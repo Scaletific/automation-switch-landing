@@ -1,0 +1,1417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Automation Switch — AI Automation Tools</title>
+  <meta name="description" content="AI-powered automation tools that do the repetitive work so your team can focus on closing, not prospecting." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Syne:wght@500;600;700;800&family=Epilogue:ital,wght@0,300;0,400;0,500;1,300&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #F7F7F4;
+      --surface:      #FFFFFF;
+      --surface-2:    #F0F0EC;
+      --surface-3:    #E6E6E2;
+      --accent:       #C8FF00;
+      --accent-deep:  #1C2600;
+      --text:         #0C0C0A;
+      --text-muted:   #72726C;
+      --text-dim:     #B0B0A8;
+      --border:       #E2E2DC;
+      --border-2:     #CECEC8;
+      --radius:       6px;
+      --radius-lg:    20px;
+      --radius-pill:  999px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Epilogue', sans-serif;
+      font-weight: 400;
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .container {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 40px;
+      position: relative;
+    }
+
+    /* ─────────────────────────────────────────
+       NAV
+    ───────────────────────────────────────── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: rgba(247, 247, 244, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+
+    /* Logo image placeholder — swap src with actual logo file */
+    .nav-logo-img {
+      height: 32px;
+      width: auto;
+    }
+
+    /* Fallback text logo if image not present */
+    .logo-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1;
+    }
+
+    .logo-text-top {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text);
+    }
+
+    .logo-text-bottom {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 17px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text);
+      background: var(--text);
+      color: var(--bg);
+      padding: 1px 6px;
+      border-radius: 3px;
+      margin-top: 2px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 36px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+      border-radius: var(--radius);
+      white-space: nowrap;
+    }
+
+    .btn-black {
+      background: var(--text);
+      color: var(--bg);
+      padding: 10px 22px;
+    }
+
+    .btn-black:hover {
+      background: #1a1a18;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      padding: 10px 22px;
+      border: 1.5px solid var(--border-2);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--text);
+      background: var(--surface-2);
+    }
+
+    .btn-lime {
+      background: var(--accent);
+      color: var(--accent-deep);
+      padding: 14px 32px;
+    }
+
+    .btn-lime:hover {
+      background: #d4ff20;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(200,255,0,0.3);
+    }
+
+    .btn-lg { font-size: 14px; padding: 14px 32px; }
+
+    /* ─────────────────────────────────────────
+       HERO
+    ───────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 68px;
+      border-bottom: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Subtle lime accent blob */
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -100px;
+      right: -80px;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(200,255,0,0.15) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1fr 400px;
+      gap: 80px;
+      align-items: center;
+      padding: 80px 0;
+      width: 100%;
+    }
+
+    /* Eyebrow pill */
+    .hero-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--accent);
+      border-radius: var(--radius-pill);
+      padding: 6px 16px 6px 8px;
+      margin-bottom: 32px;
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .pill-dot {
+      width: 22px;
+      height: 22px;
+      background: var(--accent-deep);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .pill-dot svg {
+      width: 10px;
+      height: 10px;
+      color: var(--accent);
+    }
+
+    .pill-text {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-deep);
+    }
+
+    .hero-headline {
+      font-family: 'DM Serif Display', serif;
+      font-weight: 400;
+      font-size: clamp(52px, 6.5vw, 88px);
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+      margin-bottom: 28px;
+      animation: fadeUp 0.5s 0.1s ease both;
+    }
+
+    .hero-headline em {
+      font-style: italic;
+      position: relative;
+    }
+
+    .hero-headline .underline-accent {
+      position: relative;
+      display: inline-block;
+    }
+
+    .hero-headline .underline-accent::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      left: 0;
+      right: 0;
+      height: 8px;
+      background: var(--accent);
+      z-index: -1;
+      transform: skewX(-2deg);
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      color: var(--text-muted);
+      line-height: 1.75;
+      max-width: 500px;
+      margin-bottom: 44px;
+      font-weight: 300;
+      animation: fadeUp 0.5s 0.2s ease both;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      animation: fadeUp 0.5s 0.3s ease both;
+    }
+
+    .hero-note {
+      margin-top: 20px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 0.06em;
+      animation: fadeUp 0.5s 0.4s ease both;
+    }
+
+    /* ── Toggle card (light version) ── */
+    .hero-widget {
+      animation: fadeUp 0.7s 0.15s ease both;
+    }
+
+    .toggle-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: 28px;
+      padding: 48px 40px;
+      text-align: center;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06), 0 1px 3px rgba(0,0,0,0.04);
+      position: relative;
+      overflow: hidden;
+      transition: box-shadow 0.4s;
+    }
+
+    .toggle-card.on {
+      box-shadow: 0 8px 48px rgba(200,255,0,0.2), 0 2px 8px rgba(0,0,0,0.06);
+      border-color: rgba(200,255,0,0.4);
+    }
+
+    .toggle-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 32px;
+    }
+
+    .big-toggle {
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      margin-bottom: 32px;
+    }
+
+    .toggle-track {
+      width: 140px;
+      height: 72px;
+      background: var(--surface-2);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-pill);
+      position: relative;
+      transition: background 0.4s, border-color 0.4s, box-shadow 0.4s;
+    }
+
+    .toggle-track.on {
+      background: var(--accent);
+      border-color: var(--accent);
+      box-shadow: 0 0 32px rgba(200,255,0,0.35);
+    }
+
+    .toggle-thumb {
+      position: absolute;
+      top: 6px; left: 6px;
+      width: 56px; height: 56px;
+      background: var(--surface-3);
+      border-radius: 50%;
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.4s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+
+    .toggle-track.on .toggle-thumb {
+      transform: translateX(68px);
+      background: var(--accent-deep);
+    }
+
+    .toggle-thumb svg {
+      width: 22px; height: 22px;
+      color: var(--text-muted);
+      transition: color 0.3s;
+    }
+
+    .toggle-track.on .toggle-thumb svg { color: var(--accent); }
+
+    .toggle-state-label {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 32px;
+      letter-spacing: 0.06em;
+      color: var(--surface-3);
+      transition: color 0.4s;
+    }
+
+    .toggle-card.on .toggle-state-label { color: var(--accent-deep); }
+
+    .toggle-caption {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 8px;
+      line-height: 1.5;
+    }
+
+    .toggle-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 36px;
+      border-top: 1px solid var(--border);
+      padding-top: 32px;
+    }
+
+    .stat-item { text-align: left; }
+
+    .stat-value {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 30px;
+      color: var(--text);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+
+    /* ─────────────────────────────────────────
+       LOGO USAGE ZONE (for actual logo drop-in)
+    ───────────────────────────────────────── */
+    .logo-zone {
+      padding: 48px 0;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 64px;
+    }
+
+    .logo-zone-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .logo-zone-logos {
+      display: flex;
+      align-items: center;
+      gap: 48px;
+      flex-wrap: wrap;
+    }
+
+    /* Replace these with <img> tags pointing to your logo files */
+    .logo-placeholder {
+      height: 36px;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo-placeholder img {
+      height: 100%;
+      width: auto;
+      object-fit: contain;
+      filter: grayscale(1) opacity(0.4);
+      transition: filter 0.2s;
+    }
+
+    .logo-placeholder img:hover {
+      filter: grayscale(0) opacity(1);
+    }
+
+    .logo-placeholder-text {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--text-dim);
+      letter-spacing: 0.05em;
+    }
+
+    /* ─────────────────────────────────────────
+       SECTIONS
+    ───────────────────────────────────────── */
+    section { padding: 100px 0; }
+
+    .section-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: 'DM Serif Display', serif;
+      font-weight: 400;
+      font-size: clamp(34px, 4vw, 54px);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 16px;
+    }
+
+    .section-title em {
+      font-style: italic;
+      color: var(--text-muted);
+    }
+
+    .section-sub {
+      font-size: 17px;
+      color: var(--text-muted);
+      max-width: 540px;
+      line-height: 1.75;
+      font-weight: 300;
+    }
+
+    /* ─────────────────────────────────────────
+       HOW IT WORKS
+    ───────────────────────────────────────── */
+    .how-header {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: end;
+      margin-bottom: 72px;
+    }
+
+    .how-header-right {
+      padding-bottom: 4px;
+    }
+
+    .how-header-right p {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.75;
+      font-weight: 300;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .step {
+      background: var(--surface);
+      padding: 48px 36px;
+      transition: background 0.25s;
+    }
+
+    .step:hover { background: #FDFDFB; }
+
+    .step-number {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      margin-bottom: 28px;
+    }
+
+    .step-icon {
+      width: 44px; height: 44px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    .step-icon svg {
+      width: 20px; height: 20px;
+      color: var(--text);
+    }
+
+    .step-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 19px;
+      margin-bottom: 12px;
+      letter-spacing: -0.01em;
+    }
+
+    .step-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.75;
+    }
+
+    .step-agents {
+      margin-top: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .agent-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--text-muted);
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 4px 10px;
+      letter-spacing: 0.04em;
+      width: fit-content;
+    }
+
+    .agent-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--text);
+      opacity: 0.4;
+    }
+
+    /* ─────────────────────────────────────────
+       EXAMPLE OUTPUT
+    ───────────────────────────────────────── */
+    .example-section {
+      background: var(--text);
+      color: #F2F2F0;
+    }
+
+    .example-section .section-tag { color: rgba(255,255,255,0.3); }
+    .example-section .section-title { color: #F2F2F0; }
+    .example-section .section-title em { color: rgba(255,255,255,0.4); }
+    .example-section .section-sub { color: rgba(255,255,255,0.55); }
+
+    .example-inner {
+      display: grid;
+      grid-template-columns: 1fr 1.1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .example-features {
+      margin-top: 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .example-feature {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    .feature-check {
+      width: 22px; height: 22px;
+      background: rgba(200,255,0,0.12);
+      border: 1px solid rgba(200,255,0,0.25);
+      border-radius: 50%;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+    }
+
+    .feature-check svg {
+      width: 10px; height: 10px;
+      color: var(--accent);
+    }
+
+    .feature-text {
+      font-size: 14px;
+      color: rgba(255,255,255,0.5);
+      line-height: 1.65;
+    }
+
+    .feature-text strong { color: #F2F2F0; font-weight: 500; }
+
+    /* Light email mockup on dark background */
+    .email-mockup {
+      background: #F7F7F4;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.4);
+    }
+
+    .email-toolbar {
+      background: #EBEBЕ7;
+      background: #E8E8E4;
+      padding: 14px 18px;
+      border-bottom: 1px solid #DDDDD8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .email-dot { width: 11px; height: 11px; border-radius: 50%; }
+
+    .email-toolbar-title {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: #AAAAAA;
+      letter-spacing: 0.08em;
+      margin: 0 auto;
+      text-transform: uppercase;
+    }
+
+    .email-body { padding: 32px; color: var(--text); }
+
+    .email-field {
+      display: flex;
+      gap: 14px;
+      align-items: baseline;
+      padding: 9px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .email-field:last-of-type { border-bottom: none; margin-bottom: 20px; }
+
+    .email-field-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      width: 44px;
+      flex-shrink: 0;
+    }
+
+    .email-field-val { font-size: 13px; color: var(--text-muted); }
+    .email-field-val.subject { color: var(--text); font-weight: 500; }
+
+    .email-content { font-size: 13px; color: var(--text-muted); line-height: 1.85; }
+    .email-content p { margin-bottom: 14px; }
+    .email-content p:last-child { margin-bottom: 0; }
+
+    .email-generated-tag {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .email-gen-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent-deep);
+      background: var(--accent);
+      border-radius: var(--radius);
+      padding: 3px 9px;
+    }
+
+    .email-gen-time {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      color: var(--text-dim);
+    }
+
+    /* ─────────────────────────────────────────
+       VISION
+    ───────────────────────────────────────── */
+    .vision-section {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .vision-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .vision-left {}
+
+    .vision-quote {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(30px, 3.5vw, 46px);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+
+    .vision-quote em {
+      font-style: italic;
+      background: var(--accent);
+      color: var(--accent-deep);
+      padding: 0 6px;
+      border-radius: 4px;
+    }
+
+    .vision-right p {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.8;
+      margin-bottom: 20px;
+      font-weight: 300;
+    }
+
+    .vision-right p:last-child { margin-bottom: 0; }
+
+    /* ─────────────────────────────────────────
+       TOOLS
+    ───────────────────────────────────────── */
+    .tools-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 48px;
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .tool-card {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 36px 32px;
+      transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+    }
+
+    .tool-card:hover {
+      border-color: var(--border-2);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.07);
+      transform: translateY(-4px);
+    }
+
+    .tool-card.active {
+      border-color: var(--text);
+      background: var(--text);
+      color: var(--bg);
+    }
+
+    .tool-card.active .tool-desc { color: rgba(247,247,244,0.55); }
+
+    .tool-status {
+      font-family: 'DM Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: var(--radius);
+      margin-bottom: 24px;
+      display: inline-block;
+    }
+
+    .status-live {
+      background: var(--accent);
+      color: var(--accent-deep);
+    }
+
+    .status-soon {
+      background: var(--surface-2);
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+    }
+
+    .tool-card.active .status-live {
+      background: rgba(200,255,0,0.2);
+      color: var(--accent);
+    }
+
+    .tool-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 22px;
+      margin-bottom: 10px;
+      letter-spacing: -0.01em;
+    }
+
+    .tool-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    /* ─────────────────────────────────────────
+       CTA
+    ───────────────────────────────────────── */
+    .cta-section { padding: 120px 0; }
+
+    .cta-box {
+      background: var(--text);
+      border-radius: 28px;
+      padding: 88px 72px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Lime accent strip at top */
+    .cta-box::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%);
+      width: 160px; height: 4px;
+      background: var(--accent);
+      border-radius: 0 0 4px 4px;
+    }
+
+    .cta-tag {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 24px;
+    }
+
+    .cta-title {
+      font-family: 'DM Serif Display', serif;
+      font-weight: 400;
+      font-size: clamp(38px, 5vw, 64px);
+      color: #F2F2F0;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 16px;
+    }
+
+    .cta-title em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .cta-sub {
+      font-size: 17px;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 44px;
+      font-weight: 300;
+    }
+
+    .cta-note {
+      margin-top: 24px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 0.06em;
+    }
+
+    /* ─────────────────────────────────────────
+       FOOTER
+    ───────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 48px 0;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-copy {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 0.04em;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+
+    .footer-links a {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text-dim);
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--text-muted); }
+
+    /* ─────────────────────────────────────────
+       ANIMATIONS
+    ───────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-up {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Stagger children */
+    .fade-up:nth-child(2) { transition-delay: 0.08s; }
+    .fade-up:nth-child(3) { transition-delay: 0.16s; }
+
+    /* ─────────────────────────────────────────
+       RESPONSIVE
+    ───────────────────────────────────────── */
+    @media (max-width: 960px) {
+      .hero-inner, .example-inner, .vision-inner, .how-header {
+        grid-template-columns: 1fr;
+        gap: 48px;
+      }
+
+      .hero-widget { order: -1; }
+      .steps { grid-template-columns: 1fr; }
+      .tools-grid { grid-template-columns: 1fr; }
+      .tools-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .cta-box { padding: 56px 32px; }
+      .footer-inner { flex-direction: column; gap: 24px; }
+      .nav-links { display: none; }
+      .logo-zone { flex-direction: column; gap: 24px; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <!--
+          DROP YOUR LOGO HERE:
+          <img src="./assets/automation-switch-logo.png" class="nav-logo-img" alt="Automation Switch" />
+
+          Or use the horizontal version:
+          <img src="./assets/automation-switch-horizontal.png" class="nav-logo-img" alt="Automation Switch" />
+        -->
+        <!-- Fallback text logo — remove once image is added -->
+        <div class="logo-text">
+          <span class="logo-text-top">Automation</span>
+          <span class="logo-text-bottom">Switch</span>
+        </div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#how">How It Works</a></li>
+        <li><a href="#tools">Tools</a></li>
+        <li><a href="#vision">Mission</a></li>
+      </ul>
+
+      <a href="https://app.automationswitch.com" class="btn btn-black">Try Free →</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-inner">
+
+        <div>
+          <div class="hero-pill">
+            <div class="pill-dot">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+              </svg>
+            </div>
+            <span class="pill-text">PrecisionReach — Live Now</span>
+          </div>
+
+          <h1 class="hero-headline">
+            Stop writing<br>
+            cold emails.<br>
+            <em>Let <span class="underline-accent">AI</span> do it.</em>
+          </h1>
+
+          <p class="hero-sub">
+            Automation Switch builds AI-powered tools that handle the repetitive work — so your team can focus on closing, not prospecting.
+          </p>
+
+          <div class="hero-actions">
+            <a href="https://app.automationswitch.com" class="btn btn-lime btn-lg">Try PrecisionReach Free →</a>
+            <a href="#how" class="btn btn-outline btn-lg">How It Works</a>
+          </div>
+
+          <p class="hero-note">// Free to start &nbsp;&middot;&nbsp; No credit card required</p>
+        </div>
+
+        <!-- Toggle widget -->
+        <div class="hero-widget">
+          <div class="toggle-card" id="toggleCard">
+            <p class="toggle-label">// Outreach automation</p>
+
+            <div class="big-toggle" onclick="flipSwitch()" title="Click to automate">
+              <div class="toggle-track" id="toggleTrack">
+                <div class="toggle-thumb">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <div class="toggle-state-label" id="toggleStateLabel">OFF</div>
+            <p class="toggle-caption" id="toggleCaption">Click to flip the switch</p>
+
+            <div class="toggle-stats">
+              <div class="stat-item">
+                <div class="stat-value">4</div>
+                <div class="stat-label">AI Agents</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">5</div>
+                <div class="stat-label">Emails / run</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">&lt;5m</div>
+                <div class="stat-label">Per campaign</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-value">∞</div>
+                <div class="stat-label">Industries</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how">
+    <div class="container">
+      <div class="how-header fade-up">
+        <div>
+          <p class="section-tag">// How it works</p>
+          <h2 class="section-title">Four agents.<br><em>One pipeline.</em></h2>
+        </div>
+        <div class="how-header-right">
+          <p>PrecisionReach runs a coordinated team of AI agents — each with a specific role, each informing the next. Like a real sales research team, but instant.</p>
+        </div>
+      </div>
+
+      <div class="steps fade-up">
+        <div class="step">
+          <p class="step-number">01 / 04</p>
+          <div class="step-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>
+            </svg>
+          </div>
+          <h3 class="step-title">Market Research</h3>
+          <p class="step-desc">Identifies companies and subniches within your target industry. Understands the landscape before a single email is drafted.</p>
+          <div class="step-agents">
+            <span class="agent-tag"><span class="agent-dot"></span> Business Analyst Agent</span>
+          </div>
+        </div>
+
+        <div class="step">
+          <p class="step-number">02–03</p>
+          <div class="step-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+            </svg>
+          </div>
+          <h3 class="step-title">Prospect Profiling</h3>
+          <p class="step-desc">Finds the right job titles, decision-makers, and supervisors. Builds an ideal customer profile for each target segment.</p>
+          <div class="step-agents">
+            <span class="agent-tag"><span class="agent-dot"></span> Portfolio Analyst Agent</span>
+            <span class="agent-tag"><span class="agent-dot"></span> Customer Insight Agent</span>
+          </div>
+        </div>
+
+        <div class="step">
+          <p class="step-number">04 / 04</p>
+          <div class="step-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+            </svg>
+          </div>
+          <h3 class="step-title">Email Generation</h3>
+          <p class="step-desc">Writes 5 non-salesy, pain-point-driven cold emails — tailored to each job title, in language that actually resonates.</p>
+          <div class="step-agents">
+            <span class="agent-tag"><span class="agent-dot"></span> Cold Email Generator Agent</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EXAMPLE OUTPUT — dark section for contrast -->
+  <section class="example-section" id="example">
+    <div class="container">
+      <div class="example-inner">
+
+        <div class="fade-up">
+          <p class="section-tag">// Real output</p>
+          <h2 class="section-title">Emails that <em>actually</em> get replies.</h2>
+          <p class="section-sub">Not templates. Not merge tags. Researched, contextual emails that speak your prospect's language — under 100 words.</p>
+
+          <div class="example-features">
+            <div class="example-feature">
+              <div class="feature-check">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </div>
+              <p class="feature-text"><strong>Industry-specific terminology</strong> — speaks the way your prospect thinks</p>
+            </div>
+            <div class="example-feature">
+              <div class="feature-check">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </div>
+              <p class="feature-text"><strong>Pain point led</strong> — opens with their problem, not your pitch</p>
+            </div>
+            <div class="example-feature">
+              <div class="feature-check">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </div>
+              <p class="feature-text"><strong>5 variations per run</strong> — different angles, ready to send</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="email-mockup fade-up">
+          <div class="email-toolbar">
+            <div class="email-dot" style="background:#FF5F57"></div>
+            <div class="email-dot" style="background:#FFBD2E"></div>
+            <div class="email-dot" style="background:#28CA41"></div>
+            <span class="email-toolbar-title">Generated — Real Estate SaaS</span>
+          </div>
+          <div class="email-body">
+            <div class="email-field">
+              <span class="email-field-label">To</span>
+              <span class="email-field-val">Sarah Chen, VP Operations</span>
+            </div>
+            <div class="email-field">
+              <span class="email-field-label">From</span>
+              <span class="email-field-val">mike@yourcompany.com</span>
+            </div>
+            <div class="email-field">
+              <span class="email-field-label">Subj</span>
+              <span class="email-field-val subject">Struggling to scale tenant outreach, Sarah?</span>
+            </div>
+            <div class="email-content">
+              <p>Hi Sarah,</p>
+              <p>Most property management teams we speak with lose 3–5 hours daily on manual tenant outreach — chasing renewals, following up on maintenance, coordinating move-ins.</p>
+              <p>We helped a similar firm in Dallas reduce that overhead by 70% without adding headcount. They now handle 3× the portfolio with the same team.</p>
+              <p>Worth a 15-minute call this week?</p>
+              <p style="color:#999; margin-top:16px;">Mike<br><span style="font-size:12px">Automation Switch</span></p>
+            </div>
+            <div class="email-generated-tag">
+              <span class="email-gen-badge">AI Generated</span>
+              <span class="email-gen-time">PrecisionReach &middot; 4 agents &middot; 3m 42s</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- VISION -->
+  <section class="vision-section" id="vision">
+    <div class="container">
+      <div class="vision-inner">
+        <div class="fade-up">
+          <p class="section-tag">// Our mission</p>
+          <h2 class="vision-quote">
+            Technology creates abundance.<br>
+            <em>Nobody</em> should be left behind.
+          </h2>
+        </div>
+        <div class="fade-up">
+          <p>Automation Switch was founded on a simple belief: the tools that enterprise companies use to scale should be accessible to every business — not just the ones with big budgets and bigger teams.</p>
+          <p>We build AI-powered automation tools that level the playing field. PrecisionReach is the first. There's more coming.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOOLS -->
+  <section id="tools">
+    <div class="container">
+      <div class="tools-header fade-up">
+        <div>
+          <p class="section-tag">// The toolkit</p>
+          <h2 class="section-title">One switch.<br><em>Many tools.</em></h2>
+        </div>
+        <a href="https://app.automationswitch.com" class="btn btn-black">Start with PrecisionReach →</a>
+      </div>
+
+      <div class="tools-grid">
+        <div class="tool-card active fade-up">
+          <span class="tool-status status-live">● Live now</span>
+          <h3 class="tool-name">PrecisionReach</h3>
+          <p class="tool-desc">AI cold email generator. Research your industry, identify prospects, and generate 5 personalized emails in under 5 minutes.</p>
+        </div>
+
+        <div class="tool-card fade-up">
+          <span class="tool-status status-soon">Coming soon</span>
+          <h3 class="tool-name">FollowUp</h3>
+          <p class="tool-desc">Turn one cold email into a full 5-touch follow-up sequence, tailored to each prospect's role and likely objections.</p>
+        </div>
+
+        <div class="tool-card fade-up">
+          <span class="tool-status status-soon">Coming soon</span>
+          <h3 class="tool-name">LeadBrief</h3>
+          <p class="tool-desc">Drop in a company name and get a full sales brief — key contacts, pain points, recent news, and a recommended approach.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-box fade-up">
+        <p class="cta-tag">// Start today</p>
+        <h2 class="cta-title">Stop prospecting.<br>Start <em>closing.</em></h2>
+        <p class="cta-sub">Free to try. No credit card. Results in under 5 minutes.</p>
+        <a href="https://app.automationswitch.com" class="btn btn-lime btn-lg">Launch PrecisionReach →</a>
+        <p class="cta-note">// Powered by Claude AI &nbsp;&middot;&nbsp; Built by Automation Switch &nbsp;&middot;&nbsp; A Scaletific product</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <span class="footer-copy">&copy; 2025 Automation Switch. A Scaletific product.</span>
+
+        <!--
+          DROP FOOTER LOGO HERE:
+          <img src="./assets/automation-switch-logo.png" style="height:28px;opacity:0.3" alt="Automation Switch" />
+        -->
+
+        <ul class="footer-links">
+          <li><a href="#">Privacy</a></li>
+          <li><a href="#">Terms</a></li>
+          <li><a href="mailto:hello@automationswitch.com">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Toggle
+    let isOn = false;
+    function flipSwitch() {
+      isOn = !isOn;
+      const track  = document.getElementById('toggleTrack');
+      const card   = document.getElementById('toggleCard');
+      const label  = document.getElementById('toggleStateLabel');
+      const cap    = document.getElementById('toggleCaption');
+
+      if (isOn) {
+        track.classList.add('on');
+        card.classList.add('on');
+        label.textContent = 'ON';
+        cap.textContent   = 'Automation active — agents working';
+      } else {
+        track.classList.remove('on');
+        card.classList.remove('on');
+        label.textContent = 'OFF';
+        cap.textContent   = 'Click to flip the switch';
+      }
+    }
+
+    // Scroll reveal
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 90);
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+  </script>
+
+</body>
+</html>
