@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Article — Automation Switch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #1e1e1e;
+      --bg2: #252525;
+      --bg3: #2d2d2d;
+      --border: #3a3a3a;
+      --amber: #c8861a;
+      --amber-dim: #8a5c10;
+      --amber-glow: rgba(200,134,26,0.09);
+      --text: #b0b0b0;
+      --text-dim: #707070;
+      --text-bright: #e8e8e8;
+      --mono: 'IBM Plex Mono', monospace;
+      --sans: 'IBM Plex Sans', sans-serif;
+      --display: 'Bebas Neue', sans-serif;
+    }
+    body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 15px; line-height: 1.7; overflow-x: hidden; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.5; }
+
+    /* TOPBAR */
+    .topbar { display: flex; align-items: center; justify-content: space-between; padding: 0 40px; height: 52px; border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; background: rgba(30,30,30,0.96); backdrop-filter: blur(8px); }
+    .topbar-left { display: flex; align-items: center; gap: 16px; }
+    .logo-mark { width: 28px; height: 28px; }
+    .logo-mark svg { width: 100%; height: 100%; }
+    .logo-text { font-family: var(--display); font-size: 18px; letter-spacing: 0.12em; color: var(--text-bright); }
+    .logo-text span { color: var(--amber); }
+    .topbar-right { display: flex; align-items: center; gap: 32px; }
+    .nav-link { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); text-decoration: none; transition: color 0.2s; }
+    .nav-link:hover { color: var(--amber); }
+    .nav-cta { font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #fff; background: var(--amber); padding: 7px 16px; text-decoration: none; }
+
+    /* ARTICLE HEADER */
+    .article-header { max-width: 800px; margin: 0 auto; padding: 56px 40px 40px; }
+    .breadcrumb { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 20px; display: flex; align-items: center; gap: 8px; }
+    .breadcrumb a { color: var(--amber); text-decoration: none; }
+    .breadcrumb-sep { color: var(--text-dim); }
+    .article-category { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--amber); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+    .article-category::before { content: ''; display: block; width: 20px; height: 1px; background: var(--amber); }
+    .article-title { font-family: var(--display); font-size: clamp(40px, 5vw, 64px); line-height: 0.95; letter-spacing: 0.02em; color: var(--text-bright); margin-bottom: 24px; }
+    .article-meta-row { display: flex; align-items: center; gap: 20px; padding: 16px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); margin-bottom: 40px; }
+    .meta-author { display: flex; align-items: center; gap: 10px; }
+    .meta-avatar { width: 28px; height: 28px; border-radius: 50%; background: var(--amber-glow); border: 1px solid var(--amber-dim); display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 10px; color: var(--amber); }
+    .meta-name { font-size: 13px; font-weight: 500; color: var(--text-bright); }
+    .meta-sep { width: 3px; height: 3px; border-radius: 50%; background: var(--border); }
+    .meta-item { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); }
+
+    /* ARTICLE BODY */
+    .article-layout { max-width: 1100px; margin: 0 auto; padding: 0 40px 80px; display: grid; grid-template-columns: 1fr 280px; gap: 60px; align-items: start; }
+    .article-body { max-width: 680px; }
+    .article-body p { font-size: 16px; font-weight: 300; line-height: 1.85; color: var(--text); margin-bottom: 24px; }
+    .article-body h2 { font-family: var(--display); font-size: 28px; letter-spacing: 0.04em; color: var(--text-bright); margin: 40px 0 16px; }
+    .article-body h3 { font-size: 16px; font-weight: 500; color: var(--text-bright); margin: 28px 0 10px; }
+    .article-body blockquote { border-left: 3px solid var(--amber); padding: 4px 0 4px 20px; margin: 28px 0; }
+    .article-body blockquote p { font-size: 17px; font-style: italic; color: var(--text-bright); margin: 0; }
+    .article-body code { font-family: var(--mono); font-size: 12px; background: var(--bg3); color: var(--amber); padding: 2px 6px; border-radius: 2px; }
+    .article-body pre { background: var(--bg3); border: 1px solid var(--border); padding: 20px; border-radius: 2px; margin: 24px 0; overflow-x: auto; }
+    .article-body pre code { background: none; padding: 0; color: var(--text); font-size: 12px; line-height: 1.7; }
+
+    /* SIDEBAR */
+    .article-sidebar { position: sticky; top: 72px; }
+    .sidebar-block { background: var(--bg2); border: 1px solid var(--border); padding: 24px; margin-bottom: 20px; }
+    .sidebar-block-label { font-family: var(--mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 14px; }
+    .toc-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+    .toc-list li a { font-size: 12px; color: var(--text-dim); text-decoration: none; line-height: 1.4; transition: color 0.2s; display: block; padding-left: 10px; border-left: 1px solid var(--border); }
+    .toc-list li a:hover { color: var(--amber); border-left-color: var(--amber); }
+    .toc-list li a.active { color: var(--amber); border-left-color: var(--amber); }
+    .subscribe-sidebar input { background: var(--bg); border: 1px solid var(--border); color: var(--text-bright); font-family: var(--mono); font-size: 11px; padding: 10px 12px; width: 100%; margin-bottom: 8px; outline: none; }
+    .subscribe-sidebar input:focus { border-color: var(--amber); }
+    .subscribe-sidebar button { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; background: var(--amber); color: #fff; border: none; padding: 10px; width: 100%; cursor: pointer; }
+    .subscribe-sidebar p { font-family: var(--mono); font-size: 9px; color: var(--text-dim); margin-top: 10px; line-height: 1.6; }
+
+    /* RELATED ARTICLES */
+    .related { border-top: 1px solid var(--border); max-width: 1100px; margin: 0 auto; padding: 48px 40px 80px; }
+    .related-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 24px; }
+    .related-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); }
+    .related-card { background: var(--bg); padding: 24px; cursor: pointer; transition: background 0.2s; }
+    .related-card:hover { background: var(--bg2); }
+    .related-cat { font-family: var(--mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--amber); margin-bottom: 8px; }
+    .related-title { font-size: 14px; font-weight: 500; color: var(--text-bright); line-height: 1.4; margin-bottom: 10px; }
+    .related-meta { font-family: var(--mono); font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); }
+
+    /* FOOTER */
+    footer { border-top: 1px solid var(--border); padding: 40px; display: flex; align-items: center; justify-content: space-between; background: var(--bg2); }
+    .footer-brand { font-family: var(--display); font-size: 20px; letter-spacing: 0.1em; color: var(--text-bright); }
+    .footer-brand span { color: var(--amber); }
+    .footer-links { display: flex; gap: 28px; }
+    .footer-links a { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); text-decoration: none; }
+    .footer-copy { font-family: var(--mono); font-size: 10px; color: var(--text-dim); }
+
+    @media (max-width: 900px) {
+      .article-layout { grid-template-columns: 1fr; }
+      .article-sidebar { position: static; }
+      .related-grid { grid-template-columns: 1fr; }
+      .topbar-right .nav-link { display: none; }
+    }
+    @media (max-width: 600px) {
+      .topbar { padding: 0 20px; }
+      .article-header { padding: 40px 20px 28px; }
+      .article-layout { padding: 0 20px 60px; }
+      .related { padding: 40px 20px 60px; }
+      footer { flex-direction: column; gap: 20px; align-items: flex-start; padding: 28px 20px; }
+    }
+
+    /* ─── SOCIAL LINKS ─── */
+    .social-links { display: flex; align-items: center; gap: 16px; }
+    .social-link { color: var(--text-dim); transition: color 0.2s; display: flex; align-items: center; }
+    .social-link:hover { color: var(--amber); }
+    .footer-social { display: flex; align-items: center; gap: 18px; }
+    .topbar-social { display: flex; align-items: center; gap: 14px; padding-right: 4px; border-right: 1px solid var(--border); margin-right: 4px; }
+  </style>
+</head>
+<body>
+
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="logo-mark">
+        <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="2" width="24" height="24" stroke="#e8a020" stroke-width="1.5"/>
+          <rect x="7" y="7" width="6" height="14" fill="#e8a020"/>
+          <rect x="15" y="7" width="6" height="7" fill="#3a3a3a"/>
+          <rect x="15" y="16" width="6" height="5" fill="#e8a020" opacity="0.4"/>
+        </svg>
+      </div>
+      <span class="logo-text">AUTOMATION<span>SWITCH</span></span>
+    </div>
+    <nav class="topbar-right">
+      <a href="#" class="nav-link">Articles</a>
+      <a href="#" class="nav-link">Tools</a>
+      <a href="#" class="nav-link">About</a>
+      <div class="topbar-social">
+        <a href="#" class="social-link" aria-label="X / Twitter"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.91-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+        <a href="#" class="social-link" aria-label="Instagram"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
+        <a href="#" class="social-link" aria-label="LinkedIn"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+        <a href="#" class="social-link" aria-label="YouTube"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+      </div>
+      <a href="#" class="nav-cta">Subscribe</a>
+    </nav>
+  </header>
+
+  <div class="article-header">
+    <div class="breadcrumb">
+      <a href="#">Articles</a>
+      <span class="breadcrumb-sep">/</span>
+      <span>Deep Dive</span>
+    </div>
+    <div class="article-category">Deep Dive · Workflow Architecture</div>
+    <h1 class="article-title">WHY MOST AUTOMATION PROJECTS STALL AT STEP THREE</h1>
+    <div class="article-meta-row">
+      <div class="meta-author">
+        <div class="meta-avatar">AS</div>
+        <span class="meta-name">Automation Switch</span>
+      </div>
+      <div class="meta-sep"></div>
+      <span class="meta-item">Mar 2026</span>
+      <div class="meta-sep"></div>
+      <span class="meta-item">7 min read</span>
+      <div class="meta-sep"></div>
+      <span class="meta-item">Workflow Architecture</span>
+    </div>
+  </div>
+
+  <div class="article-layout">
+    <article class="article-body">
+      <p>The failure isn't in the tools. It's in how teams think about handoffs. Most automation stalls not because the technology is wrong — but because no one mapped what happens when the workflow hits a human decision point.</p>
+
+      <h2>THE PROBLEM WITH STEP THREE</h2>
+
+      <p>Every automation project starts with the same optimism. Step one works perfectly — data comes in, a trigger fires, something moves. Step two adds a transformation layer and that works too. Then step three arrives and suddenly everything that seemed clean becomes complicated.</p>
+
+      <p>Step three is usually where a human has to make a decision. Approve or reject. Assign or escalate. The automation reaches a branch point and the tooling has no way to hold that context while it waits.</p>
+
+      <blockquote>
+        <p>The workflow isn't broken. The assumption that everything can be automated end-to-end is what breaks.</p>
+      </blockquote>
+
+      <h2>DESIGNING FOR HANDOFFS</h2>
+
+      <p>The teams that succeed don't try to automate the human decision out of the process. They design the automation to carry context cleanly up to the handoff point, pause there, and resume cleanly afterwards. That requires thinking about state — what information does the human need, and how does the system hold everything while it waits?</p>
+
+      <h3>The context package</h3>
+
+      <p>Before any handoff, your automation should compile what we call a context package — a structured summary of everything that's happened so far, what decision needs to be made, and what the downstream steps will look like depending on the choice. The human shouldn't have to dig through logs or retrace steps.</p>
+
+      <pre><code>// Example context package shape
+{
+  trigger: 'new_lead_submitted',
+  lead: { name, company, industry, source },
+  enrichment: { painPoints, stakeholderRole, intent },
+  decision_required: 'approve_for_outreach',
+  deadline: '2026-03-24T09:00:00Z',
+  next_steps: {
+    approved: 'generate_email_sequence',
+    rejected: 'archive_and_tag'
+  }
+}</code></pre>
+
+      <h2>WHERE PRECISION REACH FITS</h2>
+
+      <p>This is exactly the problem Precision Reach was built to solve for the outreach workflow specifically. By the time a lead reaches an SDR, the research is done, the pain points are surfaced, and the email sequence is already drafted. The human decision — whether to send — is the only thing left. The automation doesn't try to make that call. It just makes sure the human has everything they need to make it fast.</p>
+
+    </article>
+
+    <aside class="article-sidebar">
+      <div class="sidebar-block">
+        <div class="sidebar-block-label">In this article</div>
+        <ul class="toc-list">
+          <li><a href="#" class="active">The problem with step three</a></li>
+          <li><a href="#">Designing for handoffs</a></li>
+          <li><a href="#">The context package</a></li>
+          <li><a href="#">Where Precision Reach fits</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-block subscribe-sidebar">
+        <div class="sidebar-block-label">Stay in the loop</div>
+        <input type="email" placeholder="your@email.com" />
+        <button>Subscribe — It's Free</button>
+        <p>Automation guides, tool releases, and workflow breakdowns. No noise.</p>
+      </div>
+    </aside>
+  </div>
+
+  <div class="related">
+    <div class="related-label">Related Articles</div>
+    <div class="related-grid">
+      <div class="related-card">
+        <div class="related-cat">Tool Guide</div>
+        <div class="related-title">Connecting Make.com to Your CRM Without Writing a Line of Code</div>
+        <div class="related-meta">Feb 2026 · 5 min read</div>
+      </div>
+      <div class="related-card">
+        <div class="related-cat">Strategy</div>
+        <div class="related-title">The 3-Layer Automation Stack Every Growing Business Needs</div>
+        <div class="related-meta">Feb 2026 · 6 min read</div>
+      </div>
+      <div class="related-card">
+        <div class="related-cat">Analysis</div>
+        <div class="related-title">AI Agents in Business Workflows: What's Actually Useful Right Now</div>
+        <div class="related-meta">Dec 2025 · 10 min read</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-brand">AUTOMATION<span>SWITCH</span></div>
+    <div class="footer-social">
+      <a href="#" class="social-link" aria-label="X / Twitter"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.91-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
+      <a href="#" class="social-link" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg></a>
+      <a href="#" class="social-link" aria-label="LinkedIn"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
+      <a href="#" class="social-link" aria-label="YouTube"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></a>
+    </div>
+    <nav class="footer-links">
+      <a href="#">Articles</a>
+      <a href="#">Tools</a>
+      <a href="#">About</a>
+      <a href="#">Newsletter</a>
+    </nav>
+    <div class="footer-copy">© 2026 Automation Switch</div>
+  </footer>
+
+</body>
+</html>

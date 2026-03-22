@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1584 396" width="1584" height="396">
+  <!-- Background -->
+  <rect width="1584" height="396" fill="#1e1e1e"/>
+
+  <!-- Top amber accent line -->
+  <rect x="0" y="0" width="1584" height="4" fill="#e8a020"/>
+
+  <!-- Bottom border -->
+  <rect x="0" y="392" width="1584" height="4" fill="#e8a020" opacity="0.3"/>
+
+  <!-- Left decorative bars -->
+  <rect x="60" y="60" width="3" height="276" fill="#e8a020" opacity="0.15"/>
+  <rect x="70" y="80" width="3" height="236" fill="#e8a020" opacity="0.25"/>
+  <rect x="80" y="40" width="3" height="316" fill="#e8a020" opacity="0.1"/>
+
+  <!-- Logo mark -->
+  <g transform="translate(130, 118) scale(2.8)">
+    <rect x="2" y="2" width="56" height="56" fill="none" stroke="#e8a020" stroke-width="2.2"/>
+    <rect x="11" y="11" width="15" height="34" fill="#e8a020"/>
+    <rect x="30" y="11" width="17" height="17" fill="#252525"/>
+    <rect x="30" y="31" width="17" height="14" fill="#e8a020" opacity="0.45"/>
+  </g>
+
+  <!-- AUTOMATION -->
+  <text x="340" y="200" font-family="'Bebas Neue', Impact, sans-serif" font-size="100" letter-spacing="6" fill="#e8e8e8">AUTOMATION</text>
+  <!-- SWITCH -->
+  <text x="340" y="295" font-family="'Bebas Neue', Impact, sans-serif" font-size="100" letter-spacing="6" fill="#e8a020">SWITCH</text>
+
+  <!-- Tagline -->
+  <text x="342" y="340" font-family="'Courier New', monospace" font-size="18" letter-spacing="4" fill="#606060">WORKFLOW AUTOMATION · AI TOOLS · CONNECTED SYSTEMS</text>
+
+  <!-- Right bars -->
+  <rect x="1500" y="60" width="2" height="276" fill="#e8a020" opacity="0.15"/>
+  <rect x="1515" y="40" width="2" height="316" fill="#e8a020" opacity="0.08"/>
+  <rect x="1530" y="100" width="2" height="196" fill="#e8a020" opacity="0.25"/>
+  <rect x="1545" y="80" width="2" height="236" fill="#e8a020" opacity="0.12"/>
+  <rect x="1560" y="120" width="2" height="156" fill="#e8a020" opacity="0.2"/>
+</svg>

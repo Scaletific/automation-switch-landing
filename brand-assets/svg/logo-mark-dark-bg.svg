@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="60" height="60">
+  <!-- Background -->
+  <rect width="60" height="60" fill="#1e1e1e"/>
+  <!-- Outer border -->
+  <rect x="2" y="2" width="56" height="56" fill="none" stroke="#e8a020" stroke-width="2.5"/>
+  <!-- Left bar (solid amber) -->
+  <rect x="11" y="11" width="15" height="34" fill="#e8a020"/>
+  <!-- Top right block -->
+  <rect x="30" y="11" width="17" height="17" fill="#2d2d2d"/>
+  <!-- Bottom right block (amber dim) -->
+  <rect x="30" y="31" width="17" height="14" fill="#e8a020" opacity="0.45"/>
+</svg>

@@ -20,7 +20,7 @@ A corporate brochure site, a SaaS product page, or a developer docs portal. It r
 ## Colour Palette
 
 | Token | Value | Usage |
-|---|---|---|
+| --- | --- | --- |
 | `--bg` | `#1e1e1e` | Page background |
 | `--bg2` | `#252525` | Elevated surfaces (cards, sidebar, topbar) |
 | `--bg3` | `#2d2d2d` | Code blocks, deep surface |
@@ -40,12 +40,13 @@ A corporate brochure site, a SaaS product page, or a developer docs portal. It r
 ## Typography
 
 All fonts are loaded from Google Fonts:
+
 ```html
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
 ```
 
 | Token | Font | Usage |
-|---|---|---|
+| --- | --- | --- |
 | `--display` | Bebas Neue | Hero headlines, section titles, large display type, article titles |
 | `--sans` | IBM Plex Sans | Body copy, nav labels, descriptions, UI text |
 | `--mono` | IBM Plex Mono | Metadata, tags, categories, buttons, labels, eyebrows, code |
@@ -53,7 +54,7 @@ All fonts are loaded from Google Fonts:
 ### Type Scale
 
 | Element | Font | Size | Weight | Notes |
-|---|---|---|---|---|
+| --- | --- | --- | --- | --- |
 | Hero title | Bebas Neue | `clamp(64px, 8vw, 108px)` | 400 | `line-height: 0.92`, `letter-spacing: 0.02em` |
 | Article title (page) | Bebas Neue | `clamp(40px, 5vw, 64px)` | 400 | `line-height: 0.95` |
 | Section title | Bebas Neue | `32px` | 400 | `letter-spacing: 0.06em` |
@@ -97,7 +98,8 @@ body::before {
 ### Grid Patterns
 
 **Featured article layout (homepage + index):**
-```
+
+```text
 2fr | 1fr
      [side item]
      [side item]
@@ -116,6 +118,7 @@ body::before {
 ## Component Patterns
 
 ### Topbar / Nav
+
 - Height: `52px`, sticky, `z-index: 100`
 - Background: `rgba(30,30,30,0.96)` + `backdrop-filter: blur(8px)`
 - Logo: SVG mark + Bebas Neue wordmark (`AUTOMATION` + `SWITCH` in amber)
@@ -124,6 +127,7 @@ body::before {
 - CTA button: `nav-cta` — amber background, white text, no border-radius
 
 ### Cards (Content)
+
 - Background: `var(--bg)` → `var(--bg2)` on hover
 - **Top amber bar on hover:** `::before` pseudo, `height: 2px`, `background: var(--amber)`, `scaleX(0→1)` on hover, `transform-origin: left`
 - Category tag: IBM Plex Mono, 9px, uppercase, amber
@@ -159,30 +163,36 @@ body::before {
 ```
 
 ### Subscribe Form
+
 - Input: `background: var(--bg2)`, 1px `var(--border)` border, amber border on focus
 - Button: full-width amber, IBM Plex Mono uppercase
 - Note text: IBM Plex Mono 9–10px, `var(--text-dim)`
 
 ### Ticker
+
 - Scrolling marquee, `animation: ticker 28s linear infinite`
 - Text: IBM Plex Mono, 10px, uppercase, `var(--text-dim)`
 - Separators: `///` in amber
 
 ### Filter Bar (Articles Index)
+
 - Filter buttons: IBM Plex Mono, 10px, uppercase, 1px border
 - Active state: amber border + `var(--amber-glow)` background + amber text
 - Search input: IBM Plex Mono, right-aligned, 200px wide
 
 ### Article Sidebar (Single Article)
+
 - Sticky at `top: 72px`
 - Table of contents: left border indicator, amber on active
 - Subscribe form: same pattern as hero sidebar
 
 ### Pagination
+
 - 36×36px buttons, 1px border, amber on active/hover
 - IBM Plex Mono, 11px
 
 ### Section Labels
+
 - IBM Plex Mono, 10px, uppercase, `var(--text-dim)`
 - Optional `::after` line extending to fill width
 
@@ -208,13 +218,22 @@ All animations are CSS-only. No JS animation libraries.
 
 ## Page Templates
 
-### 1. Homepage (`automation-switch-grey.html`)
+### 1. Homepage
+
+Source: `_prototypes/automation-switch-grey.html`
+
 Structure: `topbar → ticker → hero (2-col) → divider → featured articles → tools grid → articles list → mission block → footer`
 
-### 2. Articles Index (`automation-switch-articles-index.html`)
+### 2. Articles Index
+
+Source: `_prototypes/automation-switch-articles-index.html`
+
 Structure: `topbar → page header → filter bar → featured row → articles grid → pagination → footer`
 
-### 3. Single Article (`automation-switch-article.html`)
+### 3. Single Article
+
+Source: `_prototypes/automation-switch-article.html`
+
 Structure: `topbar → article header (breadcrumb + title + meta) → 2-col layout (body + sticky sidebar) → related articles → footer`
 
 ---
@@ -239,24 +258,78 @@ Wordmark: `AUTOMATION` (var(--text-bright)) + `SWITCH` (var(--amber)), Bebas Neu
 ## Responsive Breakpoints
 
 | Breakpoint | Changes |
-|---|---|
+| --- | --- |
 | `max-width: 900px` | Hero → single column. Featured grid → single column. Tools grid → 2 col. Nav links hidden (keep social + CTA). Article sidebar → static |
 | `max-width: 600px` | Padding reduced to 20px. Tools grid → 1 col. Article number column hidden in list. Footer → stacked column |
 
 ---
 
-## Tech Stack (Decided)
+## Tech Stack (Locked)
 
 | Layer | Technology |
-|---|---|
-| Frontend framework | Next.js + TypeScript + Tailwind CSS |
-| CMS | TBD — Sanity (recommended) or markdown-in-git |
-| Newsletter / email | Beehiiv |
+| --- | --- |
+| Frontend framework | Next.js 15 + TypeScript + Tailwind CSS 4 |
+| CMS | **Sanity** (confirmed) |
+| Newsletter / email | **Beehiiv** |
 | Email capture | Beehiiv Publications API — POST to `/api/subscribe` route in Next.js |
-| Deployment | Vercel |
+| Deployment | Vercel — build from `web/` subdirectory |
 | Domain | `automationswitch.com` (Vercel DNS) |
 
+### Project Structure
+
+```text
+automationswitch/
+├── _prototypes/          # Static HTML design references (read-only)
+├── brand-assets/         # Logos, favicons, social banners
+├── DESIGN_SYSTEM.md      # This file
+└── web/                  # Next.js app — deploy root for Vercel
+    ├── sanity/
+    │   ├── sanity.config.ts
+    │   ├── schemaTypes/  # article.ts, category.ts, tool.ts
+    │   └── lib/          # client.ts, queries.ts
+    └── src/
+        ├── app/
+        │   ├── page.tsx                    # Homepage
+        │   ├── articles/page.tsx           # Articles index
+        │   ├── articles/[slug]/page.tsx    # Single article
+        │   ├── studio/[[...tool]]/page.tsx # Sanity Studio at /studio
+        │   └── api/subscribe/route.ts      # Beehiiv API proxy
+        └── components/
+            ├── layout/   # Topbar, Footer
+            ├── home/     # Ticker, ToolCard
+            ├── articles/ # ArticleCard, FeaturedArticle
+            └── ui/       # SubscribeForm, LogoMark, SocialLinks
+```
+
+### Vercel Configuration
+
+Set **Root Directory** to `web` in Vercel project settings.
+
+### Sanity Setup (one-time, human task)
+
+1. Create a Sanity project at sanity.io
+2. Add `.env.local` in `web/` with the following vars:
+
+```env
+NEXT_PUBLIC_SANITY_PROJECT_ID=your_project_id
+NEXT_PUBLIC_SANITY_DATASET=production
+SANITY_API_TOKEN=your_read_token
+BEEHIIV_API_KEY=your_key
+BEEHIIV_PUBLICATION_ID=your_publication_id
+```
+
+3. Add the same vars to Vercel environment settings.
+4. Run `npm install && npm run dev` from `web/`.
+5. Visit `localhost:3000/studio` to access the CMS.
+
+### Sanity Schemas
+
+- **Article**: title, slug, category (ref), excerpt, body (Portable Text), publishedAt, readTime, featured (bool), seo (metaTitle, metaDescription)
+- **Category**: title, slug
+- **Tool**: name, slug, tagline, description, icon (emoji), url, status (live/beta/soon), order
+
 ### Beehiiv Subscribe Endpoint
+
 ```typescript
 // pages/api/subscribe.ts (or app/api/subscribe/route.ts)
 await fetch(`https://api.beehiiv.com/v2/publications/${PUBLICATION_ID}/subscriptions`, {

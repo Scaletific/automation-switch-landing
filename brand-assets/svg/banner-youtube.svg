@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2560 1440" width="2560" height="1440">
+  <!-- Background -->
+  <rect width="2560" height="1440" fill="#1e1e1e"/>
+
+  <!-- Structural grid lines subtle -->
+  <line x1="0" y1="720" x2="2560" y2="720" stroke="#252525" stroke-width="1"/>
+  <line x1="1280" y1="0" x2="1280" y2="1440" stroke="#252525" stroke-width="1"/>
+
+  <!-- Left amber accent -->
+  <rect x="0" y="0" width="8" height="1440" fill="#e8a020"/>
+
+  <!-- Right decorative bars cluster -->
+  <rect x="2360" y="200" width="3" height="1040" fill="#e8a020" opacity="0.08"/>
+  <rect x="2380" y="300" width="3" height="840" fill="#e8a020" opacity="0.15"/>
+  <rect x="2400" y="180" width="3" height="1080" fill="#e8a020" opacity="0.06"/>
+  <rect x="2420" y="400" width="3" height="640" fill="#e8a020" opacity="0.2"/>
+  <rect x="2440" y="250" width="3" height="940" fill="#e8a020" opacity="0.1"/>
+  <rect x="2460" y="500" width="3" height="440" fill="#e8a020" opacity="0.3"/>
+  <rect x="2480" y="350" width="3" height="740" fill="#e8a020" opacity="0.12"/>
+  <rect x="2500" y="600" width="3" height="240" fill="#e8a020" opacity="0.4"/>
+  <rect x="2520" y="280" width="3" height="880" fill="#e8a020" opacity="0.08"/>
+  <rect x="2540" y="450" width="3" height="540" fill="#e8a020" opacity="0.22"/>
+
+  <!-- Logo mark centred -->
+  <g transform="translate(880, 460) scale(6)">
+    <rect x="2" y="2" width="56" height="56" fill="none" stroke="#e8a020" stroke-width="1.8"/>
+    <rect x="11" y="11" width="15" height="34" fill="#e8a020"/>
+    <rect x="30" y="11" width="17" height="17" fill="#252525"/>
+    <rect x="30" y="31" width="17" height="14" fill="#e8a020" opacity="0.45"/>
+  </g>
+
+  <!-- AUTOMATION -->
+  <text x="1280" y="760" text-anchor="middle" font-family="'Bebas Neue', Impact, sans-serif" font-size="200" letter-spacing="12" fill="#e8e8e8">AUTOMATION</text>
+  <!-- SWITCH -->
+  <text x="1280" y="940" text-anchor="middle" font-family="'Bebas Neue', Impact, sans-serif" font-size="200" letter-spacing="12" fill="#e8a020">SWITCH</text>
+
+  <!-- Tagline -->
+  <text x="1280" y="1040" text-anchor="middle" font-family="'Courier New', monospace" font-size="36" letter-spacing="8" fill="#606060">WORKFLOW AUTOMATION · AI TOOLS · CONNECTED SYSTEMS</text>
+
+  <!-- Safe area indicator note lines -->
+  <rect x="390" y="0" width="1" height="1440" fill="#2a2a2a" opacity="0.5"/>
+  <rect x="2170" y="0" width="1" height="1440" fill="#2a2a2a" opacity="0.5"/>
+</svg>
