@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PrecisionReach — AI Outreach Intelligence by AutomationSwitch</title>
+  <meta name="description" content="Stop doing outreach research manually. PrecisionReach runs a 4-agent AI pipeline that researches your market, maps decision-makers, builds ICPs, and writes cold emails — in one run." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Epilogue:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --lime: #C8FF00;
+      --lime-dim: rgba(200, 255, 0, 0.12);
+      --lime-border: rgba(200, 255, 0, 0.25);
+      --bg: #080808;
+      --surface: #0f0f0f;
+      --surface-2: #161616;
+      --border: rgba(255,255,255,0.07);
+      --text: #f0f0f0;
+      --muted: rgba(240,240,240,0.45);
+      --font-head: 'Syne', sans-serif;
+      --font-body: 'Epilogue', sans-serif;
+      --font-mono: 'DM Mono', monospace;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    /* ── GLOW ── */
+    .hero-glow {
+      position: absolute;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 800px;
+      height: 500px;
+      background: radial-gradient(ellipse at center, rgba(200,255,0,0.07) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 48px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(8,8,8,0.85);
+      backdrop-filter: blur(16px);
+    }
+
+    .nav-brand {
+      font-family: var(--font-head);
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-brand span {
+      color: var(--lime);
+    }
+
+    .nav-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--lime);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .btn-ghost-sm {
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .btn-ghost-sm:hover { color: var(--text); }
+
+    .btn-primary-sm {
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      color: #000;
+      background: var(--lime);
+      border: none;
+      cursor: pointer;
+      padding: 9px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .btn-primary-sm:hover { background: #d4ff33; transform: translateY(-1px); }
+
+    /* ── SECTIONS ── */
+    section { position: relative; z-index: 1; }
+
+    .container {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 0 48px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 140px 0 100px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .hero-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--lime);
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 24px;
+      height: 1px;
+      background: var(--lime);
+    }
+
+    h1 {
+      font-family: var(--font-head);
+      font-size: clamp(42px, 5vw, 64px);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      color: var(--text);
+      margin-bottom: 24px;
+    }
+
+    h1 em {
+      font-style: normal;
+      color: var(--lime);
+    }
+
+    .hero-sub {
+      font-size: 17px;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 40px;
+      max-width: 480px;
+    }
+
+    .hero-ctas {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 600;
+      color: #000;
+      background: var(--lime);
+      border: none;
+      cursor: pointer;
+      padding: 14px 28px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 0 0 0 rgba(200,255,0,0);
+    }
+
+    .btn-primary:hover {
+      background: #d4ff33;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(200,255,0,0.2);
+    }
+
+    .btn-ghost {
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--text);
+      background: transparent;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      padding: 14px 28px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .btn-ghost:hover {
+      border-color: rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.04);
+    }
+
+    .hero-proof {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+    }
+
+    /* ── HERO TERMINAL ── */
+    .hero-visual {
+      position: relative;
+    }
+
+    .terminal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04);
+    }
+
+    .terminal-bar {
+      background: var(--surface-2);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .terminal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .terminal-dot:nth-child(1) { background: #ff5f57; }
+    .terminal-dot:nth-child(2) { background: #febc2e; }
+    .terminal-dot:nth-child(3) { background: #28c840; }
+
+    .terminal-title {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .terminal-body {
+      padding: 24px;
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      line-height: 1.8;
+    }
+
+    .t-dim { color: var(--muted); }
+    .t-lime { color: var(--lime); }
+    .t-white { color: var(--text); }
+    .t-green { color: #4ade80; }
+
+    .agent-line {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 2px;
+      opacity: 0;
+      animation: fadeIn 0.4s ease forwards;
+    }
+
+    .agent-line:nth-child(1) { animation-delay: 0.2s; }
+    .agent-line:nth-child(2) { animation-delay: 0.6s; }
+    .agent-line:nth-child(3) { animation-delay: 1.1s; }
+    .agent-line:nth-child(4) { animation-delay: 1.7s; }
+    .agent-line:nth-child(5) { animation-delay: 2.4s; }
+    .agent-line:nth-child(6) { animation-delay: 2.7s; }
+    .agent-line:nth-child(7) { animation-delay: 3.0s; }
+    .agent-line:nth-child(8) { animation-delay: 3.3s; }
+    .agent-line:nth-child(9) { animation-delay: 3.8s; }
+    .agent-line:nth-child(10) { animation-delay: 4.2s; }
+    .agent-line:nth-child(11) { animation-delay: 4.6s; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateX(-4px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 8px;
+      height: 14px;
+      background: var(--lime);
+      animation: blink 1s step-end infinite;
+      vertical-align: middle;
+      margin-left: 2px;
+      opacity: 0;
+      animation-delay: 4.8s, 4.8s;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px;
+      background: var(--border);
+      margin: 0;
+    }
+
+    /* ── PAIN POINTS ── */
+    .pain {
+      padding: 100px 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 48px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .pain-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+    }
+
+    .pain-card {
+      background: var(--bg);
+      padding: 40px 32px;
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s;
+    }
+
+    .pain-card:hover { border-color: var(--lime-border); }
+
+    .pain-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--lime);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+
+    .pain-card:hover::before { transform: scaleX(1); }
+
+    .pain-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--lime);
+      margin-bottom: 20px;
+      letter-spacing: 0.08em;
+    }
+
+    .pain-text {
+      font-family: var(--font-head);
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1.3;
+      color: var(--text);
+    }
+
+    /* ── HOW IT WORKS ── */
+    .how {
+      padding: 120px 0;
+    }
+
+    .how-header {
+      text-align: center;
+      margin-bottom: 80px;
+    }
+
+    h2 {
+      font-family: var(--font-head);
+      font-size: clamp(32px, 4vw, 48px);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      font-size: 16px;
+      color: var(--muted);
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .pipeline {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      position: relative;
+    }
+
+    .pipeline::before {
+      content: '';
+      position: absolute;
+      top: 40px;
+      left: 10%;
+      right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--lime-border), var(--lime-border), transparent);
+      z-index: 0;
+    }
+
+    .pipe-step {
+      padding: 0 24px 40px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .pipe-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+      position: relative;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .pipe-step:hover .pipe-icon {
+      border-color: var(--lime-border);
+      box-shadow: 0 0 24px rgba(200,255,0,0.1);
+    }
+
+    .pipe-icon-inner {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--lime);
+      letter-spacing: 0.05em;
+    }
+
+    .pipe-step-num {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .pipe-title {
+      font-family: var(--font-head);
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      line-height: 1.2;
+    }
+
+    .pipe-desc {
+      font-size: 13.5px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    /* ── OUTPUT PREVIEW ── */
+    .outputs {
+      padding: 0 0 120px;
+    }
+
+    .output-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .output-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+
+    .output-card:hover {
+      border-color: var(--lime-border);
+      transform: translateY(-4px);
+    }
+
+    .output-card-header {
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .output-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--lime);
+      background: var(--lime-dim);
+      border: 1px solid var(--lime-border);
+      padding: 3px 10px;
+      border-radius: 100px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .output-card-title {
+      font-family: var(--font-head);
+      font-size: 16px;
+      font-weight: 700;
+      padding: 20px 24px 8px;
+    }
+
+    .output-card-body {
+      padding: 0 24px 24px;
+    }
+
+    .output-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .output-item:last-child { border-bottom: none; }
+
+    .output-item::before {
+      content: '→';
+      color: var(--lime);
+      font-family: var(--font-mono);
+      font-size: 11px;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ── PRICING ── */
+    .pricing {
+      padding: 120px 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .pricing-header {
+      text-align: center;
+      margin-bottom: 64px;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .price-card {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 36px 28px;
+      position: relative;
+      transition: border-color 0.3s;
+    }
+
+    .price-card:hover { border-color: rgba(255,255,255,0.15); }
+
+    .price-card.featured {
+      border-color: var(--lime-border);
+      background: linear-gradient(135deg, rgba(200,255,0,0.04), var(--bg));
+    }
+
+    .price-card.featured::before {
+      content: 'Most Popular';
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #000;
+      background: var(--lime);
+      padding: 4px 14px;
+      border-radius: 100px;
+      white-space: nowrap;
+    }
+
+    .price-tier {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .price-amount {
+      font-family: var(--font-head);
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .price-amount span {
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    .price-period {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
+
+    .price-divider {
+      height: 1px;
+      background: var(--border);
+      margin-bottom: 24px;
+    }
+
+    .price-features {
+      list-style: none;
+      margin-bottom: 32px;
+    }
+
+    .price-features li {
+      font-size: 14px;
+      color: var(--muted);
+      padding: 7px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .price-features li::before {
+      content: '✓';
+      color: var(--lime);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      flex-shrink: 0;
+    }
+
+    .price-cta {
+      display: block;
+      text-align: center;
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 13px;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .price-cta-primary {
+      background: var(--lime);
+      color: #000;
+    }
+
+    .price-cta-primary:hover {
+      background: #d4ff33;
+      transform: translateY(-1px);
+    }
+
+    .price-cta-ghost {
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    .price-cta-ghost:hover {
+      border-color: rgba(255,255,255,0.2);
+      background: rgba(255,255,255,0.04);
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 40px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-brand {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+    }
+
+    .footer-links a {
+      font-size: 13px;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--text); }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      .container { padding: 0 24px; }
+      .hero-grid { grid-template-columns: 1fr; gap: 48px; }
+      .hero-visual { display: none; }
+      .pain-grid, .pipeline, .output-grid, .pricing-grid { grid-template-columns: 1fr; }
+      .pipeline::before { display: none; }
+      footer { flex-direction: column; gap: 16px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-brand">
+    <div class="nav-dot"></div>
+    Precision<span>Reach</span> <span style="color:var(--muted);font-weight:400;margin: 0 4px;">by</span> AutomationSwitch
+  </a>
+  <div class="nav-actions">
+    <a href="#" class="btn-ghost-sm">Sign In</a>
+    <a href="#signup" class="btn-primary-sm">Start Free</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="container">
+    <div class="hero-grid">
+      <div class="hero-content">
+        <div class="hero-eyebrow">AI-Powered Outreach Intelligence</div>
+        <h1>Stop doing outreach research <em>manually</em></h1>
+        <p class="hero-sub">
+          PrecisionReach runs a 4-agent AI pipeline that researches your target industry, maps the org hierarchy, builds ideal customer profiles, and writes cold emails — in one run. No more copying between ChatGPT tabs.
+        </p>
+        <div class="hero-ctas">
+          <a href="#signup" class="btn-primary">Start Free — 3 runs on us</a>
+          <a href="#how" class="btn-ghost">See how it works</a>
+        </div>
+        <p class="hero-proof">Built for SDRs, founders, and marketing consultants</p>
+      </div>
+
+      <div class="hero-visual">
+        <div class="terminal">
+          <div class="terminal-bar">
+            <div class="terminal-dot"></div>
+            <div class="terminal-dot"></div>
+            <div class="terminal-dot"></div>
+            <span class="terminal-title">precisionreach — running pipeline</span>
+          </div>
+          <div class="terminal-body">
+            <div class="agent-line"><span class="t-dim">$</span><span class="t-lime"> precisionreach run</span><span class="t-dim"> --industry="SaaS" --sender="Scaletific"</span></div>
+            <div class="agent-line"><span class="t-dim">───────────────────────────────────────</span></div>
+            <div class="agent-line"><span class="t-lime">▶ Agent 1</span><span class="t-dim"> Business Analyst</span></div>
+            <div class="agent-line"><span class="t-dim">  Mapping companies and subniches...</span></div>
+            <div class="agent-line"><span class="t-green">  ✓ Found 12 subniches, 40+ companies</span></div>
+            <div class="agent-line"><span class="t-lime">▶ Agent 2</span><span class="t-dim"> Portfolio Analyst</span></div>
+            <div class="agent-line"><span class="t-dim">  Mapping job titles and hierarchy...</span></div>
+            <div class="agent-line"><span class="t-green">  ✓ 28 decision-maker profiles mapped</span></div>
+            <div class="agent-line"><span class="t-lime">▶ Agent 3</span><span class="t-dim"> ICP Profiler</span></div>
+            <div class="agent-line"><span class="t-green">  ✓ 5 ideal customer profiles built</span></div>
+            <div class="agent-line"><span class="t-lime">▶ Agent 4</span><span class="t-dim"> Cold Email Writer</span><span class="t-green"> ✓ 5 emails ready</span><span class="cursor"></span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PAIN POINTS -->
+<section class="pain">
+  <div class="container">
+    <div class="section-label">Sound familiar?</div>
+    <div class="pain-grid">
+      <div class="pain-card reveal">
+        <div class="pain-num">01 /</div>
+        <div class="pain-text">You spend 45 minutes in ChatGPT doing this manually</div>
+      </div>
+      <div class="pain-card reveal reveal-delay-1">
+        <div class="pain-num">02 /</div>
+        <div class="pain-text">Your cold emails are generic because you skipped the research</div>
+      </div>
+      <div class="pain-card reveal reveal-delay-2">
+        <div class="pain-num">03 /</div>
+        <div class="pain-text">You copy-paste between tabs to get one usable email</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="container">
+    <div class="how-header reveal">
+      <div class="section-label" style="justify-content:center; margin-bottom:20px;">How it works</div>
+      <h2>Four agents. One run.<br>Everything you need.</h2>
+      <p class="section-sub">Each agent hands enriched context to the next — so the cold email writer knows exactly who the prospect is before writing a word.</p>
+    </div>
+
+    <div class="pipeline">
+      <div class="pipe-step reveal">
+        <div class="pipe-icon">
+          <span class="pipe-icon-inner">INPUT</span>
+        </div>
+        <div class="pipe-step-num">Step 01</div>
+        <div class="pipe-title">Tell us your industry and offer</div>
+        <p class="pipe-desc">Fill a simple form — your industry, company name, and what you offer. That's it.</p>
+      </div>
+
+      <div class="pipe-step reveal reveal-delay-1">
+        <div class="pipe-icon">
+          <span class="pipe-icon-inner">AGENT 1</span>
+        </div>
+        <div class="pipe-step-num">Step 02</div>
+        <div class="pipe-title">Business Analyst researches your market</div>
+        <p class="pipe-desc">Maps companies and subniches within your industry. Identifies who your offer serves.</p>
+      </div>
+
+      <div class="pipe-step reveal reveal-delay-2">
+        <div class="pipe-icon">
+          <span class="pipe-icon-inner">AGENT 2</span>
+        </div>
+        <div class="pipe-step-num">Step 03</div>
+        <div class="pipe-title">Portfolio Analyst maps decision-makers</div>
+        <p class="pipe-desc">Identifies job titles, supervisors, and org hierarchy — so you know exactly who to reach.</p>
+      </div>
+
+      <div class="pipe-step reveal reveal-delay-3">
+        <div class="pipe-icon">
+          <span class="pipe-icon-inner">AGENTS<br>3 + 4</span>
+        </div>
+        <div class="pipe-step-num">Step 04</div>
+        <div class="pipe-title">ICP Profiler + Email Writer deliver</div>
+        <p class="pipe-desc">5 detailed customer profiles and 5 cold emails — role-specific, under 100 words each.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OUTPUT PREVIEW -->
+<section class="outputs">
+  <div class="container">
+    <div class="section-label reveal">What you get</div>
+    <div class="output-grid">
+      <div class="output-card reveal">
+        <div class="output-card-header">
+          <span class="output-tag">Report 01</span>
+        </div>
+        <div class="output-card-title">Org Hierarchy Report</div>
+        <div class="output-card-body">
+          <div class="output-item">Job titles and supervisors mapped by seniority</div>
+          <div class="output-item">Subniches identified within your target industry</div>
+          <div class="output-item">Decision-maker chains from IC to C-suite</div>
+          <div class="output-item">Pain points per role and how your offer addresses them</div>
+        </div>
+      </div>
+
+      <div class="output-card reveal reveal-delay-1">
+        <div class="output-card-header">
+          <span class="output-tag">Report 02</span>
+        </div>
+        <div class="output-card-title">5 Ideal Customer Profiles</div>
+        <div class="output-card-body">
+          <div class="output-item">Demographics — company size, revenue, growth stage</div>
+          <div class="output-item">Pain points with revenue impact (High / Medium / Low)</div>
+          <div class="output-item">Buying behaviour and decision timeline</div>
+          <div class="output-item">Budget ranges and expected ROI</div>
+        </div>
+      </div>
+
+      <div class="output-card reveal reveal-delay-2">
+        <div class="output-card-header">
+          <span class="output-tag">Report 03</span>
+        </div>
+        <div class="output-card-title">5 Cold Emails</div>
+        <div class="output-card-body">
+          <div class="output-item">One email per decision-maker role</div>
+          <div class="output-item">Under 100 words — written to get a reply, not impress</div>
+          <div class="output-item">Subject lines under 3 words — curiosity-first</div>
+          <div class="output-item">Copy to clipboard, download as PDF</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing" id="signup">
+  <div class="container">
+    <div class="pricing-header reveal">
+      <div class="section-label" style="justify-content:center; margin-bottom:20px;">Pricing</div>
+      <h2>Start free.<br>Scale when it works.</h2>
+    </div>
+    <div class="pricing-grid">
+      <div class="price-card reveal">
+        <div class="price-tier">Free</div>
+        <div class="price-amount">£0</div>
+        <div class="price-period">No card required</div>
+        <div class="price-divider"></div>
+        <ul class="price-features">
+          <li>3 full pipeline runs</li>
+          <li>All 4 agents included</li>
+          <li>PDF + clipboard export</li>
+          <li>All LLM options</li>
+        </ul>
+        <a href="#" class="price-cta price-cta-ghost">Get started free</a>
+      </div>
+
+      <div class="price-card featured reveal reveal-delay-1">
+        <div class="price-tier">Starter</div>
+        <div class="price-amount">£20<span>/mo</span></div>
+        <div class="price-period">Billed monthly</div>
+        <div class="price-divider"></div>
+        <ul class="price-features">
+          <li>50 runs per month</li>
+          <li>All free features</li>
+          <li>BYOK — bring your own API key</li>
+          <li>Run history saved</li>
+        </ul>
+        <a href="#" class="price-cta price-cta-primary">Start Starter</a>
+      </div>
+
+      <div class="price-card reveal reveal-delay-2">
+        <div class="price-tier">Pro</div>
+        <div class="price-amount">£79<span>/mo</span></div>
+        <div class="price-period">Billed monthly</div>
+        <div class="price-divider"></div>
+        <ul class="price-features">
+          <li>Unlimited runs</li>
+          <li>All Starter features</li>
+          <li>Priority support</li>
+          <li>Early API access</li>
+        </ul>
+        <a href="#" class="price-cta price-cta-ghost">Start Pro</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div class="container">
+  <footer>
+    <div class="footer-brand">PrecisionReach by AutomationSwitch · © 2026 Scaletific</div>
+    <div class="footer-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms</a>
+      <a href="mailto:hello@automationswitch.com">Contact</a>
+    </div>
+  </footer>
+</div>
+
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
