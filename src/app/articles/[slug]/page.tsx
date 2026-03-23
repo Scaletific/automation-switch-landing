@@ -70,7 +70,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           <p style={{ fontSize: '12px', color: 'var(--text-dim)', lineHeight: 1.6 }}>
             AI-powered cold email research and generation. Research an industry, build ICPs, and write targeted emails in one run.
           </p>
-          <a href="https://precisionreach.automationswitch.com" target="_blank" rel="noreferrer" className="sidebar-tool-link">
+          <a href="/precisionreach.html" className="sidebar-tool-link">
             Try PrecisionReach →
           </a>
         </div>
