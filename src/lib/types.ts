@@ -24,6 +24,6 @@ export interface Tool {
   tagline: string
   description?: string
   icon?: string
-  url?: string
+  url?: string | null
   status: 'live' | 'soon' | 'beta'
 }

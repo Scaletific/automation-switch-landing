@@ -13,8 +13,8 @@ export const revalidate = 60
 // Placeholder content matching the mockup — shown until Sanity is populated
 const PLACEHOLDER_TOOLS = [
   { _id: 'p1', name: 'PRECISION REACH', tagline: 'AI-powered cold email intelligence. Research an industry, surface stakeholder pain points, and generate high-converting email sequences automatically.', icon: '🎯', status: 'live' as const, url: 'https://precisionreach.automationswitch.com', slug: { current: 'precision-reach' }, order: 1 },
-  { _id: 'p2', name: 'FLOWMAP', tagline: 'Visualise your existing workflow as a structured automation map. Identify where friction lives before you build a single trigger.', icon: '⚡', status: 'soon' as const, url: null, slug: { current: 'flowmap' }, order: 2 },
-  { _id: 'p3', name: 'HOOKBASE', tagline: 'A lightweight webhook relay and inspector. Test, monitor, and debug integrations between your tools without a backend.', icon: '🔗', status: 'soon' as const, url: null, slug: { current: 'hookbase' }, order: 3 },
+  { _id: 'p2', name: 'FLOWMAP', tagline: 'Visualise your existing workflow as a structured automation map. Identify where friction lives before you build a single trigger.', icon: '⚡', status: 'soon' as const, slug: { current: 'flowmap' }, order: 2 },
+  { _id: 'p3', name: 'HOOKBASE', tagline: 'A lightweight webhook relay and inspector. Test, monitor, and debug integrations between your tools without a backend.', icon: '🔗', status: 'soon' as const, slug: { current: 'hookbase' }, order: 3 },
 ]
 
 const PLACEHOLDER_FEATURED = {
