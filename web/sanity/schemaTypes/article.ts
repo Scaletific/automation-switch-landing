@@ -11,7 +11,6 @@ export const article = defineType({
     defineField({ name: 'excerpt', title: 'Excerpt', type: 'text', rows: 3, validation: r => r.required().max(200) }),
     defineField({ name: 'body', title: 'Body', type: 'array', of: [
       { type: 'block' },
-      { type: 'code', options: { language: 'javascript', withFilename: true } },
       { type: 'image', options: { hotspot: true } },
     ]}),
     defineField({ name: 'publishedAt', title: 'Published At', type: 'datetime', validation: r => r.required() }),
