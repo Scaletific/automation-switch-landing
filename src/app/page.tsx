@@ -1,6 +1,6 @@
 import Link from 'next/link'
-import { client } from '../../sanity/lib/client'
-import { homepageArticlesQuery, toolsQuery, allArticlesQuery } from '../../sanity/lib/queries'
+import { client } from '../sanity/lib/client'
+import { homepageArticlesQuery, toolsQuery, allArticlesQuery } from '../sanity/lib/queries'
 import { FeaturedArticle } from '@/components/articles/FeaturedArticle'
 import { ArticleCard } from '@/components/articles/ArticleCard'
 import { ToolCard } from '@/components/home/ToolCard'

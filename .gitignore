@@ -1,3 +1,9 @@
 .DS_Store
 *.zip
 New Folder With Items/
+.next/
+node_modules/
+.env.local
+.env*.local
+*.tsbuildinfo
+next-env.d.ts
