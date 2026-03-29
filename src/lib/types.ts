@@ -27,3 +27,54 @@ export interface Tool {
   url?: string | null
   status: 'live' | 'soon' | 'beta'
 }
+
+export interface Author {
+  _id: string
+  name: string
+  slug: { current: string }
+  role: string
+  bio: string
+  avatar?: { asset: { url: string } }
+  twitterUrl?: string
+  linkedinUrl?: string
+}
+
+export interface FaqItem {
+  _key: string
+  question: string
+  answer: string
+}
+
+export interface ArticleFull extends Article {
+  lastModified?: string
+  tags?: string[]
+  author?: Author
+  heroImage?: { url: string; alt?: string }
+  keyTakeaways?: string[]
+  faq?: FaqItem[]
+  body?: unknown[]
+  seo?: {
+    metaTitle?: string
+    metaDescription?: string
+    canonicalUrl?: string
+    noIndex?: boolean
+  }
+}
+
+export interface SkillSource {
+  _id: string
+  name: string
+  slug: { current: string }
+  description: string
+  url: string
+  installCmd?: string
+  domains?: string[]
+  platforms?: string[]
+  skillCount?: number
+  skillCountPrev?: number
+  skillCountUpdatedAt?: string
+  sourceType: 'official' | 'community' | 'tooling' | 'spec'
+  featured?: boolean
+  status: 'published' | 'pending-review' | 'rejected'
+  seo?: { metaTitle?: string; metaDescription?: string }
+}

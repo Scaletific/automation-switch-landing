@@ -56,3 +56,45 @@ export const toolsQuery = groq`
     _id, name, slug, tagline, description, icon, url, status
   }
 `
+
+// Single article — full fields including author, takeaways, FAQ, hero
+export const articleFullBySlugQuery = groq`
+  *[_type == "article" && slug.current == $slug][0] {
+    _id,
+    title,
+    slug,
+    excerpt,
+    publishedAt,
+    lastModified,
+    readTime,
+    featured,
+    tags,
+    keyTakeaways,
+    faq[] { _key, question, answer },
+    "category": category->{ title, slug },
+    "author": author->{ _id, name, slug, role, bio, twitterUrl, linkedinUrl,
+      "avatar": avatar.asset->{ url }
+    },
+    "heroImage": { "url": heroImage.asset->url, "alt": heroImage.alt },
+    body,
+    seo
+  }
+`
+
+// Skill sources — published only, featured first
+export const allSkillSourcesQuery = groq`
+  *[_type == "skillSource" && status == "published"] | order(featured desc, name asc) {
+    _id, name, slug, description, url, installCmd,
+    domains, platforms, skillCount, skillCountPrev,
+    sourceType, featured, status
+  }
+`
+
+// Single skill source by slug
+export const skillSourceBySlugQuery = groq`
+  *[_type == "skillSource" && slug.current == $slug && status == "published"][0] {
+    _id, name, slug, description, url, installCmd,
+    domains, platforms, skillCount, skillCountPrev, skillCountUpdatedAt,
+    sourceType, featured, status, seo
+  }
+`

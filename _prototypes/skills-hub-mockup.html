@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skills Hub — Automation Switch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #1e1e1e;
+      --bg2:         #252525;
+      --bg3:         #2d2d2d;
+      --border:      #3a3a3a;
+      --border-soft: #323232;
+      --amber:       #c8861a;
+      --amber-dim:   #8a5c10;
+      --amber-glow:  rgba(200, 134, 26, 0.09);
+      --amber-glow2: rgba(200, 134, 26, 0.14);
+      --text:        #b0b0b0;
+      --text-dim:    #707070;
+      --text-bright: #e8e8e8;
+      --green:       #5dba8a;
+      --mono: 'IBM Plex Mono', monospace;
+      --sans: 'IBM Plex Sans', sans-serif;
+      --display: 'Bebas Neue', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.7;
+      min-height: 100vh;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* NOISE OVERLAY */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.5;
+    }
+
+    /* ── TOPBAR ────────────────────────────────────────────────────────────── */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 52px;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      background: rgba(30, 30, 30, 0.96);
+      backdrop-filter: blur(8px);
+    }
+    .topbar-left { display: flex; align-items: center; gap: 16px; }
+    .logo-text {
+      font-family: var(--display);
+      font-size: 18px;
+      letter-spacing: 0.12em;
+      color: var(--text-bright);
+      text-decoration: none;
+    }
+    .logo-text span { color: var(--amber); }
+    .topbar-right { display: flex; align-items: center; gap: 32px; }
+    .nav-link {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-link:hover { color: var(--amber); }
+    .nav-link.active { color: var(--amber); }
+    .nav-cta {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #fff;
+      background: var(--amber);
+      padding: 7px 16px;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .nav-cta:hover { opacity: 0.85; }
+
+    /* ── TICKER ────────────────────────────────────────────────────────────── */
+    .ticker-wrap {
+      border-bottom: 1px solid var(--border);
+      overflow: hidden;
+      white-space: nowrap;
+      padding: 8px 0;
+      background: var(--bg2);
+    }
+    .ticker-inner {
+      display: inline-block;
+      animation: ticker 32s linear infinite;
+    }
+    @keyframes ticker {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .ticker-inner span {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      padding: 0 28px;
+    }
+    .ticker-inner span.accent { color: var(--amber); }
+
+    /* ── PAGE HEADER ───────────────────────────────────────────────────────── */
+    .page-header {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 64px 40px 48px;
+      border-bottom: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: end;
+      gap: 40px;
+    }
+    .page-eyebrow {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: fadeUp 0.4s ease 0.1s both;
+    }
+    .page-eyebrow::before {
+      content: '';
+      display: block;
+      width: 20px;
+      height: 1px;
+      background: var(--amber);
+    }
+    .page-title {
+      font-family: var(--display);
+      font-size: clamp(48px, 7vw, 84px);
+      line-height: 0.92;
+      letter-spacing: 0.02em;
+      color: var(--text-bright);
+      margin-bottom: 16px;
+      animation: fadeUp 0.4s ease 0.15s both;
+    }
+    .page-title em { color: var(--amber); font-style: normal; }
+    .page-sub {
+      font-size: 14px;
+      font-weight: 300;
+      color: var(--text-dim);
+      max-width: 520px;
+      line-height: 1.8;
+      animation: fadeUp 0.4s ease 0.2s both;
+    }
+    .header-stats {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+      animation: fadeUp 0.4s ease 0.25s both;
+    }
+    .header-stat-num {
+      font-family: var(--display);
+      font-size: 56px;
+      letter-spacing: 0.04em;
+      color: var(--amber);
+      line-height: 1;
+    }
+    .header-stat-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-align: right;
+    }
+    .header-stat-sub {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      border-top: 1px solid var(--border);
+      padding-top: 8px;
+      text-align: right;
+    }
+
+    /* ── FILTER BAR ────────────────────────────────────────────────────────── */
+    .filter-bar-wrap {
+      position: sticky;
+      top: 52px;
+      z-index: 100;
+      background: rgba(30, 30, 30, 0.97);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+    .filter-bar {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+    }
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 0;
+      border-right: 1px solid var(--border);
+      padding-right: 24px;
+      margin-right: 24px;
+    }
+    .filter-group:last-child { border-right: none; padding-right: 0; margin-right: 0; }
+    .filter-label {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .filter-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+    .pill {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      cursor: pointer;
+      transition: all 0.15s;
+      background: transparent;
+      white-space: nowrap;
+      user-select: none;
+    }
+    .pill:hover { border-color: var(--amber-dim); color: var(--text); }
+    .pill.active {
+      background: var(--amber);
+      border-color: var(--amber);
+      color: #fff;
+    }
+    .filter-count {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      margin-left: auto;
+      white-space: nowrap;
+      padding: 14px 0;
+    }
+
+    /* ── MAIN CONTENT ──────────────────────────────────────────────────────── */
+    .main-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px 80px;
+    }
+
+    /* ── FEATURED ROW ──────────────────────────────────────────────────────── */
+    .featured-row {
+      padding: 32px 0 0;
+      margin-bottom: 0;
+    }
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .section-title {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .section-link {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--amber);
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .section-link:hover { opacity: 0.7; }
+
+    /* ── SKILLS GRID ───────────────────────────────────────────────────────── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      margin-bottom: 1px;
+    }
+    .skills-grid.featured-grid {
+      grid-template-columns: repeat(2, 1fr);
+      margin-bottom: 1px;
+    }
+
+    /* ── SKILL CARD ────────────────────────────────────────────────────────── */
+    .skill-card {
+      background: var(--bg);
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      transition: background 0.2s;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+    }
+    .skill-card:hover { background: var(--bg2); }
+    .skill-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--amber);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.25s ease;
+    }
+    .skill-card:hover::after { transform: scaleX(1); }
+
+    /* Featured card variant */
+    .skill-card.featured {
+      background: var(--bg2);
+    }
+    .skill-card.featured::after { transform: scaleX(1); opacity: 0.5; }
+    .skill-card.featured:hover { background: var(--bg3); }
+
+    /* Card header row */
+    .card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .source-type-badge {
+      font-family: var(--mono);
+      font-size: 8px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border: 1px solid;
+    }
+    .badge-official  { color: var(--amber);     border-color: var(--amber-dim);   background: var(--amber-glow); }
+    .badge-community { color: var(--green);      border-color: rgba(93,186,138,0.3); background: rgba(93,186,138,0.06); }
+    .badge-tooling   { color: #7ba7d4;           border-color: rgba(123,167,212,0.3); background: rgba(123,167,212,0.06); }
+    .badge-spec      { color: var(--text-dim);   border-color: var(--border);      background: transparent; }
+
+    /* Count delta badge */
+    .count-delta {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.06em;
+      color: var(--green);
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .count-delta svg { width: 8px; height: 8px; }
+
+    /* Card name */
+    .card-name {
+      font-family: var(--display);
+      font-size: 26px;
+      letter-spacing: 0.03em;
+      color: var(--text-bright);
+      line-height: 1.0;
+      margin-bottom: 10px;
+      word-break: break-word;
+    }
+    .skill-card.featured .card-name { font-size: 32px; }
+
+    /* Card description */
+    .card-desc {
+      font-size: 13.5px;
+      font-weight: 300;
+      line-height: 1.75;
+      color: #9a9a9a;
+      margin-bottom: 18px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      flex: 1;
+    }
+
+    /* Platform pills */
+    .card-platforms {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-bottom: 10px;
+    }
+    .platform-tag {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      border: 1px solid var(--border-soft);
+      padding: 3px 8px;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .skill-card:hover .platform-tag { border-color: var(--border); color: var(--text); }
+
+    /* Domain tags */
+    .card-domains {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 20px;
+    }
+    .card-domains span { opacity: 0.5; margin: 0 5px; }
+
+    /* Install command */
+    .card-install {
+      background: var(--bg3);
+      border: 1px solid var(--border-soft);
+      padding: 8px 12px;
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.04em;
+      color: var(--amber);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      cursor: copy;
+      transition: border-color 0.2s;
+    }
+    .card-install:hover { border-color: var(--amber-dim); }
+    .card-install-text { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .card-install svg { width: 12px; height: 12px; opacity: 0.5; flex-shrink: 0; }
+
+    /* Card footer */
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 14px;
+      border-top: 1px solid var(--border-soft);
+    }
+    .card-skill-count {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .card-skill-count strong {
+      color: var(--text-bright);
+      font-weight: 500;
+    }
+    .card-view-link {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--amber);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: gap 0.2s;
+    }
+    .skill-card:hover .card-view-link { gap: 10px; }
+
+    /* No install cmd placeholder */
+    .no-install {
+      background: transparent;
+      border: 1px solid var(--border-soft);
+      padding: 8px 12px;
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-dim);
+      margin-bottom: 18px;
+      opacity: 0.5;
+      font-style: italic;
+    }
+
+    /* ── SUBMIT SECTION ────────────────────────────────────────────────────── */
+    .submit-section {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 48px;
+      position: relative;
+      overflow: hidden;
+      margin-top: 48px;
+    }
+    .submit-section::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--amber) 0%, transparent 60%);
+    }
+    .submit-inner {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 48px;
+    }
+    .submit-eyebrow {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 10px;
+    }
+    .submit-title {
+      font-family: var(--display);
+      font-size: 36px;
+      letter-spacing: 0.04em;
+      color: var(--text-bright);
+      line-height: 1.0;
+      margin-bottom: 10px;
+    }
+    .submit-desc {
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--text-dim);
+      max-width: 440px;
+      line-height: 1.8;
+    }
+    .submit-form {
+      display: flex;
+      gap: 0;
+      min-width: 320px;
+    }
+    .submit-input {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-right: none;
+      color: var(--text-bright);
+      font-family: var(--mono);
+      font-size: 11px;
+      padding: 12px 14px;
+      outline: none;
+      flex: 1;
+      transition: border-color 0.2s;
+    }
+    .submit-input::placeholder { color: var(--text-dim); }
+    .submit-input:focus { border-color: var(--amber); }
+    .submit-btn {
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      background: var(--amber);
+      color: #fff;
+      border: none;
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+    }
+    .submit-btn:hover { opacity: 0.85; }
+
+    /* ── EMPTY STATE ───────────────────────────────────────────────────────── */
+    .empty-state {
+      grid-column: 1 / -1;
+      background: var(--bg);
+      padding: 64px 40px;
+      text-align: center;
+    }
+    .empty-state-title {
+      font-family: var(--display);
+      font-size: 28px;
+      color: var(--border);
+      letter-spacing: 0.04em;
+      margin-bottom: 10px;
+    }
+    .empty-state-sub {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
+    /* ── FOOTER ────────────────────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg2);
+      margin-top: 80px;
+    }
+    .footer-brand {
+      font-family: var(--display);
+      font-size: 20px;
+      letter-spacing: 0.1em;
+      color: var(--text-bright);
+    }
+    .footer-brand span { color: var(--amber); }
+    .footer-links { display: flex; gap: 28px; }
+    .footer-links a {
+      font-family: var(--mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-links a:hover { color: var(--amber); }
+    .footer-copy {
+      font-family: var(--mono);
+      font-size: 10px;
+      color: var(--text-dim);
+    }
+
+    /* ── ANIMATIONS ────────────────────────────────────────────────────────── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    /* ── RESPONSIVE ────────────────────────────────────────────────────────── */
+    @media (max-width: 1000px) {
+      .skills-grid { grid-template-columns: repeat(2, 1fr); }
+      .skills-grid.featured-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 700px) {
+      .topbar { padding: 0 20px; }
+      .topbar-right .nav-link { display: none; }
+      .page-header { padding: 40px 20px 32px; grid-template-columns: 1fr; }
+      .main-content { padding: 0 20px 60px; }
+      .skills-grid { grid-template-columns: 1fr; }
+      .filter-bar { padding: 0 20px; overflow-x: auto; }
+      .submit-inner { grid-template-columns: 1fr; }
+      .submit-form { min-width: 0; }
+      footer { flex-direction: column; gap: 20px; align-items: flex-start; padding: 28px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── TOPBAR ───────────────────────────────────────────────────────────── -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <a href="/" class="logo-text">AUTOMATION<span>SWITCH</span></a>
+    </div>
+    <div class="topbar-right">
+      <a href="/articles" class="nav-link">Articles</a>
+      <a href="/tools" class="nav-link">Tools</a>
+      <a href="/skills" class="nav-link active">Skills</a>
+      <a href="/newsletter" class="nav-cta">Subscribe</a>
+    </div>
+  </header>
+
+  <!-- ── TICKER ───────────────────────────────────────────────────────────── -->
+  <div class="ticker-wrap">
+    <div class="ticker-inner">
+      <span class="accent">// Skills Hub</span>
+      <span>Curated agent skill sources</span>
+      <span class="accent">·</span>
+      <span>Claude Code · Cursor · Copilot · Gemini CLI · Aider</span>
+      <span class="accent">·</span>
+      <span>Official · Community · Tooling · Spec</span>
+      <span class="accent">·</span>
+      <span>We are the index. Not the database.</span>
+      <span class="accent">·</span>
+      <span>Know a source? Submit it ↗</span>
+      <span class="accent">// Skills Hub</span>
+      <span>Curated agent skill sources</span>
+      <span class="accent">·</span>
+      <span>Claude Code · Cursor · Copilot · Gemini CLI · Aider</span>
+      <span class="accent">·</span>
+      <span>Official · Community · Tooling · Spec</span>
+      <span class="accent">·</span>
+      <span>We are the index. Not the database.</span>
+      <span class="accent">·</span>
+      <span>Know a source? Submit it ↗</span>
+    </div>
+  </div>
+
+  <!-- ── PAGE HEADER ───────────────────────────────────────────────────────── -->
+  <div class="page-header">
+    <div>
+      <div class="page-eyebrow">Agent Skills Directory</div>
+      <h1 class="page-title">SKILLS<br><em>HUB</em></h1>
+      <p class="page-sub">
+        The canonical index of SKILL.md file sources for AI coding agents.
+        We curate the list — the content lives at the source.
+      </p>
+    </div>
+    <div class="header-stats">
+      <div class="header-stat-num">24</div>
+      <div class="header-stat-label">Vetted sources</div>
+      <div class="header-stat-sub">800+ skills indexed · Updated weekly</div>
+    </div>
+  </div>
+
+  <!-- ── FILTER BAR ────────────────────────────────────────────────────────── -->
+  <div class="filter-bar-wrap">
+    <div class="filter-bar">
+      <div class="filter-group">
+        <span class="filter-label">Platform</span>
+        <div class="filter-pills" id="platformFilters">
+          <button class="pill active" data-filter="platform" data-value="all">All</button>
+          <button class="pill" data-filter="platform" data-value="claude-code">Claude Code</button>
+          <button class="pill" data-filter="platform" data-value="cursor">Cursor</button>
+          <button class="pill" data-filter="platform" data-value="copilot">Copilot</button>
+          <button class="pill" data-filter="platform" data-value="gemini-cli">Gemini CLI</button>
+          <button class="pill" data-filter="platform" data-value="aider">Aider</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Type</span>
+        <div class="filter-pills" id="typeFilters">
+          <button class="pill active" data-filter="type" data-value="all">All</button>
+          <button class="pill" data-filter="type" data-value="official">Official</button>
+          <button class="pill" data-filter="type" data-value="community">Community</button>
+          <button class="pill" data-filter="type" data-value="tooling">Tooling</button>
+          <button class="pill" data-filter="type" data-value="spec">Spec</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <span class="filter-label">Domain</span>
+        <div class="filter-pills" id="domainFilters">
+          <button class="pill active" data-filter="domain" data-value="all">All</button>
+          <button class="pill" data-filter="domain" data-value="engineering">Engineering</button>
+          <button class="pill" data-filter="domain" data-value="devops">DevOps</button>
+          <button class="pill" data-filter="domain" data-value="product">Product</button>
+          <button class="pill" data-filter="domain" data-value="data">Data</button>
+          <button class="pill" data-filter="domain" data-value="marketing">Marketing</button>
+        </div>
+      </div>
+      <div class="filter-count" id="filterCount">Showing 8 sources</div>
+    </div>
+  </div>
+
+  <!-- ── MAIN ──────────────────────────────────────────────────────────────── -->
+  <div class="main-content">
+
+    <!-- Featured Sources -->
+    <div class="featured-row">
+      <div class="section-header">
+        <span class="section-title">// Featured Sources</span>
+      </div>
+      <div class="skills-grid featured-grid" id="featuredGrid">
+
+        <!-- Card 1: Vercel (featured) -->
+        <a href="#" class="skill-card featured"
+           data-platforms="claude-code cursor copilot"
+           data-type="official"
+           data-domains="engineering">
+          <div class="card-header">
+            <div class="source-type-badge badge-official">Official</div>
+            <div class="count-delta">
+              <svg viewBox="0 0 8 8" fill="none"><path d="M4 7V1M1 4l3-3 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg>
+              +12 this week
+            </div>
+          </div>
+          <div class="card-name">vercel-labs / agent-skills</div>
+          <div class="card-desc">
+            Production-grade Next.js and React skill files maintained by the Vercel team. Covers routing, deployment, edge functions, and AI SDK patterns across 8 categories.
+          </div>
+          <div class="card-platforms">
+            <span class="platform-tag">Claude Code</span>
+            <span class="platform-tag">Cursor</span>
+            <span class="platform-tag">Copilot</span>
+          </div>
+          <div class="card-domains">Engineering <span>·</span> Frontend <span>·</span> DevOps</div>
+          <div class="card-install" onclick="copyInstall(event, 'npx skills add vercel-labs')">
+            <span class="card-install-text">npx skills add vercel-labs</span>
+            <svg viewBox="0 0 12 12" fill="none"><rect x="1" y="3" width="7" height="8" rx="0" stroke="currentColor" stroke-width="1"/><path d="M4 3V2h7v7H9" stroke="currentColor" stroke-width="1"/></svg>
+          </div>
+          <div class="card-footer">
+            <div class="card-skill-count"><strong>43</strong> skills</div>
+            <div class="card-view-link">View source →</div>
+          </div>
+        </a>
+
+        <!-- Card 2: alirezarezvani (featured) -->
+        <a href="#" class="skill-card featured"
+           data-platforms="claude-code"
+           data-type="community"
+           data-domains="engineering devops product">
+          <div class="card-header">
+            <div class="source-type-badge badge-community">Community</div>
+            <div class="count-delta">
+              <svg viewBox="0 0 8 8" fill="none"><path d="M4 7V1M1 4l3-3 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg>
+              +8 this week
+            </div>
+          </div>
+          <div class="card-name">alirezarezvani / claude-skills</div>
+          <div class="card-desc">
+            The most-starred community collection for Claude Code — 5,000+ GitHub stars. Covers engineering, DevOps, product management, and more. Actively maintained.
+          </div>
+          <div class="card-platforms">
+            <span class="platform-tag">Claude Code</span>
+          </div>
+          <div class="card-domains">Engineering <span>·</span> DevOps <span>·</span> Product</div>
+          <div class="card-install" onclick="copyInstall(event, 'npx skills add alirezarezvani/claude-skills')">
+            <span class="card-install-text">npx skills add alirezarezvani/claude-skills</span>
+            <svg viewBox="0 0 12 12" fill="none"><rect x="1" y="3" width="7" height="8" rx="0" stroke="currentColor" stroke-width="1"/><path d="M4 3V2h7v7H9" stroke="currentColor" stroke-width="1"/></svg>
+          </div>
+          <div class="card-footer">
+            <div class="card-skill-count"><strong>82</strong> skills</div>
+            <div class="card-view-link">View source →</div>
+          </div>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- All Sources Grid -->
+    <div style="margin-top: 1px;">
+      <div class="section-header" style="padding-top: 28px; margin-bottom: 16px;">
+        <span class="section-title">// All Sources</span>
+      </div>
+      <div class="skills-grid" id="mainGrid">
+
+        <!-- Card 3: Supabase -->
+        <a href="#" class="skill-card"
+           data-platforms="claude-code cursor"
+           data-type="official"
+           data-domains="engineering data">
+          <div class="card-header">
+            <div class="source-type-badge badge-official">Official</div>
+          </div>
+          <div class="card-name">supabase / agent-rules</div>
+          <div class="card-desc">
+            Official Supabase skill files covering database schema, RLS policies, edge functions, and realtime patterns. Built for backend-heavy agent workflows.
+          </div>
+          <div class="card-platforms">
+            <span class="platform-tag">Claude Code</span>
+            <span class="platform-tag">Cursor</span>
+          </div>
+          <div class="card-domains">Engineering <span>·</span> Data</div>
+          <div class="card-install" onclick="copyInstall(event, 'npx skills add supabase')">
+            <span class="card-install-text">npx skills add supabase</span>
+            <svg viewBox="0 0 12 12" fill="none"><rect x="1" y="3" width="7" height="8" rx="0" stroke="currentColor" stroke-width="1"/><path d="M4 3V2h7v7H9" stroke="currentColor" stroke-width="1"/></svg>
+          </div>
+          <div class="card-footer">
+            <div class="card-skill-count"><strong>27</strong> skills</div>
+            <div class="card-view-link">View source →</div>
+          </div>
+        </a>
+
+        <!-- Card 4: agentskills.io -->
+        <a href="#" class="skill-card"
+           data-platforms="claude-code cursor copilot gemini-cli aider"
+           data-type="spec"
+           data-domains="engineering">
+          <div class="card-header">
+            <div class="source-type-badge badge-spec">Spec</div>
+          </div>
+          <div class="card-name">agentskills.io</div>
+          <div class="card-desc">
+            The open SKILL.md specification and standard. If you want to understand the format before building or consuming skill files, this is the canonical reference.
+          </div>
+          <div class="card-platforms">
+            <span class="platform-tag">Claude Code</span>
+            <span class="platform-tag">Cursor</span>
+            <span class="platform-tag">Copilot</span>
+            <span class="platform-tag">Gemini CLI</span>
+            <span class="platform-tag">Aider</span>
+          </div>
+          <div class="card-domains">General <span>·</span> Standard</div>
+          <div class="no-install">No install command — specification only</div>
+          <div class="card-footer">
+            <div class="card-skill-count">Open standard</div>
+            <div class="card-view-link">View source →</div>
+          </div>
+        </a>
+
+        <!-- Card 5: npx skills CLI -->
+        <a href="#" class="skill-card"
+           data-platforms="claude-code cursor copilot aider"
+           data-type="tooling"
+           data-domains="engineering devops">
+          <div class="card-header">
+            <div class="source-type-badge badge-tooling">Tooling</div>
+          </div>
+          <div class="card-name">npx skills CLI</div>
+          <div class="card-desc">
+            The universal skill installer. Run <code style="font-family:var(--mono);font-size:11px;background:var(--bg3);padding:1px 5px;color:var(--amber);">npx skills add &lt;source&gt;</code> to pull any indexed skill collection directly into your project config.
+          </div>
+          <div class="card-platforms">
+            <span class="platform-tag">Claude Code</span>
+            <span class="platform-tag">Cursor</span>
+            <span class="platform-tag">Copilot</span>
+            <span class="platform-tag">Aider</span>
+          </div>
+          <div class="card-domains">Engineering <span>·</span> DevOps</div>
+          <div class="card-install" onclick="copyInstall(event, 'npm install -g @agentskills/cli')">
+            <span class="card-install-text">npm install -g @agentskills/cli</span>
+            <svg viewBox="0 0 12 12" fill="none"><rect x="1" y="3" width="7" height="8" rx="0" stroke="currentColor" stroke-width="1"/><path d="M4 3V2h7v7H9" stroke="currentColor" stroke-width="1"/></svg>
+          </div>
+          <div class="card-footer">
+            <div class="card-skill-count">CLI tool</div>
+            <div class="card-view-link">View source →</div>
+          </div>
+        </a>
+
+        <!-- Card 6: Streamlit -->
+        <a href="#" class="skill-card"
+           data-platforms="cursor copilot"
+           data-type="official"
+           data-domains="engineering data">
+          <div class="card-header">
+            <div class="source-type-badge badge-official">Official</div>
+          </div>
+          <div class="card-name">streamlit / skill-collection</div>
+          <div class="card-desc">
+            Streamlit's official agent skill collection for building and deploying data apps. Strong coverage of Streamlit components, state management, and caching.
+          </div>
+          <div class="card-platforms">
+            <span class="platform-tag">Cursor</span>
+            <span class="platform-tag">Copilot</span>
+          </div>
+          <div class="card-domains">Engineering <span>·</span> Data</div>
+          <div class="card-install" onclick="copyInstall(event, 'npx skills add streamlit')">
+            <span class="card-install-text">npx skills add streamlit</span>
+            <svg viewBox="0 0 12 12" fill="none"><rect x="1" y="3" width="7" height="8" rx="0" stroke="currentColor" stroke-width="1"/><path d="M4 3V2h7v7H9" stroke="currentColor" stroke-width="1"/></svg>
+          </div>
+          <div class="card-footer">
+            <div class="card-skill-count"><strong>31</strong> skills</div>
+            <div class="card-view-link">View source →</div>
+          </div>
+        </a>
+
+        <!-- Card 7: awesome-claude-code -->
+        <a href="#" class="skill-card"
+           data-platforms="claude-code"
+           data-type="community"
+           data-domains="engineering devops marketing">
+          <div class="card-header">
+            <div class="source-type-badge badge-community">Community</div>
+            <div class="count-delta">
+              <svg viewBox="0 0 8 8" fill="none"><path d="M4 7V1M1 4l3-3 3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg>
+              +5 this week
+            </div>
+          </div>
+          <div class="card-name">awesome-claude-code</div>
+          <div class="card-desc">
+            Curated list of Claude Code skills across engineering, DevOps, and marketing domains. Community-maintained with active PR reviews and quality gates.
+          </div>
+          <div class="card-platforms">
+            <span class="platform-tag">Claude Code</span>
+          </div>
+          <div class="card-domains">Engineering <span>·</span> DevOps <span>·</span> Marketing</div>
+          <div class="card-install" onclick="copyInstall(event, 'npx skills add awesome-claude-code')">
+            <span class="card-install-text">npx skills add awesome-claude-code</span>
+            <svg viewBox="0 0 12 12" fill="none"><rect x="1" y="3" width="7" height="8" rx="0" stroke="currentColor" stroke-width="1"/><path d="M4 3V2h7v7H9" stroke="currentColor" stroke-width="1"/></svg>
+          </div>
+          <div class="card-footer">
+            <div class="card-skill-count"><strong>67</strong> skills</div>
+            <div class="card-view-link">View source →</div>
+          </div>
+        </a>
+
+        <!-- Card 8: Microsoft Copilot -->
+        <a href="#" class="skill-card"
+           data-platforms="copilot"
+           data-type="official"
+           data-domains="engineering product marketing">
+          <div class="card-header">
+            <div class="source-type-badge badge-official">Official</div>
+          </div>
+          <div class="card-name">microsoft / copilot-skills</div>
+          <div class="card-desc">
+            Microsoft's official Copilot skill library. Broad coverage across engineering, product, and marketing roles. Integrates with GitHub Copilot's agent mode.
+          </div>
+          <div class="card-platforms">
+            <span class="platform-tag">Copilot</span>
+          </div>
+          <div class="card-domains">Engineering <span>·</span> Product <span>·</span> Marketing</div>
+          <div class="no-install">Install via GitHub Copilot settings</div>
+          <div class="card-footer">
+            <div class="card-skill-count"><strong>54</strong> skills</div>
+            <div class="card-view-link">View source →</div>
+          </div>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- Submit Section -->
+    <div class="submit-section">
+      <div class="submit-inner">
+        <div>
+          <div class="submit-eyebrow">// Community</div>
+          <div class="submit-title">KNOW A SOURCE<br>WE'RE MISSING?</div>
+          <p class="submit-desc">
+            Submit a repo, site, or CLI tool and we'll review it for the index.
+            We're looking for quality over quantity — vetted sources only.
+          </p>
+        </div>
+        <div>
+          <form class="submit-form" onsubmit="return false;">
+            <input type="url" class="submit-input" placeholder="github.com/org/repo-name" />
+            <button type="submit" class="submit-btn">Submit →</button>
+          </form>
+          <div style="font-family:var(--mono);font-size:9px;color:var(--text-dim);margin-top:10px;letter-spacing:0.08em;">
+            Editorial review before publishing. Usually 48–72h.
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main-content -->
+
+  <!-- ── FOOTER ────────────────────────────────────────────────────────────── -->
+  <footer>
+    <div class="footer-brand">AUTOMATION<span>SWITCH</span></div>
+    <div class="footer-links">
+      <a href="/articles">Articles</a>
+      <a href="/tools">Tools</a>
+      <a href="/skills">Skills</a>
+      <a href="/newsletter">Newsletter</a>
+    </div>
+    <div class="footer-copy">© 2026 Automation Switch</div>
+  </footer>
+
+  <script>
+    // ── Filter Logic ──────────────────────────────────────────────────────────
+
+    let activeFilters = { platform: 'all', type: 'all', domain: 'all' };
+
+    const allCards = () => document.querySelectorAll('.skill-card[data-platforms]');
+
+    function applyFilters() {
+      let visible = 0;
+      allCards().forEach(card => {
+        const platforms = card.dataset.platforms?.split(' ') || [];
+        const type      = card.dataset.type;
+        const domains   = card.dataset.domains?.split(' ') || [];
+
+        const matchP = activeFilters.platform === 'all' || platforms.includes(activeFilters.platform);
+        const matchT = activeFilters.type     === 'all' || type === activeFilters.type;
+        const matchD = activeFilters.domain   === 'all' || domains.includes(activeFilters.domain);
+
+        const show = matchP && matchT && matchD;
+        card.style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+
+      document.getElementById('filterCount').textContent =
+        `Showing ${visible} source${visible === 1 ? '' : 's'}`;
+
+      // Show empty state if no results
+      const grids = document.querySelectorAll('.skills-grid');
+      grids.forEach(grid => {
+        const hasVisible = [...grid.querySelectorAll('.skill-card')].some(c => c.style.display !== 'none');
+        let empty = grid.querySelector('.empty-state');
+        if (!hasVisible) {
+          if (!empty) {
+            empty = document.createElement('div');
+            empty.className = 'empty-state';
+            empty.innerHTML = '<div class="empty-state-title">No sources found</div><div class="empty-state-sub">Try a different filter combination</div>';
+            grid.appendChild(empty);
+          }
+        } else {
+          if (empty) empty.remove();
+        }
+      });
+    }
+
+    document.querySelectorAll('.pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        const filterGroup = pill.dataset.filter;
+        const value       = pill.dataset.value;
+
+        // Deactivate siblings
+        document.querySelectorAll(`.pill[data-filter="${filterGroup}"]`).forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+
+        activeFilters[filterGroup] = value;
+        applyFilters();
+      });
+    });
+
+    // ── Copy install command ──────────────────────────────────────────────────
+
+    function copyInstall(e, cmd) {
+      e.preventDefault();
+      e.stopPropagation();
+      navigator.clipboard.writeText(cmd).catch(() => {});
+      const el = e.currentTarget;
+      const original = el.querySelector('.card-install-text').textContent;
+      el.querySelector('.card-install-text').textContent = 'Copied!';
+      el.style.borderColor = 'var(--amber)';
+      setTimeout(() => {
+        el.querySelector('.card-install-text').textContent = original;
+        el.style.borderColor = '';
+      }, 1500);
+    }
+
+    // ── Init ──────────────────────────────────────────────────────────────────
+    applyFilters();
+  </script>
+
+</body>
+</html>

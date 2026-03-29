@@ -18,6 +18,7 @@ export function Topbar() {
       <nav className="topbar-right">
         <Link href="/articles" className="nav-link">Articles</Link>
         <Link href="/tools" className="nav-link">Tools</Link>
+        <Link href="/skills" className="nav-link">Skills</Link>
         <Link href="/about" className="nav-link">About</Link>
 
         <div className="topbar-social">

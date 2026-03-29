@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Automation Switch — System Architecture</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@300;400;500&family=IBM+Plex+Sans:wght@300;400&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #1a1a1a;
+      --bg2:     #222222;
+      --bg3:     #2a2a2a;
+      --border:  #333;
+      --amber:   #c8861a;
+      --amber2:  #e09a20;
+      --adim:    rgba(200,134,26,0.15);
+      --adim2:   rgba(200,134,26,0.06);
+      --text:    #a0a0a0;
+      --bright:  #e8e8e8;
+      --dim:     #555;
+      --green:   #5dba8a;
+      --blue:    #7ba7d4;
+      --mono:    'IBM Plex Mono', monospace;
+      --sans:    'IBM Plex Sans', sans-serif;
+      --display: 'Bebas Neue', sans-serif;
+    }
+
+    html, body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Noise */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.45;
+    }
+
+    /* ── PAGE ── */
+    .page {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 48px 40px 80px;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding-bottom: 28px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 48px;
+      animation: fadeUp 0.5s ease both;
+    }
+    .header-left { display: flex; flex-direction: column; gap: 6px; }
+    .header-eyebrow {
+      font-size: 9px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--amber);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .header-eyebrow::before { content: ''; display: block; width: 20px; height: 1px; background: var(--amber); }
+    .header-title {
+      font-family: var(--display);
+      font-size: 48px;
+      letter-spacing: 0.06em;
+      color: var(--bright);
+      line-height: 1;
+    }
+    .header-title span { color: var(--amber); }
+    .header-meta {
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--dim);
+      text-align: right;
+      line-height: 1.8;
+    }
+
+    /* ── LEGEND ── */
+    .legend {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+      animation: fadeUp 0.5s ease 0.05s both;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 9px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+    .legend-dot {
+      width: 8px;
+      height: 8px;
+      border: 1px solid;
+      flex-shrink: 0;
+    }
+    .legend-dot.amber  { border-color: var(--amber);  background: var(--adim2); }
+    .legend-dot.green  { border-color: var(--green);  background: rgba(93,186,138,0.06); }
+    .legend-dot.blue   { border-color: var(--blue);   background: rgba(123,167,212,0.06); }
+    .legend-dot.plain  { border-color: var(--border); background: transparent; }
+
+    /* ── PIPELINE ── */
+    .pipeline {
+      display: grid;
+      grid-template-columns: 1fr 32px 1fr 32px 1fr 32px 1fr 32px 1fr;
+      gap: 0;
+      align-items: start;
+    }
+
+    /* ── LANE ── */
+    .lane {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      animation: fadeUp 0.5s ease both;
+    }
+    .lane-header {
+      font-size: 8px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--dim);
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    .lane-title {
+      font-family: var(--display);
+      font-size: 22px;
+      letter-spacing: 0.08em;
+      color: var(--bright);
+      margin-bottom: 2px;
+    }
+
+    /* ── NODE ── */
+    .node {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 14px 16px;
+      margin-bottom: 8px;
+      position: relative;
+      transition: border-color 0.2s, background 0.2s;
+      cursor: default;
+    }
+    .node:hover { border-color: #444; background: var(--bg3); }
+    .node::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 2px;
+      height: 100%;
+    }
+    .node.amber::before  { background: var(--amber); }
+    .node.green::before  { background: var(--green); }
+    .node.blue::before   { background: var(--blue); }
+    .node.plain::before  { background: var(--border); }
+
+    .node-label {
+      font-size: 8px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .node.amber .node-label { color: var(--amber); }
+    .node.green .node-label { color: var(--green); }
+    .node.blue  .node-label { color: var(--blue);  }
+    .node.plain .node-label { color: var(--dim);   }
+
+    .node-name {
+      font-family: var(--display);
+      font-size: 18px;
+      letter-spacing: 0.04em;
+      color: var(--bright);
+      margin-bottom: 4px;
+      line-height: 1.1;
+    }
+    .node-desc {
+      font-size: 10px;
+      font-weight: 300;
+      color: var(--dim);
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+    .node-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 8px;
+    }
+    .tag {
+      font-size: 8px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border: 1px solid;
+    }
+    .tag.amber { color: var(--amber); border-color: rgba(200,134,26,0.3); background: var(--adim2); }
+    .tag.green { color: var(--green); border-color: rgba(93,186,138,0.25); background: rgba(93,186,138,0.04); }
+    .tag.blue  { color: var(--blue);  border-color: rgba(123,167,212,0.25); background: rgba(123,167,212,0.04); }
+    .tag.gray  { color: var(--dim);   border-color: var(--border); }
+
+    /* ── CONNECTOR ── */
+    .connector {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding-top: 48px;
+      gap: 4px;
+    }
+    .connector-line {
+      width: 1px;
+      height: 60px;
+      background: linear-gradient(180deg, transparent 0%, var(--border) 20%, var(--border) 80%, transparent 100%);
+      display: none; /* horizontal layout uses arrows instead */
+    }
+    .arrow {
+      font-size: 14px;
+      color: var(--amber);
+      opacity: 0.6;
+      margin: 0;
+      line-height: 1;
+    }
+    .arrow-label {
+      font-size: 8px;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--dim);
+      text-align: center;
+      writing-mode: vertical-lr;
+      transform: rotate(180deg);
+      line-height: 1.4;
+    }
+
+    /* ── FLOW SECTION (below main pipeline) ── */
+    .flow-section {
+      margin-top: 48px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+      animation: fadeUp 0.5s ease 0.4s both;
+    }
+    .flow-title {
+      font-size: 8px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--dim);
+      margin-bottom: 24px;
+    }
+    .flows {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+    }
+    .flow {
+      background: var(--bg2);
+      padding: 20px;
+    }
+    .flow-name {
+      font-size: 9px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 12px;
+    }
+    .flow-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .flow-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 10px;
+      color: var(--text);
+      line-height: 1.5;
+    }
+    .flow-step:last-child { border-bottom: none; }
+    .step-num {
+      font-size: 8px;
+      color: var(--amber);
+      opacity: 0.6;
+      flex-shrink: 0;
+      padding-top: 2px;
+      min-width: 16px;
+    }
+
+    /* ── ENV VARS ── */
+    .env-section {
+      margin-top: 32px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+      animation: fadeUp 0.5s ease 0.5s both;
+    }
+    .env-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--border);
+      margin-top: 20px;
+    }
+    .env-group {
+      background: var(--bg2);
+      padding: 20px;
+    }
+    .env-group-title {
+      font-size: 8px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 12px;
+    }
+    .env-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      padding: 5px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 9px;
+      align-items: baseline;
+    }
+    .env-row:last-child { border-bottom: none; }
+    .env-key { color: var(--text); letter-spacing: 0.04em; }
+    .env-status { font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; flex-shrink: 0; }
+    .env-status.set   { color: var(--green); }
+    .env-status.todo  { color: var(--amber); }
+
+    /* ── FOOTER ── */
+    .footer {
+      margin-top: 48px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .footer-brand {
+      font-family: var(--display);
+      font-size: 18px;
+      letter-spacing: 0.1em;
+      color: var(--bright);
+    }
+    .footer-brand span { color: var(--amber); }
+    .footer-meta { font-size: 9px; color: var(--dim); letter-spacing: 0.1em; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .lane:nth-child(1)  { animation-delay: 0.05s; }
+    .lane:nth-child(3)  { animation-delay: 0.12s; }
+    .lane:nth-child(5)  { animation-delay: 0.19s; }
+    .lane:nth-child(7)  { animation-delay: 0.26s; }
+    .lane:nth-child(9)  { animation-delay: 0.33s; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1100px) {
+      .pipeline { grid-template-columns: 1fr 24px 1fr 24px 1fr; }
+      .pipeline > .lane:nth-child(7),
+      .pipeline > .lane:nth-child(9),
+      .pipeline > .connector:nth-child(8) { display: none; }
+    }
+    @media (max-width: 760px) {
+      .pipeline { grid-template-columns: 1fr; }
+      .connector { display: none; }
+      .flows, .env-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <div class="header-eyebrow">System Architecture</div>
+      <div class="header-title">AUTOMATION<span>SWITCH</span></div>
+      <div style="font-size:11px;color:var(--dim);letter-spacing:0.08em;margin-top:4px;">Content pipeline · CMS · Delivery · Skills Hub</div>
+    </div>
+    <div class="header-meta">
+      Last updated: 2026-03-29<br />
+      Version: 1.0<br />
+      Stack: Notion → Sanity → Next.js → Vercel
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot amber"></div> Editorial / Content</div>
+    <div class="legend-item"><div class="legend-dot green"></div> Automation / Sync</div>
+    <div class="legend-item"><div class="legend-dot blue"></div>  Delivery / Frontend</div>
+    <div class="legend-item"><div class="legend-dot plain"></div> Schema / Config</div>
+  </div>
+
+  <!-- Pipeline -->
+  <div class="pipeline">
+
+    <!-- Lane 1: Authoring -->
+    <div class="lane">
+      <div class="lane-header">
+        <div style="color:var(--dim);font-size:8px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:4px;">01 — Authoring</div>
+        <div class="lane-title">NOTION</div>
+      </div>
+
+      <div class="node amber">
+        <div class="node-label">Articles DB</div>
+        <div class="node-name">KANBAN BOARD</div>
+        <div class="node-desc">Idea → Draft → Ready → Published. Gate: Status = Ready + SEO Checklist = ✓</div>
+        <div class="node-tags">
+          <span class="tag amber">15 fields</span>
+          <span class="tag gray">author</span>
+          <span class="tag gray">hero image</span>
+          <span class="tag gray">meta</span>
+          <span class="tag gray">FAQ</span>
+        </div>
+      </div>
+
+      <div class="node amber">
+        <div class="node-label">Template</div>
+        <div class="node-name">ARTICLE TEMPLATE</div>
+        <div class="node-desc">SEO checklist to-dos, Article Draft section, Research section, Artefacts, Distribution Plan</div>
+      </div>
+
+      <div class="node plain">
+        <div class="node-label">Submissions</div>
+        <div class="node-name">SKILL SUBMISSIONS</div>
+        <div class="node-desc">Community-submitted skill sources. Review queue before Sanity publish. Status: Pending → Approved → Rejected</div>
+      </div>
+
+      <div class="node plain">
+        <div class="node-label">Docs</div>
+        <div class="node-name">SOPs PAGE</div>
+        <div class="node-desc">Pipeline rules, field mapping, SEO requirements, enforcement layers, design rules</div>
+      </div>
+    </div>
+
+    <!-- Connector 1→2 -->
+    <div class="connector">
+      <div class="arrow">→</div>
+      <div class="arrow-label">30 min<br/>cron</div>
+    </div>
+
+    <!-- Lane 2: Sync -->
+    <div class="lane">
+      <div class="lane-header">
+        <div style="color:var(--dim);font-size:8px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:4px;">02 — Sync Engine</div>
+        <div class="lane-title">PIPELINE</div>
+      </div>
+
+      <div class="node green">
+        <div class="node-label">Core library</div>
+        <div class="node-name">NOTION-SYNC.TS</div>
+        <div class="node-desc">REST API (no SDK). Validates fields, converts Notion blocks → Portable Text, uploads images to Sanity CDN, finds author/category refs</div>
+        <div class="node-tags">
+          <span class="tag green">idempotent</span>
+          <span class="tag gray">notion-{pageId}</span>
+        </div>
+      </div>
+
+      <div class="node green">
+        <div class="node-label">API Route</div>
+        <div class="node-name">POST /API/SYNC</div>
+        <div class="node-desc">Dual auth: Vercel CRON_SECRET header + manual x-sync-secret. GET returns health check.</div>
+        <div class="node-tags">
+          <span class="tag green">SYNC_SECRET</span>
+        </div>
+      </div>
+
+      <div class="node green">
+        <div class="node-label">Scheduler</div>
+        <div class="node-name">VERCEL CRON</div>
+        <div class="node-desc">Runs every 30 minutes. Defined in vercel.json. Automatically promotes Notion status Ready → Published on sync.</div>
+        <div class="node-tags">
+          <span class="tag green">*/30 * * * *</span>
+        </div>
+      </div>
+
+      <div class="node green">
+        <div class="node-label">Skills crawler</div>
+        <div class="node-name">FIRECRAWL SYNC</div>
+        <div class="node-desc">Weekly cron. Crawls indexed skill source URLs, updates skillCount + skillCountPrev diff, flags crawlErrors ≥ 3</div>
+        <div class="node-tags">
+          <span class="tag green">weekly</span>
+          <span class="tag gray">diff tracking</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Connector 2→3 -->
+    <div class="connector">
+      <div class="arrow">→</div>
+      <div class="arrow-label">createOrReplace</div>
+    </div>
+
+    <!-- Lane 3: CMS -->
+    <div class="lane">
+      <div class="lane-header">
+        <div style="color:var(--dim);font-size:8px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:4px;">03 — CMS</div>
+        <div class="lane-title">SANITY</div>
+      </div>
+
+      <div class="node plain">
+        <div class="node-label">Schema</div>
+        <div class="node-name">ARTICLE</div>
+        <div class="node-desc">title, slug, author→, category→, hero image, body (Portable Text), keyTakeaways[], faq[], seo{}</div>
+        <div class="node-tags">
+          <span class="tag amber">required()</span>
+          <span class="tag gray">3 tab groups</span>
+        </div>
+      </div>
+
+      <div class="node plain">
+        <div class="node-label">Schema</div>
+        <div class="node-name">AUTHOR</div>
+        <div class="node-desc">name, slug, role, avatar, bio (max 400), twitterUrl, linkedinUrl — E-E-A-T signals</div>
+        <div class="node-tags">
+          <span class="tag gray">Michael Nouriel</span>
+        </div>
+      </div>
+
+      <div class="node plain">
+        <div class="node-label">Schema</div>
+        <div class="node-name">SKILL SOURCE</div>
+        <div class="node-desc">name, url, platforms[], domains[], sourceType, skillCount, skillCountPrev, crawlErrors, seo{}</div>
+        <div class="node-tags">
+          <span class="tag gray">published / pending / rejected</span>
+        </div>
+      </div>
+
+      <div class="node plain">
+        <div class="node-label">Schema</div>
+        <div class="node-name">SITE SETTINGS</div>
+        <div class="node-desc">skillsHubLive boolean — flip in Studio to show /skills CTA without code deploy</div>
+        <div class="node-tags">
+          <span class="tag gray">singleton</span>
+          <span class="tag amber">feature flag</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Connector 3→4 -->
+    <div class="connector">
+      <div class="arrow">→</div>
+      <div class="arrow-label">GROQ queries</div>
+    </div>
+
+    <!-- Lane 4: Delivery -->
+    <div class="lane">
+      <div class="lane-header">
+        <div style="color:var(--dim);font-size:8px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:4px;">04 — Delivery</div>
+        <div class="lane-title">NEXT.JS</div>
+      </div>
+
+      <div class="node blue">
+        <div class="node-label">Route</div>
+        <div class="node-name">/ARTICLES/[SLUG]</div>
+        <div class="node-desc">Author byline, hero image, key takeaways, FAQ accordion. JSON-LD: Article + BreadcrumbList + FAQPage</div>
+        <div class="node-tags">
+          <span class="tag blue">structured data</span>
+          <span class="tag gray">revalidate: 60s</span>
+        </div>
+      </div>
+
+      <div class="node blue">
+        <div class="node-label">Route</div>
+        <div class="node-name">/SKILLS</div>
+        <div class="node-desc">Filterable grid — platform / type / domain. Featured 2-col + 3-col all sources. Client-side filtering via SkillsGrid component</div>
+        <div class="node-tags">
+          <span class="tag blue">ISR 1h</span>
+        </div>
+      </div>
+
+      <div class="node blue">
+        <div class="node-label">Route</div>
+        <div class="node-name">/SKILLS/SUBMIT</div>
+        <div class="node-desc">Community submission form → POST /api/skills/submit → Notion Skill Submissions DB → editorial review</div>
+        <div class="node-tags">
+          <span class="tag blue">client component</span>
+        </div>
+      </div>
+
+      <div class="node blue">
+        <div class="node-label">Config</div>
+        <div class="node-name">VERCEL DEPLOY</div>
+        <div class="node-desc">automationswitch.com. All env vars in project settings. Cron runs in same project context.</div>
+        <div class="node-tags">
+          <span class="tag blue">production</span>
+          <span class="tag gray">l4o4vshf</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Connector 4→5 -->
+    <div class="connector">
+      <div class="arrow">→</div>
+      <div class="arrow-label">public web</div>
+    </div>
+
+    <!-- Lane 5: End users -->
+    <div class="lane">
+      <div class="lane-header">
+        <div style="color:var(--dim);font-size:8px;letter-spacing:0.2em;text-transform:uppercase;margin-bottom:4px;">05 — Audience</div>
+        <div class="lane-title">USERS</div>
+      </div>
+
+      <div class="node blue">
+        <div class="node-label">Content consumers</div>
+        <div class="node-name">READERS</div>
+        <div class="node-desc">Read articles. Organic search via rich snippets (FAQPage, Article carousel, BreadcrumbList)</div>
+        <div class="node-tags">
+          <span class="tag blue">SEO</span>
+          <span class="tag blue">E-E-A-T</span>
+        </div>
+      </div>
+
+      <div class="node blue">
+        <div class="node-label">Directory users</div>
+        <div class="node-name">BUILDERS</div>
+        <div class="node-desc">Browse and filter the Skills Hub. Install skill collections via npx. Submit new sources for review.</div>
+        <div class="node-tags">
+          <span class="tag blue">Skills Hub</span>
+        </div>
+      </div>
+
+      <div class="node plain">
+        <div class="node-label">Newsletter</div>
+        <div class="node-name">SUBSCRIBERS</div>
+        <div class="node-desc">Beehiiv integration. Subscribe form in article sidebar and homepage. API: BEEHIIV_API_KEY</div>
+        <div class="node-tags">
+          <span class="tag gray">Beehiiv</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── DATA FLOWS ── -->
+  <div class="flow-section">
+    <div class="flow-title">// Key data flows</div>
+    <div class="flows">
+
+      <div class="flow">
+        <div class="flow-name">Article publish flow</div>
+        <div class="flow-steps">
+          <div class="flow-step"><span class="step-num">01</span>Write in Notion Articles DB → set Status = Ready, check SEO Checklist</div>
+          <div class="flow-step"><span class="step-num">02</span>Vercel Cron fires every 30 min → calls POST /api/sync/notion</div>
+          <div class="flow-step"><span class="step-num">03</span>notion-sync.ts validates fields, converts blocks, uploads hero image to Sanity CDN</div>
+          <div class="flow-step"><span class="step-num">04</span>createOrReplace into Sanity with stable ID notion-{pageId}</div>
+          <div class="flow-step"><span class="step-num">05</span>Notion Status promoted Ready → Published automatically</div>
+          <div class="flow-step"><span class="step-num">06</span>Next.js ISR revalidates /articles/[slug] within 60s</div>
+        </div>
+      </div>
+
+      <div class="flow">
+        <div class="flow-name">Skills Hub update flow</div>
+        <div class="flow-steps">
+          <div class="flow-step"><span class="step-num">01</span>Manually create skillSource record in Sanity Studio (status: published)</div>
+          <div class="flow-step"><span class="step-num">02</span>OR: Community submits via /skills/submit → lands in Notion Skill Submissions DB as Pending</div>
+          <div class="flow-step"><span class="step-num">03</span>Editorial review in Notion → set Status = Approved</div>
+          <div class="flow-step"><span class="step-num">04</span>Firecrawl weekly cron crawls all published sources, updates skillCount + skillCountPrev diff</div>
+          <div class="flow-step"><span class="step-num">05</span>/skills page revalidates hourly, delta badge appears on cards where count changed</div>
+        </div>
+      </div>
+
+      <div class="flow">
+        <div class="flow-name">Schema enforcement layers</div>
+        <div class="flow-steps">
+          <div class="flow-step"><span class="step-num">L1</span>Human gate: Notion SEO Checklist checkbox + Status must be Ready or Published to enter sync</div>
+          <div class="flow-step"><span class="step-num">L2</span>Sync script gate: validates required fields (title, slug, author, category) — skips + logs if missing</div>
+          <div class="flow-step"><span class="step-num">L3</span>Sanity required() validators: reject malformed writes at the CMS layer</div>
+          <div class="flow-step"><span class="step-num">—</span>No manual policing needed. All three layers are automatic.</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── ENV VARS ── -->
+  <div class="env-section">
+    <div class="flow-title">// Environment variables</div>
+    <div class="env-grid">
+      <div class="env-group">
+        <div class="env-group-title">Sanity</div>
+        <div class="env-row"><span class="env-key">NEXT_PUBLIC_SANITY_PROJECT_ID</span><span class="env-status set">set</span></div>
+        <div class="env-row"><span class="env-key">NEXT_PUBLIC_SANITY_DATASET</span><span class="env-status set">set</span></div>
+        <div class="env-row"><span class="env-key">SANITY_API_TOKEN (Viewer)</span><span class="env-status set">set</span></div>
+        <div class="env-row"><span class="env-key">SANITY_WRITE_TOKEN (Editor)</span><span class="env-status set">set</span></div>
+      </div>
+      <div class="env-group">
+        <div class="env-group-title">Notion</div>
+        <div class="env-row"><span class="env-key">NOTION_API_TOKEN</span><span class="env-status set">set</span></div>
+        <div class="env-row"><span class="env-key">NOTION_ARTICLES_DB_ID</span><span class="env-status set">set</span></div>
+        <div class="env-row"><span class="env-key">NOTION_SUBMISSIONS_DB_ID</span><span class="env-status set">set</span></div>
+        <div class="env-row"><span class="env-key">SYNC_SECRET</span><span class="env-status set">set</span></div>
+      </div>
+      <div class="env-group">
+        <div class="env-group-title">Newsletter</div>
+        <div class="env-row"><span class="env-key">BEEHIIV_API_KEY</span><span class="env-status todo">pending</span></div>
+        <div class="env-row"><span class="env-key">BEEHIIV_PUBLICATION_ID</span><span class="env-status todo">pending</span></div>
+      </div>
+      <div class="env-group">
+        <div class="env-group-title">Managed by Vercel</div>
+        <div class="env-row"><span class="env-key">CRON_SECRET</span><span class="env-status set">auto-injected</span></div>
+        <div class="env-row"><span class="env-key">VERCEL_URL</span><span class="env-status set">auto-injected</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-brand">AUTOMATION<span>SWITCH</span></div>
+    <div class="footer-meta">architecture-v1 · 2026-03-29 · internal reference only</div>
+  </div>
+
+</div>
+</body>
+</html>

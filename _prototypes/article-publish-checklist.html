@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Article Publish Checklist — Automation Switch</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #1e1e1e;
+      --bg2: #252525;
+      --bg3: #2d2d2d;
+      --border: #3a3a3a;
+      --border-soft: #323232;
+      --amber: #c8861a;
+      --amber-dim: #8a5c10;
+      --amber-glow: rgba(200,134,26,0.09);
+      --text: #b0b0b0;
+      --text-dim: #707070;
+      --text-bright: #e8e8e8;
+      --green: #5dba8a;
+      --green-glow: rgba(93,186,138,0.1);
+      --red: #e05a5a;
+      --red-glow: rgba(224,90,90,0.08);
+      --mono: 'IBM Plex Mono', monospace;
+      --sans: 'IBM Plex Sans', sans-serif;
+      --display: 'Bebas Neue', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      font-size: 15px;
+      line-height: 1.7;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100vh;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0.5;
+    }
+
+    /* ─── TOPBAR ─── */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px; height: 52px; border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(30,30,30,0.96); backdrop-filter: blur(8px);
+    }
+    .topbar-left { display: flex; align-items: center; gap: 16px; }
+    .logo-text { font-family: var(--display); font-size: 18px; letter-spacing: 0.12em; color: var(--text-bright); }
+    .logo-text span { color: var(--amber); }
+    .topbar-right { display: flex; align-items: center; gap: 20px; }
+    .doc-title { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); }
+
+    /* ─── PAGE HEADER ─── */
+    .page-header {
+      max-width: 1100px; margin: 0 auto; padding: 48px 40px 0;
+      display: grid; grid-template-columns: 1fr auto; align-items: start; gap: 40px;
+    }
+    .page-eyebrow { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--amber); margin-bottom: 10px; }
+    .page-title { font-family: var(--display); font-size: clamp(36px, 5vw, 56px); color: var(--text-bright); line-height: 0.95; letter-spacing: 0.02em; margin-bottom: 14px; }
+    .page-sub { font-size: 14px; font-weight: 300; color: var(--text); max-width: 560px; line-height: 1.7; }
+
+    /* ─── PROGRESS WIDGET ─── */
+    .progress-widget {
+      background: var(--bg2); border: 1px solid var(--border);
+      padding: 24px 28px; min-width: 220px; text-align: center;
+    }
+    .progress-ring-wrap { position: relative; width: 80px; height: 80px; margin: 0 auto 14px; }
+    .progress-ring { transform: rotate(-90deg); }
+    .progress-ring-bg { fill: none; stroke: var(--border); stroke-width: 6; }
+    .progress-ring-fill { fill: none; stroke: var(--amber); stroke-width: 6; stroke-linecap: square; transition: stroke-dashoffset 0.4s ease; }
+    .progress-pct { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: var(--display); font-size: 24px; color: var(--amber); }
+    .progress-label { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-dim); margin-bottom: 6px; }
+    .progress-count { font-family: var(--mono); font-size: 11px; color: var(--text); }
+    .ready-badge {
+      display: none; margin-top: 14px;
+      background: var(--green-glow); border: 1px solid var(--green);
+      color: var(--green); font-family: var(--mono); font-size: 10px;
+      text-transform: uppercase; letter-spacing: 0.1em; padding: 6px 12px;
+    }
+
+    /* ─── LAYOUT ─── */
+    .checklist-layout {
+      max-width: 1100px; margin: 0 auto; padding: 36px 40px 80px;
+      display: grid; grid-template-columns: 200px 1fr; gap: 40px; align-items: start;
+    }
+
+    /* ─── NAV ─── */
+    .section-nav { position: sticky; top: 72px; }
+    .nav-label { font-family: var(--mono); font-size: 8px; text-transform: uppercase; letter-spacing: 0.14em; color: var(--text-dim); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+    .nav-item {
+      display: flex; align-items: center; gap: 8px;
+      font-family: var(--mono); font-size: 10px; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--text-dim); text-decoration: none;
+      padding: 6px 0; border-left: 2px solid transparent;
+      padding-left: 10px; transition: all 0.2s;
+    }
+    .nav-item:hover { color: var(--amber); border-left-color: var(--amber); }
+    .nav-item.active { color: var(--amber); border-left-color: var(--amber); }
+    .nav-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); flex-shrink: 0; }
+    .nav-item.section-complete .nav-dot { background: var(--green); }
+
+    /* ─── SECTIONS ─── */
+    .checklist-section { margin-bottom: 40px; }
+    .section-header {
+      display: flex; align-items: center; gap: 14px;
+      padding: 16px 20px; background: var(--bg2); border: 1px solid var(--border);
+      margin-bottom: 1px; cursor: default;
+    }
+    .section-icon { font-size: 16px; flex-shrink: 0; }
+    .section-title { font-family: var(--display); font-size: 20px; letter-spacing: 0.06em; color: var(--text-bright); }
+    .section-desc { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); margin-top: 2px; }
+    .section-badge {
+      margin-left: auto; font-family: var(--mono); font-size: 9px;
+      text-transform: uppercase; letter-spacing: 0.1em; padding: 3px 10px;
+      border: 1px solid var(--border); color: var(--text-dim); flex-shrink: 0;
+    }
+    .section-badge.complete { border-color: var(--green); color: var(--green); background: var(--green-glow); }
+
+    /* ─── CHECKLIST ITEMS ─── */
+    .checklist-items { display: flex; flex-direction: column; gap: 1px; background: var(--border); }
+    .check-item {
+      background: var(--bg); display: grid;
+      grid-template-columns: 44px 1fr auto;
+      align-items: start; gap: 0;
+      transition: background 0.2s;
+      position: relative;
+    }
+    .check-item:hover { background: var(--bg2); }
+    .check-item.checked { background: rgba(93,186,138,0.04); }
+    .check-item.checked .item-text { color: var(--text-dim); text-decoration: line-through; text-decoration-color: var(--border); }
+    .check-item.checked .item-note { opacity: 0.5; }
+
+    .check-col {
+      display: flex; align-items: flex-start; justify-content: center;
+      padding: 14px 0; cursor: pointer; height: 100%;
+    }
+    .check-box {
+      width: 16px; height: 16px; border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s; flex-shrink: 0; margin-top: 1px;
+    }
+    .check-item:hover .check-box { border-color: var(--amber); }
+    .check-item.checked .check-box { border-color: var(--green); background: var(--green); }
+    .check-box-tick { display: none; color: #1e1e1e; font-size: 10px; font-weight: bold; line-height: 1; }
+    .check-item.checked .check-box-tick { display: block; }
+
+    .item-content { padding: 14px 16px 14px 0; cursor: pointer; }
+    .item-text { font-size: 14px; font-weight: 400; color: var(--text-bright); line-height: 1.5; margin-bottom: 4px; }
+    .item-note { font-family: var(--mono); font-size: 10px; color: var(--text-dim); line-height: 1.6; }
+    .item-note code { background: var(--bg3); color: var(--amber); padding: 1px 5px; font-size: 9px; border-radius: 2px; }
+
+    .item-tag {
+      padding: 14px 16px 14px 0;
+      display: flex; align-items: flex-start; gap: 6px; flex-wrap: wrap; justify-content: flex-end;
+    }
+    .tag-pill {
+      font-family: var(--mono); font-size: 8px; text-transform: uppercase;
+      letter-spacing: 0.1em; padding: 2px 7px; border: 1px solid;
+      flex-shrink: 0; white-space: nowrap;
+    }
+    .tag-required { color: var(--red); border-color: var(--red); background: var(--red-glow); }
+    .tag-seo { color: var(--amber); border-color: var(--amber-dim); background: var(--amber-glow); }
+    .tag-schema { color: #7db3e8; border-color: rgba(125,179,232,0.3); background: rgba(125,179,232,0.06); }
+    .tag-eat { color: #b07de8; border-color: rgba(176,125,232,0.3); background: rgba(176,125,232,0.06); }
+    .tag-snippet { color: var(--green); border-color: rgba(93,186,138,0.3); background: var(--green-glow); }
+    .tag-new { color: var(--amber); border-color: var(--amber); background: var(--amber-glow); font-weight: 500; }
+
+    /* ─── LEGEND ─── */
+    .legend {
+      background: var(--bg2); border: 1px solid var(--border);
+      padding: 20px 24px; margin-bottom: 32px;
+      display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
+    }
+    .legend-label { font-family: var(--mono); font-size: 9px; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-dim); margin-right: 8px; flex-shrink: 0; }
+    .legend-item { display: flex; align-items: center; gap: 6px; }
+    .legend-item .tag-pill { margin: 0; }
+    .legend-desc { font-family: var(--mono); font-size: 9px; color: var(--text-dim); }
+
+    /* ─── RESET BUTTON ─── */
+    .reset-btn {
+      font-family: var(--mono); font-size: 10px; text-transform: uppercase;
+      letter-spacing: 0.1em; color: var(--text-dim); border: 1px solid var(--border);
+      background: none; padding: 6px 14px; cursor: pointer; transition: all 0.2s;
+    }
+    .reset-btn:hover { color: var(--amber); border-color: var(--amber); }
+
+    /* ─── SCHEMA REFERENCE PANEL ─── */
+    .schema-panel {
+      background: var(--bg2); border: 1px solid var(--border);
+      padding: 28px; margin-top: 40px;
+    }
+    .schema-panel-title { font-family: var(--display); font-size: 22px; letter-spacing: 0.04em; color: var(--text-bright); margin-bottom: 6px; }
+    .schema-panel-sub { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-dim); margin-bottom: 24px; }
+    .schema-table { width: 100%; border-collapse: collapse; }
+    .schema-table th {
+      font-family: var(--mono); font-size: 9px; text-transform: uppercase;
+      letter-spacing: 0.12em; color: var(--text-dim); text-align: left;
+      padding: 8px 12px; border-bottom: 1px solid var(--border);
+    }
+    .schema-table td {
+      font-family: var(--mono); font-size: 11px; color: var(--text);
+      padding: 10px 12px; border-bottom: 1px solid var(--border-soft);
+      vertical-align: top;
+    }
+    .schema-table tr:hover td { background: rgba(255,255,255,0.01); }
+    .schema-table td:first-child { color: var(--text-bright); font-size: 12px; }
+    .schema-table td code { color: var(--amber); font-size: 10px; background: var(--bg3); padding: 1px 5px; border-radius: 2px; }
+    .field-new { color: var(--amber); }
+    .field-req { color: var(--red); }
+    .field-opt { color: var(--text-dim); }
+
+    /* ─── FOOTER ─── */
+    footer { border-top: 1px solid var(--border); padding: 32px 40px; background: var(--bg2); }
+    .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .footer-brand { font-family: var(--display); font-size: 18px; letter-spacing: 0.1em; color: var(--text-bright); }
+    .footer-brand span { color: var(--amber); }
+    .footer-copy { font-family: var(--mono); font-size: 10px; color: var(--text-dim); }
+
+    @media (max-width: 900px) {
+      .page-header { grid-template-columns: 1fr; padding: 32px 20px 0; }
+      .checklist-layout { grid-template-columns: 1fr; padding: 24px 20px 60px; }
+      .section-nav { display: none; }
+      .topbar { padding: 0 20px; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .checklist-section { animation: fadeUp 0.4s ease both; }
+    .checklist-section:nth-child(2) { animation-delay: 0.05s; }
+    .checklist-section:nth-child(3) { animation-delay: 0.1s; }
+    .checklist-section:nth-child(4) { animation-delay: 0.15s; }
+    .checklist-section:nth-child(5) { animation-delay: 0.2s; }
+  </style>
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <nav class="topbar">
+    <div class="topbar-left">
+      <div style="width:28px;height:28px;flex-shrink:0;">
+        <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
+          <rect x="2" y="2" width="24" height="24" stroke="#e8a020" stroke-width="1.5"/>
+          <rect x="7" y="7" width="6" height="14" fill="#e8a020"/>
+          <rect x="15" y="7" width="6" height="7" fill="#3a3a3a"/>
+          <rect x="15" y="16" width="6" height="5" fill="#e8a020" opacity="0.4"/>
+        </svg>
+      </div>
+      <span class="logo-text">AUTOMATION <span>SWITCH</span></span>
+    </div>
+    <div class="topbar-right">
+      <span class="doc-title">Article Publish Checklist · v1.0</span>
+      <button class="reset-btn" onclick="resetAll()">Reset All</button>
+    </div>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div>
+      <div class="page-eyebrow">Internal · Editorial Operations</div>
+      <h1 class="page-title">Article Publish<br>Checklist</h1>
+      <p class="page-sub">Two checklists in one: SEO requirements for every article to rank well, and schema compliance requirements to ensure the Sanity CMS has all necessary data to render and syndicate correctly.</p>
+    </div>
+    <div class="progress-widget">
+      <div class="progress-ring-wrap">
+        <svg class="progress-ring" width="80" height="80" viewBox="0 0 80 80">
+          <circle class="progress-ring-bg" cx="40" cy="40" r="34"/>
+          <circle class="progress-ring-fill" id="progressRing" cx="40" cy="40" r="34"
+            stroke-dasharray="213.6" stroke-dashoffset="213.6"/>
+        </svg>
+        <div class="progress-pct" id="progressPct">0%</div>
+      </div>
+      <div class="progress-label">Completion</div>
+      <div class="progress-count" id="progressCount">0 of 0 items</div>
+      <div class="ready-badge" id="readyBadge">✓ Ready to Publish</div>
+    </div>
+  </div>
+
+  <!-- MAIN LAYOUT -->
+  <div class="checklist-layout">
+
+    <!-- SECTION NAV -->
+    <nav class="section-nav">
+      <div class="nav-label">Sections</div>
+      <a href="#schema" class="nav-item" id="nav-schema">
+        <div class="nav-dot"></div> Schema Fields
+      </a>
+      <a href="#meta" class="nav-item" id="nav-meta">
+        <div class="nav-dot"></div> Meta &amp; Tags
+      </a>
+      <a href="#content" class="nav-item" id="nav-content">
+        <div class="nav-dot"></div> Content SEO
+      </a>
+      <a href="#eat" class="nav-item" id="nav-eat">
+        <div class="nav-dot"></div> E-E-A-T
+      </a>
+      <a href="#snippets" class="nav-item" id="nav-snippets">
+        <div class="nav-dot"></div> Rich Snippets
+      </a>
+    </nav>
+
+    <!-- CHECKLISTS -->
+    <div>
+
+      <!-- LEGEND -->
+      <div class="legend">
+        <span class="legend-label">Key</span>
+        <div class="legend-item"><span class="tag-pill tag-required">Required</span><span class="legend-desc">Sanity validation fails without this</span></div>
+        <div class="legend-item"><span class="tag-pill tag-schema">Schema</span><span class="legend-desc">Needed to render the page correctly</span></div>
+        <div class="legend-item"><span class="tag-pill tag-seo">SEO</span><span class="legend-desc">Directly impacts search ranking</span></div>
+        <div class="legend-item"><span class="tag-pill tag-eat">E-E-A-T</span><span class="legend-desc">Google trust / authority signals</span></div>
+        <div class="legend-item"><span class="tag-pill tag-snippet">Rich Snippet</span><span class="legend-desc">Unlocks enhanced Google listing</span></div>
+        <div class="legend-item"><span class="tag-pill tag-new">New Field</span><span class="legend-desc">Not yet in Sanity — needs adding</span></div>
+      </div>
+
+      <!-- ══════════════════════════════════════
+           SECTION 1: SCHEMA COMPLIANCE
+      ══════════════════════════════════════ -->
+      <section class="checklist-section" id="schema">
+        <div class="section-header">
+          <span class="section-icon">⬡</span>
+          <div>
+            <div class="section-title">Schema Field Compliance</div>
+            <div class="section-desc">Every field the Sanity schema needs populated before publish</div>
+          </div>
+          <div class="section-badge" id="badge-schema">0 / 12</div>
+        </div>
+        <div class="checklist-items">
+
+          <div class="check-item" data-section="schema">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Title is written</div>
+              <div class="item-note">50–70 characters. Contains primary keyword. Used as H1 and default meta title.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-required">Required</span></div>
+          </div>
+
+          <div class="check-item" data-section="schema">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Slug generated and reviewed</div>
+              <div class="item-note">Auto-generated from title. Confirm it's keyword-rich, lowercase, hyphenated. No stop words (a, the, is…).</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-required">Required</span><span class="tag-pill tag-seo">SEO</span></div>
+          </div>
+
+          <div class="check-item" data-section="schema">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Category assigned</div>
+              <div class="item-note">Must be an existing category reference (e.g. Deep Dive, Tool Guide, Fundamentals). Creates the article:section OG tag and breadcrumb.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-required">Required</span><span class="tag-pill tag-seo">SEO</span></div>
+          </div>
+
+          <div class="check-item" data-section="schema">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Excerpt written</div>
+              <div class="item-note">Max 200 characters. This is the default meta description if <code>seo.metaDescription</code> is not set. Write it as a standalone pitch sentence.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-required">Required</span><span class="tag-pill tag-seo">SEO</span></div>
+          </div>
+
+          <div class="check-item" data-section="schema">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Body content written and structured</div>
+              <div class="item-note">Minimum 800 words for standard articles, 1,500+ for Deep Dive. Uses H2/H3 subheadings. At least one blockquote or callout.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-required">Required</span><span class="tag-pill tag-seo">SEO</span></div>
+          </div>
+
+          <div class="check-item" data-section="schema">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Published At date set</div>
+              <div class="item-note">Use the actual intended publish datetime. Feeds into <code>datePublished</code> in Article JSON-LD and the <code>article:published_time</code> OG tag.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-required">Required</span><span class="tag-pill tag-snippet">Rich Snippet</span></div>
+          </div>
+
+          <div class="check-item" data-section="schema">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Author assigned (reference)</div>
+              <div class="item-note">Must be a reference to an <code>author</code> document, not free text. Author document must have name, bio, avatar, and at least one social link. Critical for E-E-A-T.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-new">New Field</span><span class="tag-pill tag-eat">E-E-A-T</span><span class="tag-pill tag-snippet">Rich Snippet</span></div>
+          </div>
+
+          <div class="check-item" data-section="schema">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Hero image uploaded with alt text</div>
+              <div class="item-note">Minimum 1200×630px. Alt text must describe the image content (not the article title). Used as <code>og:image</code> and Article <code>ImageObject</code> in JSON-LD.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-new">New Field</span><span class="tag-pill tag-seo">SEO</span><span class="tag-pill tag-snippet">Rich Snippet</span></div>
+          </div>
+
+          <div class="check-item" data-section="schema">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Read time set</div>
+              <div class="item-note">Calculated at ~238 words per minute. Round to nearest minute. Appears in meta row and feeds Article schema <code>timeRequired</code> field.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-schema">Schema</span></div>
+          </div>
+
+          <div class="check-item" data-section="schema">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Tags added (3–7 tags)</div>
+              <div class="item-note">Use lowercase, specific keyword phrases (e.g. <code>make.com</code>, <code>error handling</code>, <code>workflow automation</code>). Maps to <code>article:tag</code> OG properties. No brand names unless directly relevant.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-new">New Field</span><span class="tag-pill tag-seo">SEO</span></div>
+          </div>
+
+          <div class="check-item" data-section="schema">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Key Takeaways written (3–5 bullets)</div>
+              <div class="item-note">Each bullet is a complete, standalone sentence. These render as the TL;DR box at the top of the article and are the primary target for Google featured snippets.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-new">New Field</span><span class="tag-pill tag-snippet">Rich Snippet</span></div>
+          </div>
+
+          <div class="check-item" data-section="schema">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Last Modified date updated (if editing a live article)</div>
+              <div class="item-note">Always update when making content changes to a published article. Feeds <code>dateModified</code> in Article JSON-LD. Shows "Updated" badge on the article page.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-new">New Field</span><span class="tag-pill tag-seo">SEO</span></div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════
+           SECTION 2: META & TECHNICAL SEO
+      ══════════════════════════════════════ -->
+      <section class="checklist-section" id="meta">
+        <div class="section-header">
+          <span class="section-icon">◈</span>
+          <div>
+            <div class="section-title">Meta &amp; Technical SEO</div>
+            <div class="section-desc">What Google reads before it reads the page</div>
+          </div>
+          <div class="section-badge" id="badge-meta">0 / 7</div>
+        </div>
+        <div class="checklist-items">
+
+          <div class="check-item" data-section="meta">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">SEO Meta Title written</div>
+              <div class="item-note">50–60 characters max. Primary keyword in the first 4 words. Format: <code>[Keyword Topic] | Automation Switch</code>. Different from the article H1 is fine.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-seo">SEO</span><span class="tag-pill tag-schema">Schema</span></div>
+          </div>
+
+          <div class="check-item" data-section="meta">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">SEO Meta Description written</div>
+              <div class="item-note">150–160 characters. Contains the primary keyword and a clear value proposition. Ends with an implied CTA. Also used as <code>og:description</code> and <code>twitter:description</code>.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-seo">SEO</span><span class="tag-pill tag-schema">Schema</span></div>
+          </div>
+
+          <div class="check-item" data-section="meta">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Canonical URL will be auto-set to the published URL</div>
+              <div class="item-note">Sanity generates this from the slug. Confirm the slug matches the intended URL. No trailing slashes, no uppercase characters.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-seo">SEO</span></div>
+          </div>
+
+          <div class="check-item" data-section="meta">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Open Graph image confirmed (hero image is set)</div>
+              <div class="item-note">The hero image automatically becomes the <code>og:image</code>. Confirm it crops well at 1200×630. Test using <a href="https://developers.facebook.com/tools/debug/" target="_blank" style="color:var(--amber);">Facebook Debugger</a> or Twitter Card Validator after publish.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-seo">SEO</span></div>
+          </div>
+
+          <div class="check-item" data-section="meta">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Article JSON-LD will auto-generate correctly</div>
+              <div class="item-note">Requires: title, excerpt/meta description, hero image, publishedAt, author reference, and category. Once these are filled, the <code>Article</code> + <code>BreadcrumbList</code> structured data generates automatically.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-snippet">Rich Snippet</span></div>
+          </div>
+
+          <div class="check-item" data-section="meta">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Post-publish: validate with Google Rich Results Test</div>
+              <div class="item-note">Visit <code>search.google.com/test/rich-results</code> after publishing. Confirm Article, Breadcrumb, and FAQ snippets all pass with no warnings.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-snippet">Rich Snippet</span></div>
+          </div>
+
+          <div class="check-item" data-section="meta">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Post-publish: submit URL to Google Search Console</div>
+              <div class="item-note">Use the "URL Inspection → Request Indexing" tool in GSC. Don't wait for the crawler — push every new article manually for faster indexing.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-seo">SEO</span></div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════
+           SECTION 3: CONTENT SEO
+      ══════════════════════════════════════ -->
+      <section class="checklist-section" id="content">
+        <div class="section-header">
+          <span class="section-icon">◇</span>
+          <div>
+            <div class="section-title">Content SEO</div>
+            <div class="section-desc">On-page signals that directly influence ranking and dwell time</div>
+          </div>
+          <div class="section-badge" id="badge-content">0 / 8</div>
+        </div>
+        <div class="checklist-items">
+
+          <div class="check-item" data-section="content">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Primary keyword appears in the H1 (article title)</div>
+              <div class="item-note">The H1 is the article title. The primary keyword should appear in the first 4 words where possible. Only one H1 per page — this is automatic from the Sanity schema.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-seo">SEO</span></div>
+          </div>
+
+          <div class="check-item" data-section="content">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Primary keyword appears in the first paragraph</div>
+              <div class="item-note">Google gives extra weight to keywords in the opening paragraph. Don't force it — but make sure the opening naturally mentions the topic the article is about.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-seo">SEO</span></div>
+          </div>
+
+          <div class="check-item" data-section="content">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">H2/H3 subheadings use related and LSI keywords</div>
+              <div class="item-note">LSI = Latent Semantic Indexing — related terms and phrases. E.g. if primary keyword is "automation failure", H2s might use "trigger errors", "workflow breakdown", "silent failures".</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-seo">SEO</span></div>
+          </div>
+
+          <div class="check-item" data-section="content">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">At least 2 internal links to related articles</div>
+              <div class="item-note">Link using descriptive anchor text — not "click here". Internal links distribute page authority and signal topical relevance to Google. Use the related articles section and in-body links.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-seo">SEO</span></div>
+          </div>
+
+          <div class="check-item" data-section="content">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">At least 1 outbound link to an authoritative external source</div>
+              <div class="item-note">Link to data sources, tools you reference, or relevant documentation. Use <code>rel="nofollow"</code> for commercial links. Signals to Google that the content is well-researched.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-seo">SEO</span></div>
+          </div>
+
+          <div class="check-item" data-section="content">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Hero image has descriptive alt text</div>
+              <div class="item-note">Alt text describes what's in the image — not the article title. Example: "A flowchart showing three failure points in a multi-step Make.com workflow". Helps with image SEO and accessibility.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-seo">SEO</span></div>
+          </div>
+
+          <div class="check-item" data-section="content">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">PrecisionReach cross-linked naturally where relevant</div>
+              <div class="item-note">Where the article topic connects to cold email outreach, lead research, or AI automation — link to PrecisionReach. Don't force it. The tool CTA in the sidebar is always present regardless.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-seo">SEO</span></div>
+          </div>
+
+          <div class="check-item" data-section="content">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Word count matches the category depth expectation</div>
+              <div class="item-note">Fundamentals: 800–1,200 words. Tool Guide: 1,000–1,800 words. Deep Dive: 1,500–3,000 words. Word count alone doesn't rank — but thin content rarely competes for competitive keywords.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-seo">SEO</span></div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════
+           SECTION 4: E-E-A-T
+      ══════════════════════════════════════ -->
+      <section class="checklist-section" id="eat">
+        <div class="section-header">
+          <span class="section-icon">◉</span>
+          <div>
+            <div class="section-title">E-E-A-T Signals</div>
+            <div class="section-desc">Experience, Expertise, Authoritativeness, Trust — Google's quality framework</div>
+          </div>
+          <div class="section-badge" id="badge-eat">0 / 6</div>
+        </div>
+        <div class="checklist-items">
+
+          <div class="check-item" data-section="eat">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Author document exists and is fully filled</div>
+              <div class="item-note">The <code>author</code> document must have: full name, bio (2–3 sentences of genuine expertise), avatar photo, role/title, at least one social profile link. This is the foundation of E-E-A-T — currently missing from schema.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-new">New Field</span><span class="tag-pill tag-eat">E-E-A-T</span></div>
+          </div>
+
+          <div class="check-item" data-section="eat">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Author bio on the article matches their expertise to this topic</div>
+              <div class="item-note">The author bio should explain why this person is qualified to write on this specific subject. Vague bios ("passionate about tech") score poorly vs. specific ones ("built 80+ production automations for enterprise clients").</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-eat">E-E-A-T</span></div>
+          </div>
+
+          <div class="check-item" data-section="eat">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Content includes first-hand experience or original data</div>
+              <div class="item-note">Google's "Experience" signal (the first E in E-E-A-T) rewards content based on real experience. Include specific examples, original observations, or data from your own automation work — not just general advice.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-eat">E-E-A-T</span></div>
+          </div>
+
+          <div class="check-item" data-section="eat">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Claims and statistics are sourced or attributed</div>
+              <div class="item-note">Any stat, benchmark, or claim should link to its source, or clearly be attributed to your own experience ("in our client work…"). Unsourced statistics weaken Trust score.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-eat">E-E-A-T</span></div>
+          </div>
+
+          <div class="check-item" data-section="eat">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Author profile page exists at /authors/[slug]</div>
+              <div class="item-note">Google uses author pages as an authority signal. The page should list all articles by this author and include the same bio, photo, and social links as the author document. This is a separate page to build.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-eat">E-E-A-T</span><span class="tag-pill tag-snippet">Rich Snippet</span></div>
+          </div>
+
+          <div class="check-item" data-section="eat">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Publish date is honest — not back-dated for SEO</div>
+              <div class="item-note">Google penalises artificial date manipulation. Set <code>publishedAt</code> to the real publish date. If updating substantially, update <code>lastModified</code> instead. Don't reset <code>publishedAt</code> on edits.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-eat">E-E-A-T</span></div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════
+           SECTION 5: RICH SNIPPETS
+      ══════════════════════════════════════ -->
+      <section class="checklist-section" id="snippets">
+        <div class="section-header">
+          <span class="section-icon">◈</span>
+          <div>
+            <div class="section-title">Rich Snippet Eligibility</div>
+            <div class="section-desc">Schema that unlocks enhanced listings in Google search results</div>
+          </div>
+          <div class="section-badge" id="badge-snippets">0 / 5</div>
+        </div>
+        <div class="checklist-items">
+
+          <div class="check-item" data-section="snippets">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Article schema eligible: title + image + author + date all set</div>
+              <div class="item-note">Google's Article rich result requires all four. When present, your article may appear in the Top Stories carousel and include an image thumbnail in standard search results.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-snippet">Rich Snippet</span></div>
+          </div>
+
+          <div class="check-item" data-section="snippets">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">FAQ schema eligible: at least 2 FAQ items added</div>
+              <div class="item-note">Each question should be phrased as a real user query ("How do I…", "Why does…", "What is…"). Answers should be 2–4 sentences. Google shows these as expandable accordions below your listing — massive click-rate booster.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-new">New Field</span><span class="tag-pill tag-snippet">Rich Snippet</span></div>
+          </div>
+
+          <div class="check-item" data-section="snippets">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Featured snippet targeted: Key Takeaways box completed</div>
+              <div class="item-note">Google frequently pulls the Key Takeaways/TL;DR box as a featured snippet (position zero). Each bullet should directly answer a "What is…" or "How to…" question a user might search for.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-new">New Field</span><span class="tag-pill tag-snippet">Rich Snippet</span></div>
+          </div>
+
+          <div class="check-item" data-section="snippets">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Breadcrumb schema will auto-generate from category + slug</div>
+              <div class="item-note">Breadcrumbs appear in the Google search listing URL path (replaces the full URL with Home › Articles › Category). This is automatic once category and slug are set correctly.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-snippet">Rich Snippet</span></div>
+          </div>
+
+          <div class="check-item" data-section="snippets">
+            <div class="check-col" onclick="toggle(this)"><div class="check-box"><span class="check-box-tick">✓</span></div></div>
+            <div class="item-content" onclick="toggle(this.previousElementSibling)">
+              <div class="item-text">Post-publish: all structured data passes Google Rich Results Test</div>
+              <div class="item-note">Run the URL through <code>search.google.com/test/rich-results</code> within 24 hours of publishing. Fix any errors before requesting indexing via Search Console.</div>
+            </div>
+            <div class="item-tag"><span class="tag-pill tag-snippet">Rich Snippet</span></div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SCHEMA REFERENCE TABLE -->
+      <div class="schema-panel" id="schema-ref">
+        <div class="schema-panel-title">Sanity Schema Reference</div>
+        <div class="schema-panel-sub">Current fields · Required updates · New additions</div>
+        <table class="schema-table">
+          <thead>
+            <tr>
+              <th>Field</th>
+              <th>Type</th>
+              <th>Status</th>
+              <th>Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>title</td>
+              <td><code>string</code></td>
+              <td class="field-req">● Required (exists)</td>
+              <td>H1, meta title fallback, og:title, Article headline</td>
+            </tr>
+            <tr>
+              <td>slug</td>
+              <td><code>slug</code></td>
+              <td class="field-req">● Required (exists)</td>
+              <td>URL path, canonical URL, breadcrumb</td>
+            </tr>
+            <tr>
+              <td>category</td>
+              <td><code>reference → category</code></td>
+              <td class="field-req">● Required (exists)</td>
+              <td>article:section, breadcrumb, internal taxonomy</td>
+            </tr>
+            <tr>
+              <td>excerpt</td>
+              <td><code>text (max 200)</code></td>
+              <td class="field-req">● Required (exists)</td>
+              <td>Meta description fallback, og:description, article intro</td>
+            </tr>
+            <tr>
+              <td>body</td>
+              <td><code>array (Portable Text)</code></td>
+              <td class="field-req">● Required (exists)</td>
+              <td>Article body content, H2/H3 headings, inline links</td>
+            </tr>
+            <tr>
+              <td>publishedAt</td>
+              <td><code>datetime</code></td>
+              <td class="field-req">● Required (exists)</td>
+              <td>datePublished, article:published_time, meta row display</td>
+            </tr>
+            <tr>
+              <td>readTime</td>
+              <td><code>number</code></td>
+              <td class="field-opt">○ Optional (exists)</td>
+              <td>timeRequired in Article schema, meta row display</td>
+            </tr>
+            <tr>
+              <td>featured</td>
+              <td><code>boolean</code></td>
+              <td class="field-opt">○ Optional (exists)</td>
+              <td>Homepage featured article slot</td>
+            </tr>
+            <tr>
+              <td>seo.metaTitle</td>
+              <td><code>string</code></td>
+              <td class="field-opt">○ Optional (exists)</td>
+              <td>Overrides title for &lt;title&gt; tag and og:title</td>
+            </tr>
+            <tr>
+              <td>seo.metaDescription</td>
+              <td><code>text</code></td>
+              <td class="field-opt">○ Optional (exists)</td>
+              <td>Overrides excerpt for meta description and og:description</td>
+            </tr>
+            <tr style="border-top: 2px solid var(--amber-dim);">
+              <td class="field-new">author</td>
+              <td><code>reference → author</code></td>
+              <td class="field-new">★ New — ADD TO SCHEMA</td>
+              <td>Person schema, E-E-A-T, Article author, byline display</td>
+            </tr>
+            <tr>
+              <td class="field-new">heroImage</td>
+              <td><code>image (with alt)</code></td>
+              <td class="field-new">★ New — ADD TO SCHEMA</td>
+              <td>og:image, Article ImageObject, hero display, Twitter card</td>
+            </tr>
+            <tr>
+              <td class="field-new">lastModified</td>
+              <td><code>datetime</code></td>
+              <td class="field-new">★ New — ADD TO SCHEMA</td>
+              <td>dateModified in Article schema, "Updated" badge on article</td>
+            </tr>
+            <tr>
+              <td class="field-new">tags</td>
+              <td><code>array of string</code></td>
+              <td class="field-new">★ New — ADD TO SCHEMA</td>
+              <td>article:tag OG properties, keyword signals, tag filtering</td>
+            </tr>
+            <tr>
+              <td class="field-new">keyTakeaways</td>
+              <td><code>array of string</code></td>
+              <td class="field-new">★ New — ADD TO SCHEMA</td>
+              <td>TL;DR box on article page, featured snippet target</td>
+            </tr>
+            <tr>
+              <td class="field-new">faq</td>
+              <td><code>array of {question, answer}</code></td>
+              <td class="field-new">★ New — ADD TO SCHEMA</td>
+              <td>FAQPage JSON-LD, FAQ accordion section on article page</td>
+            </tr>
+            <tr style="border-top: 1px solid var(--border);">
+              <td class="field-new">author.name</td>
+              <td><code>string</code></td>
+              <td class="field-new">★ New type: author</td>
+              <td>Person schema name, byline display, author page</td>
+            </tr>
+            <tr>
+              <td class="field-new">author.slug</td>
+              <td><code>slug</code></td>
+              <td class="field-new">★ New type: author</td>
+              <td>/authors/[slug] profile page URL</td>
+            </tr>
+            <tr>
+              <td class="field-new">author.bio</td>
+              <td><code>text</code></td>
+              <td class="field-new">★ New type: author</td>
+              <td>Author bio card on article, E-E-A-T expertise signal</td>
+            </tr>
+            <tr>
+              <td class="field-new">author.avatar</td>
+              <td><code>image</code></td>
+              <td class="field-new">★ New type: author</td>
+              <td>Author avatar in meta row, bio card, author page</td>
+            </tr>
+            <tr>
+              <td class="field-new">author.role</td>
+              <td><code>string</code></td>
+              <td class="field-new">★ New type: author</td>
+              <td>Job title shown in byline and bio card</td>
+            </tr>
+            <tr>
+              <td class="field-new">author.twitterUrl</td>
+              <td><code>url</code></td>
+              <td class="field-new">★ New type: author</td>
+              <td>twitter:creator tag, Person schema sameAs, author bio links</td>
+            </tr>
+            <tr>
+              <td class="field-new">author.linkedinUrl</td>
+              <td><code>url</code></td>
+              <td class="field-new">★ New type: author</td>
+              <td>Person schema sameAs, author bio links, E-E-A-T</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">AUTOMATION <span>SWITCH</span></div>
+      <div class="footer-copy">Internal Operations Doc · automationswitch.com</div>
+    </div>
+  </footer>
+
+  <script>
+    function toggle(checkCol) {
+      const item = checkCol.closest('.check-item');
+      item.classList.toggle('checked');
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const all = document.querySelectorAll('.check-item');
+      const checked = document.querySelectorAll('.check-item.checked');
+      const total = all.length;
+      const done = checked.length;
+      const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+      // Ring
+      const circumference = 213.6;
+      const offset = circumference - (pct / 100) * circumference;
+      document.getElementById('progressRing').style.strokeDashoffset = offset;
+      document.getElementById('progressPct').textContent = pct + '%';
+      document.getElementById('progressCount').textContent = done + ' of ' + total + ' items';
+
+      // Ready badge
+      const badge = document.getElementById('readyBadge');
+      badge.style.display = pct === 100 ? 'block' : 'none';
+
+      // Section badges
+      const sections = ['schema', 'meta', 'content', 'eat', 'snippets'];
+      sections.forEach(sec => {
+        const secItems = document.querySelectorAll(`.check-item[data-section="${sec}"]`);
+        const secDone = document.querySelectorAll(`.check-item[data-section="${sec}"].checked`);
+        const badge = document.getElementById('badge-' + sec);
+        const navDot = document.querySelector(`#nav-${sec} .nav-dot`);
+        const navItem = document.getElementById('nav-' + sec);
+        if (badge) {
+          badge.textContent = secDone.length + ' / ' + secItems.length;
+          if (secDone.length === secItems.length && secItems.length > 0) {
+            badge.classList.add('complete');
+            if (navItem) navItem.classList.add('section-complete');
+          } else {
+            badge.classList.remove('complete');
+            if (navItem) navItem.classList.remove('section-complete');
+          }
+        }
+      });
+
+      // Change ring color to green when complete
+      const ring = document.getElementById('progressRing');
+      ring.style.stroke = pct === 100 ? '#5dba8a' : '#c8861a';
+      document.getElementById('progressPct').style.color = pct === 100 ? '#5dba8a' : '#c8861a';
+    }
+
+    function resetAll() {
+      document.querySelectorAll('.check-item.checked').forEach(el => el.classList.remove('checked'));
+      updateProgress();
+    }
+
+    // Init progress count
+    updateProgress();
+  </script>
+
+</body>
+</html>
