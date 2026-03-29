@@ -44,6 +44,32 @@ export default async function SkillsPage() {
         }}
       />
 
+      {/* Ticker */}
+      <div className="ticker-wrap ticker-wrap--light">
+        <div className="ticker-inner">
+          <span className="accent">// Skills Hub</span>
+          <span>Curated agent skill sources</span>
+          <span className="accent">·</span>
+          <span>Claude Code · Cursor · Copilot · Gemini CLI · Aider</span>
+          <span className="accent">·</span>
+          <span>Official · Community · Tooling · Spec</span>
+          <span className="accent">·</span>
+          <span>We are the index. Not the database.</span>
+          <span className="accent">·</span>
+          <span>Know a source? Submit it ↗</span>
+          <span className="accent">// Skills Hub</span>
+          <span>Curated agent skill sources</span>
+          <span className="accent">·</span>
+          <span>Claude Code · Cursor · Copilot · Gemini CLI · Aider</span>
+          <span className="accent">·</span>
+          <span>Official · Community · Tooling · Spec</span>
+          <span className="accent">·</span>
+          <span>We are the index. Not the database.</span>
+          <span className="accent">·</span>
+          <span>Know a source? Submit it ↗</span>
+        </div>
+      </div>
+
       {/* Page header */}
       <div className="page-header" style={{ display: 'grid', gridTemplateColumns: '1fr auto', alignItems: 'end', gap: '40px' }}>
         <div>
@@ -55,7 +81,7 @@ export default async function SkillsPage() {
           </p>
         </div>
         <div style={{ textAlign: 'right' }}>
-          <div style={{ fontFamily: 'var(--display)', fontSize: '56px', color: 'var(--amber)', letterSpacing: '0.04em', lineHeight: 1 }}>
+          <div style={{ fontFamily: 'var(--display)', fontSize: '96px', color: 'var(--amber)', letterSpacing: '0.04em', lineHeight: 1 }}>
             {publishedCount}
           </div>
           <div style={{ fontFamily: 'var(--mono)', fontSize: '9px', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--text-dim)', marginTop: '4px' }}>
@@ -63,7 +89,7 @@ export default async function SkillsPage() {
           </div>
           {totalSkills > 0 && (
             <div style={{ fontFamily: 'var(--mono)', fontSize: '9px', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--text-dim)', borderTop: '1px solid var(--border)', paddingTop: '8px', marginTop: '8px' }}>
-              {totalSkills}+ skills indexed
+              {totalSkills}+ skills indexed · Updated weekly
             </div>
           )}
         </div>

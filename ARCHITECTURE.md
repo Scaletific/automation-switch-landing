@@ -6,7 +6,7 @@ layer into Sanity, and is served to users by the Next.js app on Vercel.
 
 ---
 
-```
+```text
 ╔══════════════════════════════════════════════════════════════════════════════════╗
 ║                        AUTOMATION SWITCH — SYSTEM MAP                          ║
 ╚══════════════════════════════════════════════════════════════════════════════════╝
@@ -260,16 +260,49 @@ layer into Sanity, and is served to users by the Next.js app on Vercel.
   └──────────────────────────────────────────────────────────────┘
 
   ┌──────────────────────────────────────────────────────────────┐
-  │  scripts/sync-skills.ts  [ TODO — not yet built ]           │
+  │  scripts/sync-skill-submissions.ts                           │
   │                                                              │
-  │  Will:                                                       │
-  │    1. Fetch all skillSource docs from Sanity                 │
-  │    2. For each, call Firecrawl API on the source URL         │
-  │    3. Count skills found in crawl response                   │
-  │    4. Compare to skillCount (previous)                       │
-  │    5. If diff, write skillCountPrev = old value,             │
-  │       skillCount = new value, skillCountUpdatedAt = now      │
+  │  Run: npx tsx --env-file=.env.local \                        │
+  │         scripts/sync-skill-submissions.ts                    │
+  │  Or triggered via POST /api/sync/skill-submissions           │
+  │                                                              │
+  │  Flow:                                                       │
+  │    1. Query Notion Submissions DB for Status = "Approved"    │
+  │    2. Validate required fields (name, url, description)      │
+  │    3. Create skillSource doc in Sanity                       │
+  │       • status: "pending-review" (not auto-published)        │
+  │       • Preserves human editorial gate: editor sets          │
+  │         featured + status=published in Studio                │
+  │    4. Flip Notion entry Status: Approved → Synced            │
+  │    5. Returns { synced, skipped, errors } summary            │
+  │                                                              │
+  │  Auth needed:                                                │
+  │    NOTION_API_TOKEN, NOTION_SUBMISSIONS_DB_ID,               │
+  │    SANITY_WRITE_TOKEN (all already in .env.local)            │
+  └──────────────────────────────────────────────────────────────┘
+
+  ┌──────────────────────────────────────────────────────────────┐
+  │  scripts/sync-skills.ts                                      │
+  │                                                              │
+  │  Run: npx tsx --env-file=.env.local scripts/sync-skills.ts   │
+  │  Or triggered via POST /api/sync/skills (weekly Vercel cron) │
+  │                                                              │
+  │  Flow:                                                       │
+  │    1. Fetch all published skillSource docs from Sanity       │
+  │    2. For each source, use Firecrawl to scrape the URL       │
+  │       and count SKILL.md / skill.md files found              │
+  │    3. If count differs from current skillCount:              │
+  │       • skillCountPrev = old skillCount                      │
+  │       • skillCount     = new count                           │
+  │       • skillCountUpdatedAt = now                            │
+  │    4. Always write lastCrawledAt = now                       │
+  │    5. On crawl failure: increment crawlErrors;               │
+  │       at 3+ consecutive failures flag for review             │
   │    6. Patch Sanity doc via SANITY_WRITE_TOKEN                │
+  │                                                              │
+  │  Auth needed:                                                │
+  │    SANITY_API_TOKEN, SANITY_WRITE_TOKEN (existing)           │
+  │    FIRECRAWL_API_KEY  ← NEW: firecrawl.dev → API Keys        │
   └──────────────────────────────────────────────────────────────┘
 
 
@@ -294,9 +327,32 @@ layer into Sanity, and is served to users by the Next.js app on Vercel.
   1. Receive submission at /skills/submit (web form)
      → Notion Skill Submissions DB entry created (Status: Pending)
   2. Review submission in Notion, set Status = Approved
-  3. Manually create skillSource document in Sanity Studio
-  4. Set featured: true for homepage highlight
+  3. sync-skill-submissions.ts runs (cron or manual):
+     → Picks up Approved entries, creates skillSource doc in Sanity
+       with status: "pending-review"
+     → Flips Notion entry: Approved → Synced (idempotent)
+  4. Editor opens Sanity Studio (/studio):
+     → Sets featured: true if desired
+     → Sets status: "published" to make it live
   5. /skills revalidates within 3600s — source appears in directory
+  6. sync-skills.ts runs weekly (cron):
+     → Firecrawl scrapes each published source URL
+     → Counts SKILL.md files found; writes skillCount delta to Sanity
+     → Powers the "+N this week" badge on each card
+
+  SCRIPTS REFERENCE:
+  ──────────────────
+  ┌─────────────────────────────────┬────────────────────────────────────┬──────────────────────────────────────┐
+  │ Script                          │ Purpose                            │ Tokens required                      │
+  ├─────────────────────────────────┼────────────────────────────────────┼──────────────────────────────────────┤
+  │ scripts/seed-sanity.ts          │ One-time: seed authors/categories  │ SANITY_WRITE_TOKEN                   │
+  │ scripts/sync-skill-             │ Notion Submissions (Approved) →    │ NOTION_API_TOKEN,                    │
+  │   submissions.ts                │ Sanity skillSource (pending-review)│ NOTION_SUBMISSIONS_DB_ID,            │
+  │                                 │                                    │ SANITY_WRITE_TOKEN                   │
+  │ scripts/sync-skills.ts          │ Firecrawl crawl → update           │ SANITY_API_TOKEN,                    │
+  │                                 │ skillCount delta on Sanity docs    │ SANITY_WRITE_TOKEN,                  │
+  │                                 │                                    │ FIRECRAWL_API_KEY (new)              │
+  └─────────────────────────────────┴────────────────────────────────────┴──────────────────────────────────────┘
 
   SCHEMA ENFORCEMENT LAYERS:
   ───────────────────────────
@@ -324,6 +380,8 @@ layer into Sanity, and is served to users by the Next.js app on Vercel.
   SANITY_API_TOKEN           ✅ set               add →
   SANITY_WRITE_TOKEN         ✅ set               add →
   SYNC_SECRET                ✅ set               add →
+  GITHUB_TOKEN               ⏳ optional          add →
+  FIRECRAWL_API_KEY          ⏳ pending           add →
   BEEHIIV_API_KEY            ⏳ pending           —
   BEEHIIV_PUBLICATION_ID     ⏳ pending           —
 
