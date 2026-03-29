@@ -15,20 +15,20 @@ const PLACEHOLDER_TOOLS: Tool[] = [
   { _id: 'p4', name: 'SKILLS BUILDER', tagline: 'Draft, validate, and publish SKILL.md files for your AI agent workflows in minutes.', icon: '🧠', status: 'soon', url: null, slug: { current: 'skills-builder' } },
 ]
 
-const PLACEHOLDER_FEATURED = {
+const PLACEHOLDER_FEATURED: Article = {
   _id: 'pf1',
   title: 'SKILL.md Files: The Configuration Primitive Every Agent Builder Should Know',
   slug: { current: 'why-automation-projects-stall' },
   excerpt: 'Most developers configuring AI coding agents never discover that the most powerful form of customisation ships as a plain markdown file.',
   publishedAt: '2026-03-01T00:00:00Z',
   readTime: 12,
-  category: { title: 'Deep Dive' },
+  category: { title: 'Deep Dive', slug: { current: 'deep-dive' } },
 }
 
-const PLACEHOLDER_ARTICLES = [
-  { _id: 'pa1', title: 'Building a Notion to Sanity Sync Pipeline in 2026', slug: { current: 'make-crm' }, publishedAt: '2026-02-01T00:00:00Z', readTime: 8, excerpt: 'How we wired Notion as a CMS frontend to Sanity as a delivery layer, with a Vercel cron job running every 30 minutes and zero manual deploys.', category: { title: 'Tool Guide' } },
-  { _id: 'pa2', title: 'The Agent Governance Layer Most Teams Skip', slug: { current: '3-layer-stack' }, publishedAt: '2026-02-01T00:00:00Z', readTime: 6, excerpt: 'A capable agent and a trustworthy agent are different things. Here is the configuration layer that separates teams shipping reliably from teams cleaning up messes.', category: { title: 'Strategy' } },
-  { _id: 'pa3', title: 'Zapier vs Make vs n8n — Which Platform Is Right for Your Team', slug: { current: 'zapier-vs-make-vs-n8n' }, publishedAt: '2026-01-01T00:00:00Z', readTime: 9, excerpt: 'An honest comparison of three major automation platforms across price, flexibility, and team fit for growing businesses.', category: { title: 'Comparison' } },
+const PLACEHOLDER_ARTICLES: Article[] = [
+  { _id: 'pa1', title: 'Building a Notion to Sanity Sync Pipeline in 2026', slug: { current: 'make-crm' }, publishedAt: '2026-02-01T00:00:00Z', readTime: 8, excerpt: 'How we wired Notion as a CMS frontend to Sanity as a delivery layer, with a Vercel cron job running every 30 minutes and zero manual deploys.', category: { title: 'Tool Guide', slug: { current: 'tool-guide' } } },
+  { _id: 'pa2', title: 'The Agent Governance Layer Most Teams Skip', slug: { current: '3-layer-stack' }, publishedAt: '2026-02-01T00:00:00Z', readTime: 6, excerpt: 'A capable agent and a trustworthy agent are different things. Here is the configuration layer that separates teams shipping reliably from teams cleaning up messes.', category: { title: 'Strategy', slug: { current: 'strategy' } } },
+  { _id: 'pa3', title: 'Zapier vs Make vs n8n — Which Platform Is Right for Your Team', slug: { current: 'zapier-vs-make-vs-n8n' }, publishedAt: '2026-01-01T00:00:00Z', readTime: 9, excerpt: 'An honest comparison of three major automation platforms across price, flexibility, and team fit for growing businesses.', category: { title: 'Comparison', slug: { current: 'comparison' } } },
 ]
 
 function formatDate(iso: string) {
@@ -84,16 +84,16 @@ export default async function HomePage() {
       <div className="stat-band">
         <div className="stat-band-inner">
           <div className="stat-band-item">
-            <div className="stat-band-num">205+</div>
+            <div className="stat-band-num">7,530+</div>
             <div className="stat-band-label">Skills Indexed</div>
           </div>
           <div className="stat-band-item">
-            <div className="stat-band-num">11</div>
-            <div className="stat-band-label">Agent Platforms</div>
+            <div className="stat-band-num">8</div>
+            <div className="stat-band-label">Curated Sources</div>
           </div>
           <div className="stat-band-item">
-            <div className="stat-band-num">9</div>
-            <div className="stat-band-label">Skill Domains</div>
+            <div className="stat-band-num">6</div>
+            <div className="stat-band-label">Agent Platforms</div>
           </div>
           <div className="stat-band-item">
             <div className="stat-band-num">∞</div>
@@ -102,28 +102,57 @@ export default async function HomePage() {
         </div>
       </div>
 
-      {/* LATEST ARTICLES — section bar + 3-col grid */}
+      {/* LATEST ARTICLES — section bar + featured lead + 2-col secondary grid */}
       <div className="section-bar">
         <span className="section-bar-label">Latest Articles</span>
         <Link href="/articles" className="section-bar-link">View All →</Link>
       </div>
-      <div className="article-grid">
-        {showArticles.map((article) => (
-          <Link key={article._id} href={`/articles/${article.slug.current}`} className="article-grid-item">
-            {article.category && (
-              <div className="article-category">{article.category.title}</div>
+      {showArticles.length > 0 && (() => {
+        const [lead, ...rest] = showArticles
+        return (
+          <>
+            <Link href={`/articles/${lead.slug.current}`} className="article-featured">
+              <div className="article-featured-text">
+                <div className="article-featured-label">Latest</div>
+                {lead.kicker && <div className="article-kicker">{lead.kicker}</div>}
+                <div className="article-featured-title">{lead.title}</div>
+                {lead.excerpt && <div className="article-featured-excerpt">{lead.excerpt}</div>}
+                <div className="article-featured-meta">
+                  {lead.category && <span>{lead.category.title}</span>}
+                  {lead.category && lead.readTime && <span>·</span>}
+                  <span>{formatDate(lead.publishedAt)}</span>
+                  {lead.readTime && <><span>·</span><span>{lead.readTime} min</span></>}
+                </div>
+              </div>
+              <div className="article-featured-side">
+                <div className="article-featured-side-label">Read Article →</div>
+                <div className="article-featured-side-title">
+                  {lead.category?.title ?? 'Deep Dive'}
+                </div>
+                <div className="article-featured-side-sub">
+                  Practical analysis for teams building with AI and automation.
+                </div>
+              </div>
+            </Link>
+            {rest.length > 0 && (
+              <div className="article-grid-2col">
+                {rest.map((article) => (
+                  <Link key={article._id} href={`/articles/${article.slug.current}`} className="article-grid-item">
+                    {article.category && <div className="article-category">{article.category.title}</div>}
+                    {article.kicker && <div className="article-kicker">{article.kicker}</div>}
+                    <div className="article-grid-title">{article.title}</div>
+                    {article.excerpt && <div className="article-grid-excerpt">{article.excerpt}</div>}
+                    <div className="article-grid-meta">
+                      <span>{formatDate(article.publishedAt)}</span>
+                      {article.readTime && <><span>·</span><span>{article.readTime} min</span></>}
+                    </div>
+                  </Link>
+                ))}
+              </div>
             )}
-            <div className="article-grid-title">{article.title}</div>
-            {article.excerpt && (
-              <div className="article-grid-excerpt">{article.excerpt}</div>
-            )}
-            <div className="article-grid-meta">
-              <span>{formatDate(article.publishedAt)}</span>
-              {article.readTime && <><span>·</span><span>{article.readTime} min</span></>}
-            </div>
-          </Link>
-        ))}
-      </div>
+          </>
+        )
+      })()}
 
       {/* SKILLS CALLOUT — full-width amber-light band */}
       <div className="skills-callout">
@@ -139,7 +168,7 @@ export default async function HomePage() {
           </div>
         </div>
         <div style={{ flexShrink: 0, textAlign: 'right' }}>
-          <div className="skills-count">205</div>
+          <div className="skills-count">7,530+</div>
           <div className="skills-count-label">Skills Indexed</div>
         </div>
       </div>
