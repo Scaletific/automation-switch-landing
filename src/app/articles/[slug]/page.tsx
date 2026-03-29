@@ -222,55 +222,83 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               ))}
             </div>
           )}
-        </div>
 
-        {/* Sidebar */}
-        <aside className="sidebar-sticky">
-          {/* Author bio */}
+          {/* Author bio — bottom of main content */}
           {article.author && (
-            <div className="author-bio-card">
-              <div className="sidebar-section-title">Written by</div>
+            <div className="author-bio-card author-bio-card--inline">
               <div className="author-bio-avatar">
                 {article.author.avatar?.asset?.url ? (
                   <Image
                     src={article.author.avatar.asset.url}
                     alt={article.author.name}
-                    width={48}
-                    height={48}
+                    width={64}
+                    height={64}
                   />
                 ) : (
-                  <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--display)', fontSize: '18px', color: 'var(--amber)' }}>
+                  <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'var(--display)', fontSize: '22px', color: 'var(--amber)' }}>
                     {article.author.name.charAt(0)}
                   </div>
                 )}
               </div>
-              <div className="author-bio-name">{article.author.name}</div>
-              <div className="author-bio-role">{article.author.role}</div>
-              {article.author.bio && (
-                <p className="author-bio-text">{article.author.bio}</p>
-              )}
-              <div className="author-bio-links">
-                {article.author.twitterUrl && (
-                  <a href={article.author.twitterUrl} target="_blank" rel="noopener noreferrer" className="author-bio-link">X</a>
+              <div>
+                <div className="author-bio-label">Written by</div>
+                <div className="author-bio-name">{article.author.name}</div>
+                <div className="author-bio-role">{article.author.role}</div>
+                {article.author.bio && (
+                  <p className="author-bio-text">{article.author.bio}</p>
                 )}
-                {article.author.linkedinUrl && (
-                  <a href={article.author.linkedinUrl} target="_blank" rel="noopener noreferrer" className="author-bio-link">LinkedIn</a>
-                )}
+                <div className="author-bio-links">
+                  {article.author.twitterUrl && (
+                    <a href={article.author.twitterUrl} target="_blank" rel="noopener noreferrer" className="author-bio-link">X</a>
+                  )}
+                  {article.author.linkedinUrl && (
+                    <a href={article.author.linkedinUrl} target="_blank" rel="noopener noreferrer" className="author-bio-link">LinkedIn</a>
+                  )}
+                </div>
               </div>
             </div>
           )}
+        </div>
+
+        {/* Sidebar */}
+        <aside className="sidebar-sticky">
+          {/* Article info stats */}
+          <div className="sidebar-section">
+            <div className="sidebar-section-title">Article info</div>
+            <div className="sidebar-stats-grid">
+              {article.readTime && (
+                <>
+                  <div className="sidebar-stat">
+                    <div className="sidebar-stat-value">{article.readTime}</div>
+                    <div className="sidebar-stat-label">Min read</div>
+                  </div>
+                </>
+              )}
+              <div className="sidebar-stat">
+                <div className="sidebar-stat-value">{new Date(article.publishedAt).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</div>
+                <div className="sidebar-stat-label">{new Date(article.publishedAt).getFullYear()}</div>
+              </div>
+              {article.category && (
+                <div className="sidebar-stat sidebar-stat--wide">
+                  <div className="sidebar-stat-value sidebar-stat-value--sm">{article.category.title}</div>
+                  <div className="sidebar-stat-label">Category</div>
+                </div>
+              )}
+            </div>
+          </div>
 
           <div className="sidebar-section">
             <div className="sidebar-section-title">Stay in the loop</div>
             <SubscribeForm compact />
           </div>
 
-          <div className="sidebar-section">
-            <div className="sidebar-section-title">Try our tools</div>
-            <p style={{ fontSize: '12px', color: 'var(--text-dim)', lineHeight: 1.6 }}>
+          <div className="sidebar-section sidebar-section--amber">
+            <div className="sidebar-section-title sidebar-section-title--amber">From Automation Switch</div>
+            <div className="sidebar-tool-name">PrecisionReach</div>
+            <p style={{ fontSize: '12px', color: 'var(--text-dim)', lineHeight: 1.6, marginBottom: '16px' }}>
               AI-powered cold email research and generation. Research an industry, build ICPs, and write targeted emails in one run.
             </p>
-            <a href="/precisionreach.html" className="sidebar-tool-link">
+            <a href="https://precisionreach.automationswitch.com" className="sidebar-tool-cta">
               Try PrecisionReach →
             </a>
           </div>
