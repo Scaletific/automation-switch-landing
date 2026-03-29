@@ -4,6 +4,7 @@ import { groq } from 'next-sanity'
 const articleFields = groq`
   _id,
   title,
+  kicker,
   slug,
   excerpt,
   publishedAt,
@@ -62,6 +63,7 @@ export const articleFullBySlugQuery = groq`
   *[_type == "article" && slug.current == $slug][0] {
     _id,
     title,
+    kicker,
     slug,
     excerpt,
     publishedAt,

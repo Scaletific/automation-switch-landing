@@ -7,6 +7,7 @@ export interface Category {
 export interface Article {
   _id: string
   title: string
+  kicker?: string
   slug: { current: string }
   excerpt: string
   publishedAt: string

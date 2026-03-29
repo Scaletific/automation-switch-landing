@@ -19,6 +19,14 @@ export const article = defineType({
       validation: r => r.required(),
     }),
     defineField({
+      name: 'kicker',
+      title: 'Kicker',
+      type: 'string',
+      group: 'content',
+      description: 'Short editorial phrase shown above the headline in article cards and on the article page. Sets the angle before the headline. E.g. "The missing layer" or "Why teams fail". No punctuation at end. Max 80 chars.',
+      validation: r => r.max(80),
+    }),
+    defineField({
       name: 'slug',
       title: 'Slug',
       type: 'slug',

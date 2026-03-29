@@ -19,19 +19,35 @@ A corporate brochure site, a SaaS product page, or a developer docs portal. It r
 
 ## Colour Palette
 
+The site uses a **warm cream/parchment** light theme with dark inversion blocks and a single amber accent.
+
 | Token | Value | Usage |
 | --- | --- | --- |
-| `--bg` | `#1e1e1e` | Page background |
-| `--bg2` | `#252525` | Elevated surfaces (cards, sidebar, topbar) |
-| `--bg3` | `#2d2d2d` | Code blocks, deep surface |
-| `--border` | `#3a3a3a` | All borders and dividers |
-| `--border-soft` | `#323232` | Subtle separators |
-| `--amber` | `#c8861a` | Primary accent — CTAs, links, highlights, logo mark |
-| `--amber-dim` | `#8a5c10` | Secondary amber — icon borders |
-| `--amber-glow` | `rgba(200,134,26,0.09)` | Background tint on amber-accented elements |
-| `--text` | `#b0b0b0` | Body copy, default text |
-| `--text-dim` | `#707070` | Metadata, labels, muted UI text |
-| `--text-bright` | `#e8e8e8` | Headlines, active elements, key copy |
+| `--bg` | `#f0ebe0` | Page background (warm cream) |
+| `--bg2` | `#f9f7f2` | Elevated surfaces, section bars, topbar |
+| `--bg3` | `#e8e2d6` | Code blocks, deep surface, install blocks |
+| `--bg-inv` | `#1e1a14` | Dark inversion blocks (newsletter, hero right, footer) |
+| `--border` | `#c4bdb0` | All borders and dividers |
+| `--border-soft` | `#d4cec6` | Subtle separators |
+| `--border-strong` | `#9a9080` | Emphasis borders |
+| `--amber` | `#c8861a` | Primary accent — CTAs, links, highlights, hover bars |
+| `--amber-bright` | `#f9b700` | High-visibility amber — numbers in dark blocks, accent chips |
+| `--amber-dark` | `#a06810` | Muted amber on light bg (eyebrows on callout sections) |
+| `--amber-glow` | `rgba(200,134,26,0.10)` | Background tint on amber-accented elements |
+| `--amber-light` | `rgba(200,134,26,0.10)` | Skills callout background |
+| `--text` | `#1e1a14` | Body copy, default text — high contrast |
+| `--text-mid` | `#4a4438` | Descriptions, secondary content — **minimum for readable prose** |
+| `--text-dim` | `#857d72` | Metadata labels only — 3.4:1 contrast, WCAG AA fail at small sizes |
+| `--text-bright` | `#1e1a14` | Headlines, active elements |
+| `--text-inv` | `#f0ebe0` | Text on dark inversion blocks |
+| `--text-inv-dim` | `#a09888` | Muted text on dark inversion blocks |
+
+**Contrast rules (enforced after 2026-03-29 readability audit):**
+
+- `--text-dim` **must not** be used for description text or body copy — only for decorative metadata labels
+- All card descriptions, article excerpts, and tool descriptions use `--text-mid` minimum
+- `--text` is preferred for any content the user needs to read to make a decision
+- Footer links and nav items on dark background: `--text-inv-dim` is acceptable at 13px+
 
 **Rule:** Never use pure white or pure black. Never introduce new accent colours. Amber is the only accent. If a second accent is ever needed, escalate to human first.
 
@@ -53,20 +69,26 @@ All fonts are loaded from Google Fonts:
 
 ### Type Scale
 
-| Element | Font | Size | Weight | Notes |
-| --- | --- | --- | --- | --- |
-| Hero title | Bebas Neue | `clamp(64px, 8vw, 108px)` | 400 | `line-height: 0.92`, `letter-spacing: 0.02em` |
-| Article title (page) | Bebas Neue | `clamp(40px, 5vw, 64px)` | 400 | `line-height: 0.95` |
-| Section title | Bebas Neue | `32px` | 400 | `letter-spacing: 0.06em` |
-| Article title XL (index featured) | Bebas Neue | `32px` | 400 | `line-height: 1.0` |
-| Article title LG (grid card) | Bebas Neue | `24px` | 400 | `line-height: 1.0` |
-| Mission block | Bebas Neue | `clamp(28px, 3.5vw, 46px)` | 400 | |
-| Body copy | IBM Plex Sans | `16px` | 300 | `line-height: 1.85` |
-| UI body | IBM Plex Sans | `15px` | 400 | `line-height: 1.7` |
-| Small body | IBM Plex Sans | `13px` | 300 | `line-height: 1.7` |
-| Nav links | IBM Plex Mono | `11px` | 400 | Uppercase, `letter-spacing: 0.08em` |
-| Tags / categories | IBM Plex Mono | `9–11px` | 400 | Uppercase, `letter-spacing: 0.1–0.14em` |
-| Metadata | IBM Plex Mono | `9–10px` | 400 | Uppercase, muted |
+| Element | Font | Size | Weight | Color | Notes |
+| --- | --- | --- | --- | --- | --- |
+| Page title XL | Bebas Neue | `clamp(56px, 8vw, 96px)` | 400 | `--text-bright` | `line-height: 0.92` |
+| Hero title | Bebas Neue | `clamp(40px, 5.5vw, 72px)` | 400 | `--text-bright` | `line-height: 0.95` |
+| Section title / card name | Bebas Neue | `26–32px` | 400 | `--text-bright` | `letter-spacing: 0.03–0.06em` |
+| Mission block | Bebas Neue | `clamp(28px, 3.5vw, 46px)` | 400 | `--text-bright` | amber `em` span for emphasis |
+| Article body | IBM Plex Sans | `16px` | 400 | `--text` | `line-height: 1.85`, max-width ~680px |
+| Card descriptions | IBM Plex Sans | `14–15px` | **400** | **`--text-mid`** | Never 300 weight or `--text-dim` |
+| UI body / page sub | IBM Plex Sans | `14px` | 300–400 | `--text` | `line-height: 1.8` |
+| Footer nav links | IBM Plex Mono | `13px` | 400 | `--text-inv-dim` | `letter-spacing: 0.04em` |
+| Nav links (topbar) | IBM Plex Mono | `11px` | 400 | `--text-mid` | Uppercase, `letter-spacing: 0.08em` |
+| Section bar labels | Bebas Neue | `18px` | 400 | `--text` | `letter-spacing: 0.22em` |
+| Tags / platform chips | IBM Plex Mono | `10px` | 400 | **`--text-mid`** | Uppercase, never `--text-dim` |
+| Metadata / article meta | IBM Plex Mono | `10px` | 400 | `--text-mid` | Uppercase |
+| Eyebrows / micro labels | IBM Plex Mono | `10px` | 400–500 | `--amber` | Uppercase, `letter-spacing: 0.16–0.2em` |
+| Footer col labels | IBM Plex Mono | `10px` | 400 | `--amber` | Uppercase |
+| Footer bottom copy | IBM Plex Mono | `11px` | 400 | `--text-inv-dim` | |
+| Badge / status chips | IBM Plex Mono | `9px` | 400 | varies | Uppercase |
+
+**Readability floor (enforced 2026-03-29):** No content text below 14px. No description text at weight 300. No description text using `--text-dim`.
 
 ---
 
@@ -131,9 +153,42 @@ body::before {
 - Background: `var(--bg)` → `var(--bg2)` on hover
 - **Top amber bar on hover:** `::before` pseudo, `height: 2px`, `background: var(--amber)`, `scaleX(0→1)` on hover, `transform-origin: left`
 - Category tag: IBM Plex Mono, 9px, uppercase, amber
+- **Kicker** (optional): IBM Plex Mono, 10px, weight 500, uppercase, `letter-spacing: 0.18em`, `var(--amber-dark)` — shown above the headline, sets editorial angle. CSS class: `.article-kicker`
 - Title: Bebas Neue (size varies by card size)
-- Excerpt: IBM Plex Sans 13px, 300 weight, `var(--text)`
-- Meta: IBM Plex Mono, 9px, uppercase, `var(--text-dim)` with 3px dot separators
+- Excerpt / description: IBM Plex Sans **14–15px, 400 weight, `var(--text-mid)`** — never use 300 weight or `--text-dim`
+- Meta: IBM Plex Mono, 10px, uppercase, `var(--text-mid)`
+
+### Featured Article Card (Asymmetric — Wired/Economist pattern)
+
+The home page "Latest Articles" section uses an asymmetric lead layout instead of a uniform 3-col grid. This is architectural — do not revert to equal columns.
+
+- **First article** renders as `.article-featured` — a full-width 2-col card:
+  - Left panel (`.article-featured-text`): cream background, 48px padding, holds label/kicker/title/excerpt/meta
+  - Right panel (`.article-featured-side`): dark inversion (`var(--bg-inv)`), large display category name
+  - **Permanent amber bar** at top (`::before`, `height: 3px`) — always visible, not hover-only
+- **Remaining articles** render in `.article-grid-2col` — a 2-col grid below the featured card
+
+### Section Opening Rules (Economist/Bloomberg pattern)
+
+Key structural sections use a thick amber top border to mark editorial divisions:
+
+```css
+/* Applied to .stat-band and .skills-callout */
+border-top: 3px solid var(--amber);
+```
+
+This is a permanent rule — not hover state. Applies to `.stat-band` and `.skills-callout`. Do not apply to every section — reserved for primary structural breaks only.
+
+### Article Body Width
+
+```css
+.article-body {
+  max-width: 680px;   /* New Yorker / Economist pattern — optimal reading width */
+  font-weight: 400;   /* Never 300 for body text */
+}
+```
+
+The 680px cap is non-negotiable — do not increase it for "breathing room". Narrow column is the design intent.
 
 ### Buttons
 

@@ -39,7 +39,12 @@ export function SubscribeForm({ compact = false }: { compact?: boolean }) {
       {status === 'error' && (
         <p style={{ fontFamily: 'var(--mono)', fontSize: '10px', color: '#f87171' }}>Something went wrong. Try again.</p>
       )}
-      {status === 'error' && null}
+      {status !== 'success' && (
+        <p style={{ fontFamily: 'var(--mono)', fontSize: '10px', color: 'var(--text-mid)', lineHeight: 1.6, marginTop: '8px' }}>
+          One email per week. No spam. Unsubscribe any time. By subscribing you agree to our{' '}
+          <a href="/privacy" style={{ color: 'var(--amber)', textDecoration: 'underline' }}>Privacy Policy</a>.
+        </p>
+      )}
     </form>
   )
 }

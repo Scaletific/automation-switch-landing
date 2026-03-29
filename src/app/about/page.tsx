@@ -26,15 +26,68 @@ const jsonLd = {
   url: 'https://automationswitch.com',
   description:
     'Automation Switch publishes practical workflow automation guides, builds AI-powered tools, and curates the SKILL.md directory for AI coding agents.',
-  parentOrganization: {
-    '@type': 'Organization',
-    name: 'Scaletific',
-  },
+  parentOrganization: { '@type': 'Organization', name: 'Scaletific' },
   sameAs: [
     'https://x.com/automationswitch',
     'https://linkedin.com/company/automationswitch',
   ],
 }
+
+const PILLARS = [
+  {
+    num: '01',
+    name: 'ARTICLES',
+    href: '/articles',
+    desc: 'Deep dives and strategy breakdowns on workflow automation, business process design, and connected systems. Written for practitioners who build in production — not for people learning to prompt.',
+    cta: 'Read Articles →',
+  },
+  {
+    num: '02',
+    name: 'TOOLS',
+    href: '/tools',
+    desc: 'AI-powered tools built around real workflow bottlenecks. PrecisionReach automates cold email intelligence. Each tool ships when a genuine problem justifies building — not before.',
+    cta: 'Explore Tools →',
+  },
+  {
+    num: '03',
+    name: 'SKILLS HUB',
+    href: '/skills',
+    desc: 'The canonical directory of SKILL.md sources for AI coding agents across Claude Code, Cursor, Copilot, Gemini CLI, and more. We are the index — not the database.',
+    cta: 'Browse Skills →',
+  },
+]
+
+const AUDIENCE = [
+  { num: '01', label: 'Operations Engineers', desc: 'Connecting systems, eliminating manual handoffs, and automating the repeatable work that slows everything down.' },
+  { num: '02', label: 'Platform Teams', desc: 'Governing agent workflows and tooling standards across engineering organisations at scale.' },
+  { num: '03', label: 'Solo Founders', desc: 'Moving fast with AI agents before you can afford to hire a full engineering team.' },
+  { num: '04', label: 'Developers', desc: 'Configuring agents with proven SKILL.md files instead of reinventing configuration from scratch.' },
+  { num: '05', label: 'Product Managers', desc: 'Understanding what automation actually enables, what it costs, and when to commission it.' },
+  { num: '06', label: 'Technical Leaders', desc: 'Making architectural choices about automation before those choices become entrenched technical debt.' },
+]
+
+const PRINCIPLES = [
+  {
+    num: '01',
+    title: 'REAL PROBLEMS FIRST',
+    body: 'Every article starts with a workflow someone is actually running. We do not cover tools in the abstract. We cover what happens when they hit production load.',
+  },
+  {
+    num: '02',
+    title: 'WE ARE THE INDEX',
+    body: 'For Skills Hub: we curate, verify, and link. The skills live at the source. We surface the signal — we do not hoard the content.',
+  },
+  {
+    num: '03',
+    title: 'SHIP FIRST, REFINE SECOND',
+    body: 'Our tools follow the same discipline: identify a genuine bottleneck, build a focused solution, ship early, and improve based on how people actually use it.',
+  },
+  {
+    num: '04',
+    title: 'PRODUCTION REALITY',
+    body: 'Automation Switch is a product of Scaletific — working across platform engineering, infrastructure, and enterprise automation. That background shapes every sentence we publish.',
+  },
+]
 
 export default function AboutPage() {
   return (
@@ -44,138 +97,235 @@ export default function AboutPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* PAGE HEADER */}
-      <div className="page-header">
-        <div className="page-eyebrow">Who we are</div>
-        <h1 className="page-title-xl">ABOUT</h1>
-        <p className="page-sub">
-          Automation Switch is where practitioners come to learn what actually works in workflow automation, AI tooling, and agent orchestration.
-        </p>
+      {/* TICKER — light variant */}
+      <div className="ticker-wrap ticker-wrap--light">
+        <div className="ticker-inner">
+          <span>Workflow Automation</span><span className="ticker-sep">///</span>
+          <span className="accent">SKILL.md</span><span className="ticker-sep">///</span>
+          <span>Agent Orchestration</span><span className="ticker-sep">///</span>
+          <span>No-Code Pipelines</span><span className="ticker-sep">///</span>
+          <span className="accent">BUILT BY SCALETIFIC</span><span className="ticker-sep">///</span>
+          <span>Connected Systems</span><span className="ticker-sep">///</span>
+          <span>AI Tooling</span><span className="ticker-sep">///</span>
+          <span className="accent">PRODUCTION-FIRST</span><span className="ticker-sep">///</span>
+          <span>Workflow Automation</span><span className="ticker-sep">///</span>
+          <span className="accent">SKILL.md</span><span className="ticker-sep">///</span>
+          <span>Agent Orchestration</span><span className="ticker-sep">///</span>
+          <span>No-Code Pipelines</span><span className="ticker-sep">///</span>
+          <span className="accent">BUILT BY SCALETIFIC</span><span className="ticker-sep">///</span>
+          <span>Connected Systems</span><span className="ticker-sep">///</span>
+          <span>AI Tooling</span><span className="ticker-sep">///</span>
+          <span className="accent">PRODUCTION-FIRST</span><span className="ticker-sep">///</span>
+        </div>
       </div>
 
-      {/* MISSION */}
-      <section className="section">
-        <div className="section-header">
-          <h2 className="section-title">THE MISSION</h2>
+      {/* HERO — 2-col split */}
+      <section className="about-hero">
+        {/* LEFT — headline + CTAs */}
+        <div className="about-hero-left">
+          <div style={{
+            fontFamily: 'var(--mono)',
+            fontSize: '10px',
+            letterSpacing: '0.2em',
+            textTransform: 'uppercase',
+            color: 'var(--amber)',
+            marginBottom: '20px',
+          }}>
+            About Automation Switch
+          </div>
+          <h1 className="page-title-xl">
+            TECHNOLOGY<br />
+            CREATES<br />
+            <span>ABUNDANCE.</span>
+          </h1>
+          <p style={{
+            marginTop: '24px',
+            fontSize: '14px',
+            fontWeight: 300,
+            lineHeight: 1.8,
+            color: 'var(--text)',
+            maxWidth: '400px',
+          }}>
+            Everybody should be able to tap into it. We write the playbooks, deliver
+            the breakdowns, build the tools, and explore what automation makes
+            possible — so nobody gets left behind.
+          </p>
+          <div style={{ marginTop: '32px', display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+            <Link href="/articles" className="btn-primary">Read Articles</Link>
+            <Link href="/skills" className="btn-ghost">Browse Skills →</Link>
+          </div>
         </div>
 
-        <div className="mission" style={{ margin: '0 0 48px', maxWidth: '100%' }}>
-          <div className="mission-eyebrow">Why we exist</div>
-          <div className="mission-text">
-            We build the tools and write<br />
-            the playbooks so <em>you do not</em><br />
-            have to figure it out alone.
+        {/* RIGHT — dark card with manifesto + inline stats */}
+        <div className="about-hero-right">
+          <div style={{
+            fontFamily: 'var(--mono)',
+            fontSize: '10px',
+            letterSpacing: '0.2em',
+            textTransform: 'uppercase',
+            color: 'var(--amber)',
+            marginBottom: '20px',
+          }}>
+            Our stance
           </div>
-          <p className="mission-sub">
-            Teams deserve honest breakdowns written by people who have shipped real workflows,
-            tools built around real problems, and a directory that saves hours
-            of searching for the right agent configuration. That is why we started
-            Automation Switch.
-          </p>
+          <div style={{
+            fontFamily: 'var(--display)',
+            fontSize: 'clamp(22px, 2.4vw, 36px)',
+            lineHeight: 1.15,
+            letterSpacing: '0.02em',
+            color: 'var(--text-inv)',
+          }}>
+            We write the playbooks.<br />
+            We build the tools.<br />
+            We explore automation —<br />
+            so no one{' '}
+            <span style={{ color: 'var(--amber-bright)' }}>gets left behind.</span>
+          </div>
+          <div style={{
+            marginTop: '40px',
+            paddingTop: '32px',
+            borderTop: '1px solid rgba(255,255,255,0.08)',
+            display: 'flex',
+            gap: '32px',
+          }}>
+            {[
+              { num: '7,730+', label: 'Skills Indexed' },
+              { num: '8', label: 'Curated Sources' },
+              { num: '6', label: 'Agent Platforms' },
+            ].map((stat) => (
+              <div key={stat.label}>
+                <div style={{
+                  fontFamily: 'var(--display)',
+                  fontSize: '32px',
+                  color: 'var(--amber-bright)',
+                  letterSpacing: '0.04em',
+                  lineHeight: 1,
+                }}>
+                  {stat.num}
+                </div>
+                <div style={{
+                  fontFamily: 'var(--mono)',
+                  fontSize: '9px',
+                  letterSpacing: '0.14em',
+                  textTransform: 'uppercase',
+                  color: 'var(--text-inv-dim)',
+                  marginTop: '6px',
+                }}>
+                  {stat.label}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* WHAT WE DO */}
-      <section className="section">
-        <div className="section-header">
-          <h2 className="section-title">WHAT WE DO</h2>
-        </div>
-
-        <div className="tools-grid" style={{ marginTop: '24px' }}>
-          <Link href="/articles" className="tool-card">
-            <div className="tool-icon">📝</div>
-            <div className="tool-name">ARTICLES</div>
-            <p className="tool-desc">
-              Deep dives, tool comparisons, and strategy breakdowns on workflow automation, business process design, and connected systems.
-              Every piece is written for practitioners who are actively building.
-            </p>
+      <div className="section-bar">
+        <span className="section-bar-label">WHAT WE DO</span>
+      </div>
+      <div className="tools-grid">
+        {PILLARS.map((p) => (
+          <Link key={p.num} href={p.href} className="tool-card">
+            <div style={{
+              fontFamily: 'var(--mono)',
+              fontSize: '28px',
+              fontWeight: 300,
+              color: 'var(--amber)',
+              letterSpacing: '-0.02em',
+              lineHeight: 1,
+              marginBottom: '16px',
+            }}>
+              {p.num}
+            </div>
+            <div className="tool-name">{p.name}</div>
+            <p className="tool-desc">{p.desc}</p>
+            <div style={{
+              fontFamily: 'var(--mono)',
+              fontSize: '10px',
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              color: 'var(--amber)',
+              marginTop: '8px',
+            }}>
+              {p.cta}
+            </div>
           </Link>
-          <Link href="/tools" className="tool-card">
-            <div className="tool-icon">⚙️</div>
-            <div className="tool-name">TOOLS</div>
-            <p className="tool-desc">
-              AI-powered tools built around real workflow problems. Our first tool, PrecisionReach, automates cold email research
-              and generation. More are on the way, each designed to solve a specific bottleneck we have seen teams hit.
+        ))}
+      </div>
+
+      {/* WHO WE BUILD FOR */}
+      <div className="section-bar">
+        <span className="section-bar-label">WHO WE BUILD FOR</span>
+      </div>
+      <div className="article-grid">
+        {AUDIENCE.map((a) => (
+          <div key={a.num} className="article-grid-item">
+            <div className="article-category">{a.num}</div>
+            <div className="article-grid-title">{a.label}</div>
+            <div className="article-grid-excerpt">{a.desc}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* HOW WE OPERATE — principles manifesto */}
+      <div className="section-bar">
+        <span className="section-bar-label">HOW WE OPERATE</span>
+      </div>
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(2, 1fr)',
+        borderBottom: '1px solid var(--border)',
+      }}>
+        {PRINCIPLES.map((p, i) => (
+          <div key={p.num} style={{
+            padding: '48px',
+            borderRight: i % 2 === 0 ? '1px solid var(--border)' : 'none',
+            borderBottom: i < 2 ? '1px solid var(--border)' : 'none',
+          }}>
+            <div style={{
+              fontFamily: 'var(--mono)',
+              fontSize: '10px',
+              letterSpacing: '0.18em',
+              color: 'var(--amber)',
+              marginBottom: '14px',
+            }}>
+              {p.num}
+            </div>
+            <div style={{
+              fontFamily: 'var(--display)',
+              fontSize: '20px',
+              letterSpacing: '0.06em',
+              color: 'var(--text-bright)',
+              marginBottom: '14px',
+            }}>
+              {p.title}
+            </div>
+            <p style={{
+              fontSize: '13px',
+              fontWeight: 300,
+              lineHeight: 1.8,
+              color: 'var(--text)',
+            }}>
+              {p.body}
             </p>
-          </Link>
-          <Link href="/skills" className="tool-card">
-            <div className="tool-icon">📂</div>
-            <div className="tool-name">SKILLS HUB</div>
-            <p className="tool-desc">
-              The canonical directory of SKILL.md sources for AI coding agents across Claude Code, Cursor, Copilot, Gemini CLI, and more.
-              We curate the index. The content lives at the source. Over 200 skills indexed and growing weekly.
-            </p>
-          </Link>
-        </div>
-      </section>
+          </div>
+        ))}
+      </div>
 
-      {/* WHO THIS IS FOR */}
-      <section className="section">
-        <div className="section-header">
-          <h2 className="section-title">WHO THIS IS FOR</h2>
-        </div>
-
-        <div style={{ maxWidth: '760px', margin: '0 auto' }}>
-          <p className="body-copy" style={{ marginBottom: '24px' }}>
-            Automation Switch is built for operations teams, developers, founders, and anyone
-            responsible for making systems talk to each other. Whether you are connecting your first
-            Zapier trigger or orchestrating multi-agent workflows in production, the content here
-            meets you where you are.
-          </p>
-          <p className="body-copy" style={{ marginBottom: '24px' }}>
-            We cover no-code platforms like Zapier, Make, and n8n alongside code-first approaches,
-            AI agent configuration, and the emerging SKILL.md ecosystem. If you care about
-            eliminating manual handoffs and building workflows that hold up under real load,
-            you are in the right place.
-          </p>
-        </div>
-      </section>
-
-      {/* HOW WE WORK */}
-      <section className="section">
-        <div className="section-header">
-          <h2 className="section-title">HOW WE WORK</h2>
-        </div>
-
-        <div style={{ maxWidth: '760px', margin: '0 auto' }}>
-          <p className="body-copy" style={{ marginBottom: '24px' }}>
-            Everything we publish starts with a real workflow problem.
-            Articles go through research, drafting, editorial review, and an SEO quality
-            gate before they go live. Our tools follow the same discipline: identify a genuine
-            bottleneck, build a focused solution, ship early, and improve based on how
-            people actually use it.
-          </p>
-          <p className="body-copy">
-            Automation Switch is a product of{' '}
-            <a
-              href="https://scaletific.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: 'var(--amber)', textDecoration: 'none' }}
-            >
-              Scaletific
-            </a>
-            , which works across platform engineering, infrastructure, and enterprise automation.
-            That background shapes how we think about the content. Everything here is grounded in
-            production reality.
-          </p>
-        </div>
-      </section>
-
-      {/* STATS BAND */}
+      {/* STAT BAND */}
       <div className="stat-band">
         <div className="stat-band-inner">
           <div className="stat-band-item">
-            <div className="stat-band-num">205+</div>
+            <div className="stat-band-num">7,730+</div>
             <div className="stat-band-label">Skills Indexed</div>
           </div>
           <div className="stat-band-item">
-            <div className="stat-band-num">11</div>
-            <div className="stat-band-label">Agent Platforms</div>
+            <div className="stat-band-num">8</div>
+            <div className="stat-band-label">Curated Sources</div>
           </div>
           <div className="stat-band-item">
-            <div className="stat-band-num">9</div>
-            <div className="stat-band-label">Skill Domains</div>
+            <div className="stat-band-num">6</div>
+            <div className="stat-band-label">Agent Platforms</div>
           </div>
           <div className="stat-band-item">
             <div className="stat-band-num">1</div>

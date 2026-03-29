@@ -14,6 +14,7 @@ export function ArticleCard({ article, size = 'grid' }: Props) {
   return (
     <Link href={`/articles/${article.slug.current}`} className="featured-side-item">
       <div className="article-category">{article.category?.title}</div>
+      {article.kicker && <div className="article-kicker">{article.kicker}</div>}
       {size === 'side' ? (
         <div className="article-title">{article.title}</div>
       ) : (

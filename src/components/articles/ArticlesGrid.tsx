@@ -88,6 +88,7 @@ export function ArticlesGrid({ articles }: { articles: Article[] }) {
                   {featured.category && (
                     <div className="article-category">{featured.category.title}</div>
                   )}
+                  {featured.kicker && <div className="article-kicker">{featured.kicker}</div>}
                   <h2 className="article-card-feat-title">{featured.title}</h2>
                   {featured.excerpt && (
                     <p className="article-excerpt">{featured.excerpt}</p>
@@ -148,6 +149,7 @@ export function ArticlesGrid({ articles }: { articles: Article[] }) {
                     {a.category && (
                       <div className="article-category">{a.category.title}</div>
                     )}
+                    {a.kicker && <div className="article-kicker">{a.kicker}</div>}
                     <div className="article-grid-title">{a.title}</div>
                     {a.excerpt && (
                       <div className="article-grid-excerpt">{a.excerpt}</div>
