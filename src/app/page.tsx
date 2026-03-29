@@ -15,20 +15,20 @@ const PLACEHOLDER_TOOLS: Tool[] = [
   { _id: 'p4', name: 'SKILLS BUILDER', tagline: 'Draft, validate, and publish SKILL.md files for your AI agent workflows in minutes.', icon: '🧠', status: 'soon', url: null, slug: { current: 'skills-builder' } },
 ]
 
-const PLACEHOLDER_FEATURED = {
+const PLACEHOLDER_FEATURED: Article = {
   _id: 'pf1',
   title: 'SKILL.md Files: The Configuration Primitive Every Agent Builder Should Know',
   slug: { current: 'why-automation-projects-stall' },
   excerpt: 'Most developers configuring AI coding agents never discover that the most powerful form of customisation ships as a plain markdown file.',
   publishedAt: '2026-03-01T00:00:00Z',
   readTime: 12,
-  category: { title: 'Deep Dive' },
+  category: { title: 'Deep Dive', slug: { current: 'deep-dive' } },
 }
 
-const PLACEHOLDER_ARTICLES = [
-  { _id: 'pa1', title: 'Building a Notion to Sanity Sync Pipeline in 2026', slug: { current: 'make-crm' }, publishedAt: '2026-02-01T00:00:00Z', readTime: 8, excerpt: 'How we wired Notion as a CMS frontend to Sanity as a delivery layer, with a Vercel cron job running every 30 minutes and zero manual deploys.', category: { title: 'Tool Guide' } },
-  { _id: 'pa2', title: 'The Agent Governance Layer Most Teams Skip', slug: { current: '3-layer-stack' }, publishedAt: '2026-02-01T00:00:00Z', readTime: 6, excerpt: 'A capable agent and a trustworthy agent are different things. Here is the configuration layer that separates teams shipping reliably from teams cleaning up messes.', category: { title: 'Strategy' } },
-  { _id: 'pa3', title: 'Zapier vs Make vs n8n — Which Platform Is Right for Your Team', slug: { current: 'zapier-vs-make-vs-n8n' }, publishedAt: '2026-01-01T00:00:00Z', readTime: 9, excerpt: 'An honest comparison of three major automation platforms across price, flexibility, and team fit for growing businesses.', category: { title: 'Comparison' } },
+const PLACEHOLDER_ARTICLES: Article[] = [
+  { _id: 'pa1', title: 'Building a Notion to Sanity Sync Pipeline in 2026', slug: { current: 'make-crm' }, publishedAt: '2026-02-01T00:00:00Z', readTime: 8, excerpt: 'How we wired Notion as a CMS frontend to Sanity as a delivery layer, with a Vercel cron job running every 30 minutes and zero manual deploys.', category: { title: 'Tool Guide', slug: { current: 'tool-guide' } } },
+  { _id: 'pa2', title: 'The Agent Governance Layer Most Teams Skip', slug: { current: '3-layer-stack' }, publishedAt: '2026-02-01T00:00:00Z', readTime: 6, excerpt: 'A capable agent and a trustworthy agent are different things. Here is the configuration layer that separates teams shipping reliably from teams cleaning up messes.', category: { title: 'Strategy', slug: { current: 'strategy' } } },
+  { _id: 'pa3', title: 'Zapier vs Make vs n8n — Which Platform Is Right for Your Team', slug: { current: 'zapier-vs-make-vs-n8n' }, publishedAt: '2026-01-01T00:00:00Z', readTime: 9, excerpt: 'An honest comparison of three major automation platforms across price, flexibility, and team fit for growing businesses.', category: { title: 'Comparison', slug: { current: 'comparison' } } },
 ]
 
 function formatDate(iso: string) {
