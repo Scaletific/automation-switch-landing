@@ -5,11 +5,11 @@ export function Topbar() {
     <header className="topbar">
       <div className="topbar-left">
         <div className="logo-mark">
-          <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="2" y="2" width="24" height="24" stroke="#e8a020" strokeWidth="1.5"/>
-            <rect x="7" y="7" width="6" height="14" fill="#e8a020"/>
-            <rect x="15" y="7" width="6" height="7" fill="#3a3a3a"/>
-            <rect x="15" y="16" width="6" height="5" fill="#e8a020" opacity="0.4"/>
+          <svg width="32" height="32" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="2" width="56" height="56" fill="none" stroke="#c8861a" strokeWidth="2.5"/>
+            <rect x="11" y="11" width="15" height="34" fill="#c8861a"/>
+            <rect x="30" y="11" width="17" height="17" fill="#1e1a14" opacity="0.25"/>
+            <rect x="30" y="31" width="17" height="14" fill="#c8861a" opacity="0.45"/>
           </svg>
         </div>
         <Link href="/" className="logo-text">AUTOMATION<span>SWITCH</span></Link>

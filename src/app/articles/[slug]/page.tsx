@@ -126,7 +126,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
           {/* Header */}
           <div className="article-header">
-            <div className="article-page-category">{article.category?.title}</div>
+            {article.category?.title && (
+              <div className="article-page-category-pill">{article.category.title}</div>
+            )}
             <h1 className="article-page-title">{article.title}</h1>
             {article.excerpt && <p className="article-page-excerpt">{article.excerpt}</p>}
 
