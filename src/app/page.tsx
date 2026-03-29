@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import { client } from '@sanity/lib/client'
 import { homepageArticlesQuery, toolsQuery, allArticlesQuery } from '@sanity/lib/queries'
-import { ToolCard } from '@/components/home/ToolCard'
 import { SubscribeForm } from '@/components/ui/SubscribeForm'
 import { Ticker } from '@/components/home/Ticker'
 import type { Article, Tool } from '@/lib/types'
@@ -9,25 +8,26 @@ import type { Article, Tool } from '@/lib/types'
 export const revalidate = 60
 
 // Placeholder content shown until Sanity is populated
-const PLACEHOLDER_TOOLS = [
-  { _id: 'p1', name: 'PRECISION REACH', tagline: 'AI-powered cold email intelligence. Research an industry, surface stakeholder pain points, and generate high-converting email sequences automatically.', icon: '🎯', status: 'live' as const, url: '/precisionreach.html', slug: { current: 'precision-reach' }, order: 1 },
-  { _id: 'p2', name: 'FLOWMAP', tagline: 'Visualise your existing workflow as a structured automation map. Identify where friction lives before you build a single trigger.', icon: '⚡', status: 'soon' as const, slug: { current: 'flowmap' }, order: 2 },
-  { _id: 'p3', name: 'HOOKBASE', tagline: 'A lightweight webhook relay and inspector. Test, monitor, and debug integrations between your tools without a backend.', icon: '🔗', status: 'soon' as const, slug: { current: 'hookbase' }, order: 3 },
+const PLACEHOLDER_TOOLS: Tool[] = [
+  { _id: 'p1', name: 'PRECISION REACH', tagline: 'AI-powered cold email intelligence. Research an industry, surface stakeholder pain points, and generate high-converting email sequences automatically.', icon: '🎯', status: 'live', url: '/precisionreach.html', slug: { current: 'precision-reach' } },
+  { _id: 'p2', name: 'FLOWMAP', tagline: 'Visualise your existing workflow as a structured automation map. Identify where friction lives before you build a single trigger.', icon: '⚡', status: 'soon', url: null, slug: { current: 'flowmap' } },
+  { _id: 'p3', name: 'HOOKBASE', tagline: 'A lightweight webhook relay and inspector. Test, monitor, and debug integrations between your tools without a backend.', icon: '🔗', status: 'soon', url: null, slug: { current: 'hookbase' } },
+  { _id: 'p4', name: 'SKILLS BUILDER', tagline: 'Draft, validate, and publish SKILL.md files for your AI agent workflows in minutes.', icon: '🧠', status: 'soon', url: null, slug: { current: 'skills-builder' } },
 ]
 
 const PLACEHOLDER_FEATURED = {
   _id: 'pf1',
-  title: 'WHY MOST AUTOMATION PROJECTS STALL AT STEP THREE',
+  title: 'SKILL.md Files: The Configuration Primitive Every Agent Builder Should Know',
   slug: { current: 'why-automation-projects-stall' },
-  excerpt: 'The failure is not in the tools. It is in how teams think about handoffs. Most automation stalls not because the technology is wrong, but because no one mapped what happens when the workflow hits a human decision point.',
+  excerpt: 'Most developers configuring AI coding agents never discover that the most powerful form of customisation ships as a plain markdown file.',
   publishedAt: '2026-03-01T00:00:00Z',
-  readTime: 7,
+  readTime: 12,
   category: { title: 'Deep Dive' },
 }
 
 const PLACEHOLDER_ARTICLES = [
-  { _id: 'pa1', title: 'Connecting Make.com to Your CRM Without Writing a Line of Code', slug: { current: 'make-crm' }, publishedAt: '2026-02-01T00:00:00Z', readTime: 5, excerpt: 'A step-by-step walkthrough for linking your CRM to Make.com using pre-built modules, custom webhooks, and data mapping.', category: { title: 'Tool Guide' } },
-  { _id: 'pa2', title: 'The 3-Layer Automation Stack Every Growing Business Needs', slug: { current: '3-layer-stack' }, publishedAt: '2026-02-01T00:00:00Z', readTime: 6, excerpt: 'Trigger layer, logic layer, action layer. Here is how to build a stack that scales with your team instead of breaking every quarter.', category: { title: 'Strategy' } },
+  { _id: 'pa1', title: 'Building a Notion to Sanity Sync Pipeline in 2026', slug: { current: 'make-crm' }, publishedAt: '2026-02-01T00:00:00Z', readTime: 8, excerpt: 'How we wired Notion as a CMS frontend to Sanity as a delivery layer, with a Vercel cron job running every 30 minutes and zero manual deploys.', category: { title: 'Tool Guide' } },
+  { _id: 'pa2', title: 'The Agent Governance Layer Most Teams Skip', slug: { current: '3-layer-stack' }, publishedAt: '2026-02-01T00:00:00Z', readTime: 6, excerpt: 'A capable agent and a trustworthy agent are different things. Here is the configuration layer that separates teams shipping reliably from teams cleaning up messes.', category: { title: 'Strategy' } },
   { _id: 'pa3', title: 'Zapier vs Make vs n8n — Which Platform Is Right for Your Team', slug: { current: 'zapier-vs-make-vs-n8n' }, publishedAt: '2026-01-01T00:00:00Z', readTime: 9, excerpt: 'An honest comparison of three major automation platforms across price, flexibility, and team fit for growing businesses.', category: { title: 'Comparison' } },
 ]
 
@@ -44,136 +44,139 @@ export default async function HomePage() {
 
   const showFeatured = featured ?? PLACEHOLDER_FEATURED
   const showArticles = (allArticles && allArticles.length > 0) ? allArticles.slice(0, 3) : PLACEHOLDER_ARTICLES
-  const showTools = (tools && tools.length > 0) ? tools : PLACEHOLDER_TOOLS
+  const showTools = (tools && tools.length > 0) ? tools.slice(0, 4) : PLACEHOLDER_TOOLS
 
   return (
     <>
       <Ticker />
 
-      {/* HERO — two-column: text left, featured article right */}
+      {/* HERO — full-width two-column */}
       <section className="hero-v1">
         <div className="hero-v1-text">
-          <div className="hero-tag">Automation Intelligence</div>
+          <div className="hero-tag">For builders who ship with AI</div>
           <h1 className="hero-title">
-            FLIP THE<br />
-            <span className="line2">SWITCH.</span>
+            Automate<br />
+            the work<br />
+            that <span className="line2">matters.</span>
           </h1>
           <p className="hero-sub">
-            Tools, insights, and connected workflows for businesses that move fast.
-            We build automation infrastructure so your team can focus on what matters.
+            Practical guides, tooling, and a skills directory for teams running AI agents in production.
+            No tutorials about prompting. No hype. Just what works.
           </p>
           <div className="hero-actions">
-            <a href="#tools" className="btn-primary">Explore Tools</a>
-            <Link href="/articles" className="btn-ghost">Read Articles →</Link>
+            <Link href="/articles" className="btn-primary">Read the Articles</Link>
+            <Link href="/skills" className="btn-ghost">Browse Skills →</Link>
           </div>
         </div>
 
         <Link href={`/articles/${showFeatured.slug.current}`} className="hero-v1-card">
-          <div className="hero-v1-card-label">Featured Article</div>
+          <div className="hero-v1-card-label">Latest</div>
           {showFeatured.category && (
-            <div className="article-category">{showFeatured.category.title}</div>
+            <div className="hero-v1-card-cat">{showFeatured.category.title}&nbsp;·&nbsp;{showFeatured.readTime} min read</div>
           )}
           <div className="hero-v1-card-title">{showFeatured.title}</div>
           <div className="hero-v1-card-excerpt">{showFeatured.excerpt}</div>
-          <div className="hero-v1-card-meta">
-            <span>{formatDate(showFeatured.publishedAt)}</span>
-            {showFeatured.readTime && <><span>·</span><span>{showFeatured.readTime} min read</span></>}
-          </div>
-          <div className="hero-v1-card-arrow">Read article →</div>
+          <div className="hero-v1-card-arrow">Read Article</div>
         </Link>
       </section>
 
-      {/* STAT BAND */}
+      {/* STAT BAND — 4 items */}
       <div className="stat-band">
         <div className="stat-band-inner">
           <div className="stat-band-item">
-            <div className="stat-band-num">3</div>
-            <div className="stat-band-label">Tools in development</div>
-            <div className="stat-band-desc">From cold email automation to workflow visualisation and webhook inspection.</div>
+            <div className="stat-band-num">205+</div>
+            <div className="stat-band-label">Skills Indexed</div>
           </div>
           <div className="stat-band-item">
-            <div className="stat-band-num">12</div>
-            <div className="stat-band-label">Articles planned</div>
-            <div className="stat-band-desc">Deep dives, tool guides, and strategy breakdowns already in the pipeline.</div>
+            <div className="stat-band-num">11</div>
+            <div className="stat-band-label">Agent Platforms</div>
+          </div>
+          <div className="stat-band-item">
+            <div className="stat-band-num">9</div>
+            <div className="stat-band-label">Skill Domains</div>
           </div>
           <div className="stat-band-item">
             <div className="stat-band-num">∞</div>
-            <div className="stat-band-label">Workflows possible</div>
-            <div className="stat-band-desc">Every business has a unique stack. We help you connect it.</div>
+            <div className="stat-band-label">Workflows Possible</div>
           </div>
         </div>
       </div>
 
-      {/* LATEST ARTICLES — 3-col grid */}
-      <section className="section" id="articles">
-        <div className="section-header">
-          <h2 className="section-title">LATEST ARTICLES</h2>
-          <Link href="/articles" className="section-link">All Articles →</Link>
-        </div>
-        <div className="article-grid">
-          {showArticles.map((article) => (
-            <Link key={article._id} href={`/articles/${article.slug.current}`} className="article-grid-item">
-              {article.category && (
-                <div className="article-category">{article.category.title}</div>
-              )}
-              <div className="article-grid-title">{article.title}</div>
-              {article.excerpt && (
-                <div className="article-grid-excerpt">{article.excerpt}</div>
-              )}
-              <div className="article-grid-meta">
-                <span>{formatDate(article.publishedAt)}</span>
-                {article.readTime && <><span>·</span><span>{article.readTime} min</span></>}
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
+      {/* LATEST ARTICLES — section bar + 3-col grid */}
+      <div className="section-bar">
+        <span className="section-bar-label">Latest Articles</span>
+        <Link href="/articles" className="section-bar-link">View All →</Link>
+      </div>
+      <div className="article-grid">
+        {showArticles.map((article) => (
+          <Link key={article._id} href={`/articles/${article.slug.current}`} className="article-grid-item">
+            {article.category && (
+              <div className="article-category">{article.category.title}</div>
+            )}
+            <div className="article-grid-title">{article.title}</div>
+            {article.excerpt && (
+              <div className="article-grid-excerpt">{article.excerpt}</div>
+            )}
+            <div className="article-grid-meta">
+              <span>{formatDate(article.publishedAt)}</span>
+              {article.readTime && <><span>·</span><span>{article.readTime} min</span></>}
+            </div>
+          </Link>
+        ))}
+      </div>
 
-      {/* TOOLS */}
-      <section className="section" id="tools">
-        <div className="section-header">
-          <h2 className="section-title">OUR TOOLS</h2>
-          <Link href="/tools" className="section-link">All Tools →</Link>
-        </div>
-        <div className="tools-grid">
-          {showTools.map((tool) => (
-            <ToolCard key={tool._id} tool={tool} />
-          ))}
-        </div>
-      </section>
-
-      {/* SKILLS CALLOUT */}
+      {/* SKILLS CALLOUT — full-width amber-light band */}
       <div className="skills-callout">
-        <div className="skills-callout-inner">
-          <div>
-            <div className="skills-callout-eyebrow">Skills Hub</div>
-            <div className="skills-callout-title">THE CANONICAL INDEX<br />OF SKILL.MD SOURCES</div>
-            <p className="skills-callout-sub">
-              We track the best collections of SKILL.md files for AI coding agents. One directory,
-              vetted sources, always up to date.
-            </p>
-          </div>
-          <div style={{ flexShrink: 0 }}>
-            <Link href="/skills" className="btn-primary" style={{ display: 'block', textAlign: 'center', whiteSpace: 'nowrap' }}>
-              Browse the Directory →
-            </Link>
+        <div>
+          <div className="skills-callout-eyebrow">New — Skills Hub</div>
+          <div className="skills-callout-title">The SKILL.md Directory</div>
+          <p className="skills-callout-sub">
+            The index the agent ecosystem has been missing. Browse, filter, and copy SKILL.md files
+            by domain, platform, and use case. Built with Firecrawl. Growing weekly.
+          </p>
+          <div style={{ marginTop: '16px' }}>
+            <Link href="/skills" className="btn-primary">Browse the Directory →</Link>
           </div>
         </div>
+        <div style={{ flexShrink: 0, textAlign: 'right' }}>
+          <div className="skills-count">205</div>
+          <div className="skills-count-label">Skills Indexed</div>
+        </div>
+      </div>
+
+      {/* TOOLS — section bar + 4-col strip */}
+      <div className="section-bar">
+        <span className="section-bar-label">Tools</span>
+        <Link href="/tools" className="section-bar-link">View All →</Link>
+      </div>
+      <div className="tools-strip">
+        {showTools.map((tool) => (
+          <a
+            key={tool._id}
+            href={tool.url ?? '#'}
+            className="tool-strip-card"
+            target={tool.url?.startsWith('http') ? '_blank' : undefined}
+            rel="noreferrer"
+          >
+            <div className="tool-strip-tag">{tool.status === 'live' ? 'Live' : tool.status === 'beta' ? 'Beta' : 'Coming Soon'}</div>
+            <div className="tool-strip-name">{tool.name}</div>
+            <div className="tool-strip-desc">{tool.tagline}</div>
+          </a>
+        ))}
       </div>
 
       {/* NEWSLETTER BAND */}
       <div className="newsletter-band" id="subscribe">
         <div className="newsletter-band-inner">
           <div>
-            <div className="newsletter-band-eyebrow">Stay in the loop</div>
+            <div className="newsletter-band-eyebrow">Weekly Newsletter</div>
             <div className="newsletter-band-title">
-              AUTOMATION<br />
-              <span>INTELLIGENCE</span><br />
-              DELIVERED.
+              Stay ahead of<br />
+              the <span>agent curve.</span>
             </div>
             <p className="newsletter-band-sub">
-              Workflow guides, tool releases, and automation breakdowns.
-              No noise. Unsubscribe anytime.
+              One email per week. New skills discovered, tools worth knowing, and what the community
+              is building with AI agents in production. No noise, no hype.
             </p>
           </div>
           <div className="newsletter-band-form">

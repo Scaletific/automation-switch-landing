@@ -39,7 +39,7 @@ export function ArticlesGrid({ articles }: { articles: Article[] }) {
         <div className="articles-filter-inner">
           <div className="articles-filter-pills">
             <button
-              className={`skill-pill${activeCategory === 'all' ? ' active' : ''}`}
+              className={`filter-btn${activeCategory === 'all' ? ' active' : ''}`}
               onClick={() => setActiveCategory('all')}
             >
               All
@@ -47,7 +47,7 @@ export function ArticlesGrid({ articles }: { articles: Article[] }) {
             {categories.map(cat => (
               <button
                 key={cat}
-                className={`skill-pill${activeCategory === cat ? ' active' : ''}`}
+                className={`filter-btn${activeCategory === cat ? ' active' : ''}`}
                 onClick={() => setActiveCategory(cat)}
               >
                 {cat}
@@ -69,7 +69,7 @@ export function ArticlesGrid({ articles }: { articles: Article[] }) {
       </div>
 
       {/* Content area */}
-      <div className="section" style={{ paddingTop: '32px' }}>
+      <div className="articles-section">
         {filtered.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '64px 0' }}>
             <div style={{ fontFamily: 'var(--display)', fontSize: '28px', color: 'var(--border)', letterSpacing: '0.04em', marginBottom: '10px' }}>
