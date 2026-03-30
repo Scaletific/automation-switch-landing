@@ -29,6 +29,7 @@ export function Footer() {
           <div className="footer-dark-col">
             <div className="footer-col-label">Company</div>
             <Link href="/about">About</Link>
+            <Link href="/contact">Contact</Link>
             <Link href="/#subscribe">Newsletter</Link>
           </div>
           <div className="footer-dark-col">
