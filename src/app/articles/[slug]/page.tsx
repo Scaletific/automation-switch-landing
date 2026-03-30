@@ -5,6 +5,7 @@ import { client } from '@sanity/lib/client'
 import { articleFullBySlugQuery, allArticlesQuery, relatedArticlesQuery, latestArticlesQuery } from '@sanity/lib/queries'
 import { PortableText } from '@portabletext/react'
 import { SubscribeForm } from '@/components/ui/SubscribeForm'
+import { FaqAccordion } from '@/components/ui/FaqAccordion'
 import type { ArticleFull, Article } from '@/lib/types'
 import type { Metadata } from 'next'
 
@@ -282,20 +283,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
           {/* FAQ */}
           {article.faq && article.faq.length > 0 && (
-            <div className="article-faq">
-              <div className="faq-label">Frequently asked questions</div>
-              {article.faq.map(item => (
-                <div key={item._key} className="faq-item" onClick={e => {
-                  (e.currentTarget as HTMLElement).classList.toggle('open')
-                }}>
-                  <button className="faq-question">
-                    <span className="faq-question-text">{item.question}</span>
-                    <span className="faq-chevron">+</span>
-                  </button>
-                  <div className="faq-answer">{item.answer}</div>
-                </div>
-              ))}
-            </div>
+            <FaqAccordion items={article.faq} />
           )}
 
           {/* Author bio — bottom of main content */}
