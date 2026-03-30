@@ -78,7 +78,15 @@ export const articleFullBySlugQuery = groq`
       "avatar": avatar.asset->{ url }
     },
     "heroImage": { "url": heroImage.asset->url, "alt": heroImage.alt },
-    body,
+    body[] {
+      ...,
+      _type == "image" => {
+        _type,
+        _key,
+        alt,
+        "asset": { "_ref": asset._ref, "url": asset->url }
+      }
+    },
     seo
   }
 `
