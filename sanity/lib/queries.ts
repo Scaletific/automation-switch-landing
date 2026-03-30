@@ -98,6 +98,13 @@ export const relatedArticlesQuery = groq`
   }
 `
 
+// Fallback: latest articles excluding current slug (used when no same-category articles exist)
+export const latestArticlesQuery = groq`
+  *[_type == "article" && slug.current != $slug] | order(publishedAt desc)[0...3] {
+    ${articleFields}
+  }
+`
+
 // Author by slug — with their articles
 export const authorBySlugQuery = groq`
   *[_type == "author" && slug.current == $slug][0] {

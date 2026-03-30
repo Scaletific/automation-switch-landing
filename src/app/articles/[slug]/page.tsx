@@ -2,7 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { client } from '@sanity/lib/client'
-import { articleFullBySlugQuery, allArticlesQuery, relatedArticlesQuery } from '@sanity/lib/queries'
+import { articleFullBySlugQuery, allArticlesQuery, relatedArticlesQuery, latestArticlesQuery } from '@sanity/lib/queries'
 import { PortableText } from '@portabletext/react'
 import { SubscribeForm } from '@/components/ui/SubscribeForm'
 import type { ArticleFull, Article } from '@/lib/types'
@@ -100,9 +100,12 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   const article = await client.fetch<ArticleFull>(articleFullBySlugQuery, { slug })
   if (!article) notFound()
 
-  const related = article.category
+  const sameCategoryRelated = article.category
     ? await client.fetch<Article[]>(relatedArticlesQuery, { slug, categorySlug: article.category.slug.current })
     : []
+  const related = sameCategoryRelated.length > 0
+    ? sameCategoryRelated
+    : await client.fetch<Article[]>(latestArticlesQuery, { slug })
 
   const filteredBody = filterBody(
     article.body as unknown[] | undefined,
