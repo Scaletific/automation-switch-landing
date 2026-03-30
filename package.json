@@ -6,10 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.80.0",
+    "@formspree/react": "^3.0.0",
     "@notionhq/client": "^5.15.0",
     "@portabletext/react": "^3.2.0",
     "@sanity/client": "^6.22.5",
@@ -25,6 +28,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@playwright/test": "^1.58.2",
     "@tailwindcss/typography": "^0.5.15",
     "@types/node": "^22",
     "@types/react": "^19",
