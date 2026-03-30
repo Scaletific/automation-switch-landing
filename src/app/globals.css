@@ -1545,8 +1545,9 @@ body::before {
   line-height: 1.8;
   color: var(--text);
   max-width: 620px;
-  margin: 0 0 24px;
+  margin: 0 0 14px;
 }
+.author-hero-bio:last-of-type { margin-bottom: 24px; }
 .author-hero-links { display: flex; gap: 12px; }
 
 @media (max-width: 700px) {

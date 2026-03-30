@@ -87,7 +87,9 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
           <div className="author-hero-eyebrow">Author</div>
           <h1 className="author-hero-name">{author.name}</h1>
           <div className="author-hero-role">{author.role}</div>
-          <p className="author-hero-bio">{author.bio}</p>
+          {author.bio.split('\n\n').map((para, i) => (
+            <p key={i} className="author-hero-bio">{para}</p>
+          ))}
           <div className="author-hero-links">
             {author.linkedinUrl && (
               <a
