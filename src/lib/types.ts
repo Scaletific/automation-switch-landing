@@ -47,6 +47,7 @@ export interface FaqItem {
 }
 
 export interface ArticleFull extends Article {
+  related?: Article[]
   lastModified?: string
   tags?: string[]
   author?: Author

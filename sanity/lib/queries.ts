@@ -91,6 +91,13 @@ export const articleFullBySlugQuery = groq`
   }
 `
 
+// Related articles — same category, excluding current slug
+export const relatedArticlesQuery = groq`
+  *[_type == "article" && category->slug.current == $categorySlug && slug.current != $slug] | order(publishedAt desc)[0...3] {
+    ${articleFields}
+  }
+`
+
 // Author by slug — with their articles
 export const authorBySlugQuery = groq`
   *[_type == "author" && slug.current == $slug][0] {

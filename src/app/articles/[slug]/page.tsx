@@ -2,7 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { client } from '@sanity/lib/client'
-import { articleFullBySlugQuery, allArticlesQuery } from '@sanity/lib/queries'
+import { articleFullBySlugQuery, allArticlesQuery, relatedArticlesQuery } from '@sanity/lib/queries'
 import { PortableText } from '@portabletext/react'
 import { SubscribeForm } from '@/components/ui/SubscribeForm'
 import type { ArticleFull, Article } from '@/lib/types'
@@ -38,6 +38,29 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+}
+
+// Filter body blocks: remove h1 (title repeated), Key Takeaways section (if field populated), FAQ section (if field populated)
+function filterBody(body: unknown[] | undefined, hasTakeaways: boolean, hasFaq: boolean): unknown[] {
+  if (!body) return []
+  let inSection: 'none' | 'takeaways' | 'faq' = 'none'
+
+  return (body as any[]).filter((block) => {
+    if (block._type !== 'block') return inSection === 'none'
+    if (block.style === 'h1') return false
+
+    if (block.style === 'h2') {
+      const text = (block.children?.[0]?.text ?? '').toLowerCase().trim()
+      if (hasTakeaways && text.includes('key takeaway')) { inSection = 'takeaways'; return false }
+      if (hasFaq && (text.includes('frequently asked') || text === 'faq')) { inSection = 'faq'; return false }
+      if (inSection === 'takeaways') { inSection = 'none'; return true }
+      if (inSection === 'faq') return false
+      return true
+    }
+
+    if (inSection !== 'none') return false
+    return true
+  })
 }
 
 // Custom PortableText components for rendering images in article body
@@ -76,6 +99,16 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   const { slug } = await params
   const article = await client.fetch<ArticleFull>(articleFullBySlugQuery, { slug })
   if (!article) notFound()
+
+  const related = article.category
+    ? await client.fetch<Article[]>(relatedArticlesQuery, { slug, categorySlug: article.category.slug.current })
+    : []
+
+  const filteredBody = filterBody(
+    article.body as unknown[] | undefined,
+    !!(article.keyTakeaways && article.keyTakeaways.length > 0),
+    !!(article.faq && article.faq.length > 0)
+  )
 
   const siteUrl = 'https://automationswitch.com'
   const articleUrl = `${siteUrl}/articles/${article.slug.current}`
@@ -237,8 +270,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
           {/* Body */}
           <div className="article-body">
-            {article.body ? (
-              <PortableText value={article.body as Parameters<typeof PortableText>[0]['value']} components={portableTextComponents} />
+            {filteredBody.length > 0 ? (
+              <PortableText value={filteredBody as Parameters<typeof PortableText>[0]['value']} components={portableTextComponents} />
             ) : (
               <p style={{ color: 'var(--text-dim)' }}>Content coming soon.</p>
             )}
@@ -254,7 +287,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 }}>
                   <button className="faq-question">
                     <span className="faq-question-text">{item.question}</span>
-                    <span className="faq-chevron">↓</span>
+                    <span className="faq-chevron">+</span>
                   </button>
                   <div className="faq-answer">{item.answer}</div>
                 </div>
@@ -343,6 +376,30 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           </div>
         </aside>
       </div>
+
+      {/* Related articles */}
+      {related && related.length > 0 && (
+        <section className="related-articles">
+          <div className="related-articles-header">
+            <span className="related-articles-label">Related Articles</span>
+            <Link href="/articles" className="related-articles-all">View All →</Link>
+          </div>
+          <div className="related-articles-grid">
+            {related.map(r => (
+              <Link key={r._id} href={`/articles/${r.slug.current}`} className="related-card">
+                {r.category && <div className="related-cat">{r.category.title}</div>}
+                {r.kicker && <div className="article-kicker">{r.kicker}</div>}
+                <div className="related-title">{r.title}</div>
+                {r.excerpt && <div className="related-excerpt">{r.excerpt}</div>}
+                <div className="related-meta">
+                  <span>{formatDate(r.publishedAt)}</span>
+                  {r.readTime && <><span> · </span><span>{r.readTime} min</span></>}
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
     </>
   )
 }
