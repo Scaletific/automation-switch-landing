@@ -38,7 +38,7 @@ export const author = defineType({
       type: 'text',
       rows: 4,
       description: 'Short bio — 2–3 sentences. Should tie expertise to the content Automation Switch covers.',
-      validation: r => r.required().max(400),
+      validation: r => r.required(),
     }),
     defineField({
       name: 'twitterUrl',

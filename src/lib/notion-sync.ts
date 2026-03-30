@@ -175,6 +175,15 @@ interface PortableTextBlock {
   children:  PortableTextSpan[]
 }
 
+interface PortableTextImage {
+  _type:  'image'
+  _key:   string
+  asset:  { _type: 'reference'; _ref: string }
+  alt?:   string
+}
+
+type PortableTextNode = PortableTextBlock | PortableTextImage
+
 interface FAQItem {
   question: string
   answer:   string
@@ -237,7 +246,64 @@ function getBlockRichText(block: NotionBlock, type: string): NotionRichText[] {
   return (blockData.rich_text as NotionRichText[]) ?? []
 }
 
-function convertBlock(block: NotionBlock): PortableTextBlock | null {
+// ── Sanity CDN URL → asset reference ID ──────────────────────────────────────
+// e.g. https://cdn.sanity.io/images/proj/dataset/abc123-800x600.png → image-abc123-800x600-png
+const SANITY_CDN_RE = /cdn\.sanity\.io\/images\/[^/]+\/[^/]+\/([a-f0-9]+-\d+x\d+)\.(\w+)/
+
+function sanityUrlToAssetRef(url: string): string | null {
+  const m = url.match(SANITY_CDN_RE)
+  if (!m) return null
+  return `image-${m[1]}-${m[2]}`
+}
+
+// ── Markdown image detection in paragraph text ───────────────────────────────
+// Matches ![alt](url) where the URL is a Sanity CDN URL
+const MD_IMAGE_RE = /!\[([^\]]*)\]\(([^)]+cdn\.sanity\.io[^)]+)\)/
+
+function tryParseMarkdownImage(block: NotionBlock): PortableTextImage | null {
+  if (block.type !== 'paragraph') return null
+  const plainText = getBlockRichText(block, 'paragraph').map(rt => rt.plain_text).join('')
+  // Also check if any rich text span contains a Sanity CDN URL (Notion auto-links these)
+  const richText = getBlockRichText(block, 'paragraph')
+  let sanityUrl: string | null = null
+  let altText = ''
+
+  // First try standard markdown image syntax in the plain text
+  const mdMatch = plainText.match(MD_IMAGE_RE)
+  if (mdMatch) {
+    altText = mdMatch[1]
+    sanityUrl = mdMatch[2]
+  } else {
+    // Fallback: look for a Sanity CDN URL in any link href
+    for (const rt of richText) {
+      const href = rt.href ?? rt.text?.link?.url
+      if (href && SANITY_CDN_RE.test(href)) {
+        sanityUrl = href
+        // Use the non-URL text as alt text
+        altText = richText
+          .filter(r => !(r.href ?? r.text?.link?.url))
+          .map(r => r.plain_text)
+          .join('')
+          .replace(/^[!\[\]()]+|[!\[\]()]+$/g, '')
+          .trim()
+        break
+      }
+    }
+  }
+
+  if (!sanityUrl) return null
+  const assetRef = sanityUrlToAssetRef(sanityUrl)
+  if (!assetRef) return null
+
+  return {
+    _type: 'image',
+    _key:  key(),
+    asset: { _type: 'reference', _ref: assetRef },
+    ...(altText && { alt: altText }),
+  }
+}
+
+function convertBlock(block: NotionBlock): PortableTextNode | null {
   const k = key()
 
   const simpleBlock = (style: string, richText: NotionRichText[]): PortableTextBlock => {
@@ -248,6 +314,33 @@ function convertBlock(block: NotionBlock): PortableTextBlock | null {
   const listBlock = (listItem: string, richText: NotionRichText[]): PortableTextBlock => {
     const { spans, markDefs } = richTextToSpans(richText)
     return { _type: 'block', _key: k, style: 'normal', listItem, level: 1, markDefs, children: spans }
+  }
+
+  // Check for markdown image pattern in paragraphs first
+  if (block.type === 'paragraph') {
+    const img = tryParseMarkdownImage(block)
+    if (img) return img
+  }
+
+  // Handle native Notion image blocks
+  if (block.type === 'image') {
+    const imgData = block.image as { type?: string; file?: { url?: string }; external?: { url?: string }; caption?: NotionRichText[] } | undefined
+    if (imgData) {
+      const url = imgData.type === 'external' ? imgData.external?.url : imgData.file?.url
+      if (url && SANITY_CDN_RE.test(url)) {
+        const assetRef = sanityUrlToAssetRef(url)
+        if (assetRef) {
+          const caption = imgData.caption?.map(rt => rt.plain_text).join('').trim() ?? ''
+          return {
+            _type: 'image',
+            _key:  k,
+            asset: { _type: 'reference', _ref: assetRef },
+            ...(caption && { alt: caption }),
+          }
+        }
+      }
+    }
+    return null
   }
 
   switch (block.type) {
@@ -322,6 +415,44 @@ function extractArticleBody(blocks: NotionBlock[]): NotionBlock[] {
   }
 
   return body
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// STRIP EXTRACTED SECTIONS FROM BODY
+// Removes Key Takeaways and FAQ sections that are promoted to dedicated fields
+// ─────────────────────────────────────────────────────────────────────────────
+
+const EXTRACTED_SECTIONS = ['key takeaway', 'frequently asked', 'faq']
+
+function stripExtractedSections(blocks: NotionBlock[]): NotionBlock[] {
+  const result: NotionBlock[] = []
+  let skipping = false
+
+  for (const block of blocks) {
+    const text = getPlainText(block).toLowerCase()
+
+    if (isHeading(block) && EXTRACTED_SECTIONS.some(s => text.includes(s))) {
+      skipping = true
+      continue
+    }
+
+    // Stop skipping when we hit the next heading at h1/h2 level
+    // (or a divider, which Notion renders as block.type === 'divider')
+    if (skipping) {
+      if (isHeading(block) && !EXTRACTED_SECTIONS.some(s => text.includes(s))) {
+        skipping = false
+      } else if (block.type === 'divider') {
+        skipping = false
+        continue // skip the divider itself
+      } else {
+        continue
+      }
+    }
+
+    result.push(block)
+  }
+
+  return result
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -647,8 +778,8 @@ export async function syncNotionToSanity(): Promise<SyncResult> {
 
       const allBlocks = await getPageBlocks(page.id)
 
-      const bodyBlocks        = extractArticleBody(allBlocks)
-      const portableBody      = bodyBlocks.map(convertBlock).filter((b): b is PortableTextBlock => b !== null)
+      const bodyBlocks        = stripExtractedSections(extractArticleBody(allBlocks))
+      const portableBody      = bodyBlocks.map(convertBlock).filter((b): b is PortableTextNode => b !== null)
       const keyTakeaways      = extractKeyTakeaways(allBlocks)
       const faq               = extractFAQ(allBlocks)
 

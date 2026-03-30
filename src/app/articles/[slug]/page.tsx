@@ -40,6 +40,38 @@ function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
 }
 
+// Custom PortableText components for rendering images in article body
+const portableTextComponents = {
+  types: {
+    image: ({ value }: { value: { asset?: { _ref?: string; url?: string }; alt?: string } }) => {
+      // Build the Sanity CDN URL from the asset reference
+      // Asset ref format: image-{hash}-{width}x{height}-{ext}
+      let src = value.asset?.url
+      if (!src && value.asset?._ref) {
+        const ref = value.asset._ref
+        const [, hash, dimensions, ext] = ref.match(/^image-([a-f0-9]+)-(\d+x\d+)-(\w+)$/) ?? []
+        if (hash) {
+          src = `https://cdn.sanity.io/images/l4o4vshf/production/${hash}-${dimensions}.${ext}`
+        }
+      }
+      if (!src) return null
+      return (
+        <figure className="article-body-figure">
+          <img
+            src={`${src}?w=1200&auto=format&q=80`}
+            alt={value.alt ?? ''}
+            loading="lazy"
+            className="article-body-image"
+          />
+          {value.alt && (
+            <figcaption className="article-body-figcaption">{value.alt}</figcaption>
+          )}
+        </figure>
+      )
+    },
+  },
+}
+
 export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params
   const article = await client.fetch<ArticleFull>(articleFullBySlugQuery, { slug })
@@ -206,7 +238,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           {/* Body */}
           <div className="article-body">
             {article.body ? (
-              <PortableText value={article.body as Parameters<typeof PortableText>[0]['value']} />
+              <PortableText value={article.body as Parameters<typeof PortableText>[0]['value']} components={portableTextComponents} />
             ) : (
               <p style={{ color: 'var(--text-dim)' }}>Content coming soon.</p>
             )}
