@@ -35,7 +35,7 @@ export interface Author {
   slug: { current: string }
   role: string
   bio: string
-  avatar?: { asset: { url: string } }
+  avatar?: { url: string }
   twitterUrl?: string
   linkedinUrl?: string
 }
@@ -60,6 +60,10 @@ export interface ArticleFull extends Article {
     canonicalUrl?: string
     noIndex?: boolean
   }
+}
+
+export interface AuthorWithArticles extends Author {
+  articles: Article[]
 }
 
 export interface SkillSource {

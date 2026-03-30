@@ -1270,7 +1270,9 @@ body::before {
   align-items: center;
   gap: 12px;
   margin-bottom: 20px;
+  text-decoration: none;
 }
+.author-byline:hover .author-byline-name { color: var(--amber); }
 .author-avatar {
   width: 36px;
   height: 36px;
@@ -1452,7 +1454,10 @@ body::before {
   letter-spacing: 0.04em;
   color: var(--text-bright);
   margin-bottom: 2px;
+  text-decoration: none;
+  display: block;
 }
+.author-bio-name:hover { color: var(--amber); }
 .author-bio-role {
   font-family: var(--mono);
   font-size: 9px;
@@ -1480,6 +1485,78 @@ body::before {
   transition: border-color 0.2s;
 }
 .author-bio-link:hover { border-color: var(--amber); }
+
+/* ─── AUTHOR PAGE ─────────────────────────────────── */
+.author-hero {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 48px;
+  align-items: start;
+  padding: 64px 48px;
+  border-bottom: 1px solid var(--border);
+}
+.author-hero-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+}
+.author-hero-placeholder {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: var(--bg-inv);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--display);
+  font-size: 48px;
+  color: var(--amber);
+}
+.author-hero-eyebrow {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 10px;
+}
+.author-hero-name {
+  font-family: var(--display);
+  font-size: clamp(32px, 4vw, 56px);
+  letter-spacing: 0.04em;
+  color: var(--text-bright);
+  line-height: 1;
+  margin: 0 0 8px;
+}
+.author-hero-role {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-mid);
+  margin-bottom: 20px;
+}
+.author-hero-bio {
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: var(--text);
+  max-width: 620px;
+  margin: 0 0 24px;
+}
+.author-hero-links { display: flex; gap: 12px; }
+
+@media (max-width: 700px) {
+  .author-hero {
+    grid-template-columns: 1fr;
+    padding: 40px 20px;
+    gap: 24px;
+  }
+  .author-hero-img, .author-hero-placeholder { width: 80px; height: 80px; }
+}
 
 /* Sidebar stats grid */
 .sidebar-stats-grid {

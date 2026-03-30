@@ -83,6 +83,17 @@ export const articleFullBySlugQuery = groq`
   }
 `
 
+// Author by slug — with their articles
+export const authorBySlugQuery = groq`
+  *[_type == "author" && slug.current == $slug][0] {
+    _id, name, slug, role, bio, linkedinUrl,
+    "avatar": avatar.asset->{ url },
+    "articles": *[_type == "article" && references(^._id)] | order(publishedAt desc) {
+      ${articleFields}
+    }
+  }
+`
+
 // Skill sources — published only, featured first
 export const allSkillSourcesQuery = groq`
   *[_type == "skillSource" && status == "published"] | order(featured desc, name asc) {
