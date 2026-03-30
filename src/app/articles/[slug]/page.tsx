@@ -63,7 +63,11 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         '@type': 'Person',
         name: article.author.name,
         jobTitle: article.author.role,
-        url: article.author.twitterUrl ?? article.author.linkedinUrl,
+        url: `https://automationswitch.com/authors/${article.author.slug.current}`,
+        sameAs: [
+          ...(article.author.linkedinUrl ? [article.author.linkedinUrl] : []),
+          'https://scaletific.com',
+        ],
       },
     }),
     publisher: {

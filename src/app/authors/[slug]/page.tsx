@@ -45,12 +45,20 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
     ...(author.avatar?.url && { image: author.avatar.url }),
     sameAs: [
       ...(author.linkedinUrl ? [author.linkedinUrl] : []),
+      'https://scaletific.com',
     ],
-    worksFor: {
-      '@type': 'Organization',
-      name: 'Automation Switch',
-      url: 'https://automationswitch.com',
-    },
+    worksFor: [
+      {
+        '@type': 'Organization',
+        name: 'Automation Switch',
+        url: 'https://automationswitch.com',
+      },
+      {
+        '@type': 'Organization',
+        name: 'Scaletific',
+        url: 'https://scaletific.com',
+      },
+    ],
   }
 
   return (
