@@ -3,6 +3,7 @@ import { Bebas_Neue, IBM_Plex_Mono, IBM_Plex_Sans } from 'next/font/google'
 import './globals.css'
 import { Topbar } from '@/components/layout/Topbar'
 import { Footer } from '@/components/layout/Footer'
+import { Analytics } from '@vercel/analytics/next'
 
 const bebasNeue = Bebas_Neue({
   weight: '400',
@@ -48,6 +49,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Topbar />
         <main>{children}</main>
         <Footer />
+        <Analytics />
       </body>
     </html>
   )
