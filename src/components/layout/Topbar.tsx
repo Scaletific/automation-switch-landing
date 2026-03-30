@@ -64,7 +64,6 @@ export function Topbar() {
 
         {/* Mobile controls */}
         <div className="topbar-mobile-controls">
-          <Link href="/#subscribe" className="nav-cta" onClick={close}>Subscribe</Link>
           <button
             className={`burger-btn${menuOpen ? ' burger-btn--open' : ''}`}
             onClick={() => setMenuOpen(o => !o)}
@@ -86,6 +85,7 @@ export function Topbar() {
             <Link href="/tools" className="mobile-nav-link" onClick={close}>Tools</Link>
             <Link href="/skills" className="mobile-nav-link" onClick={close}>Skills</Link>
             <Link href="/about" className="mobile-nav-link" onClick={close}>About</Link>
+            <Link href="/#subscribe" className="mobile-nav-link mobile-nav-link--cta" onClick={close}>Subscribe — It&apos;s Free</Link>
           </nav>
           <div className="mobile-menu-social">
             <a href="https://x.com/automationswitch" className="social-link" aria-label="X / Twitter" onClick={close}>
