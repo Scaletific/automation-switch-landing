@@ -111,8 +111,8 @@ export default function ContactForm() {
           cursor: state.submitting ? 'not-allowed' : 'pointer',
           opacity: state.submitting ? 0.7 : 1,
           transition: 'opacity 0.2s',
-          alignSelf: 'flex-start',
-          minWidth: '160px',
+          alignSelf: "stretch",
+          width: "100%",
         }}
       >
         {state.submitting ? 'Sending...' : 'Send Message'}
