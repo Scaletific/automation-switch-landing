@@ -63,7 +63,11 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         '@type': 'Person',
         name: article.author.name,
         jobTitle: article.author.role,
-        url: article.author.twitterUrl ?? article.author.linkedinUrl,
+        url: `https://automationswitch.com/authors/${article.author.slug.current}`,
+        sameAs: [
+          ...(article.author.linkedinUrl ? [article.author.linkedinUrl] : []),
+          'https://scaletific.com',
+        ],
       },
     }),
     publisher: {
@@ -137,11 +141,11 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
             {/* Author byline */}
             {article.author && (
-              <div className="author-byline">
+              <Link href={`/authors/${article.author.slug.current}`} className="author-byline">
                 <div className="author-avatar">
-                  {article.author.avatar?.asset?.url ? (
+                  {article.author.avatar?.url ? (
                     <Image
-                      src={article.author.avatar.asset.url}
+                      src={article.author.avatar.url}
                       alt={article.author.name}
                       width={36}
                       height={36}
@@ -156,7 +160,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                   <span className="author-byline-name">{article.author.name}</span>
                   <span className="author-byline-role">{article.author.role}</span>
                 </div>
-              </div>
+              </Link>
             )}
 
             <div className="article-page-meta">
@@ -230,9 +234,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           {article.author && (
             <div className="author-bio-card author-bio-card--inline">
               <div className="author-bio-avatar">
-                {article.author.avatar?.asset?.url ? (
+                {article.author.avatar?.url ? (
                   <Image
-                    src={article.author.avatar.asset.url}
+                    src={article.author.avatar.url}
                     alt={article.author.name}
                     width={64}
                     height={64}
@@ -245,7 +249,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               </div>
               <div>
                 <div className="author-bio-label">Written by</div>
-                <div className="author-bio-name">{article.author.name}</div>
+                <Link href={`/authors/${article.author.slug.current}`} className="author-bio-name">{article.author.name}</Link>
                 <div className="author-bio-role">{article.author.role}</div>
                 {article.author.bio && (
                   <p className="author-bio-text">{article.author.bio}</p>
