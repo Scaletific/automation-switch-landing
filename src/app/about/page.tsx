@@ -38,21 +38,21 @@ const PILLARS = [
     num: '01',
     name: 'ARTICLES',
     href: '/articles',
-    desc: 'Deep dives and strategy breakdowns on workflow automation, business process design, and connected systems. Written for practitioners who build in production — not for people learning to prompt.',
+    desc: 'Deep dives and strategy breakdowns on workflow automation, business process design, and connected systems. Written for practitioners who build in production. Not for people learning to prompt.',
     cta: 'Read Articles →',
   },
   {
     num: '02',
     name: 'TOOLS',
     href: '/tools',
-    desc: 'AI-powered tools built around real workflow bottlenecks. PrecisionReach automates cold email intelligence. Each tool ships when a genuine problem justifies building — not before.',
+    desc: 'AI-powered tools built around real workflow bottlenecks. PrecisionReach automates cold email intelligence. Each tool ships when a genuine problem justifies building. Not before.',
     cta: 'Explore Tools →',
   },
   {
     num: '03',
     name: 'SKILLS HUB',
     href: '/skills',
-    desc: 'The canonical directory of SKILL.md sources for AI coding agents across Claude Code, Cursor, Copilot, Gemini CLI, and more. We are the index — not the database.',
+    desc: 'The canonical directory of SKILL.md sources for AI coding agents across Claude Code, Cursor, Copilot, Gemini CLI, and more. We are the index. Not the database.',
     cta: 'Browse Skills →',
   },
 ]
@@ -75,7 +75,7 @@ const PRINCIPLES = [
   {
     num: '02',
     title: 'WE ARE THE INDEX',
-    body: 'For Skills Hub: we curate, verify, and link. The skills live at the source. We surface the signal — we do not hoard the content.',
+    body: 'For Skills Hub: we curate, verify, and link. The skills live at the source. We surface the signal. We do not hoard the content.',
   },
   {
     num: '03',
@@ -85,7 +85,7 @@ const PRINCIPLES = [
   {
     num: '04',
     title: 'PRODUCTION REALITY',
-    body: 'Automation Switch is a product of Scaletific — working across platform engineering, infrastructure, and enterprise automation. That background shapes every sentence we publish.',
+    body: 'Automation Switch is a product of Scaletific, working across platform engineering, infrastructure, and enterprise automation. That background shapes every sentence we publish.',
   },
 ]
 
@@ -148,7 +148,7 @@ export default function AboutPage() {
           }}>
             Everybody should be able to tap into it. We write the playbooks, deliver
             the breakdowns, build the tools, and explore what automation makes
-            possible — so nobody gets left behind.
+            possible. So nobody gets left behind.
           </p>
           <div style={{ marginTop: '32px', display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
             <Link href="/articles" className="btn-primary">Read Articles</Link>
@@ -177,8 +177,8 @@ export default function AboutPage() {
           }}>
             We write the playbooks.<br />
             We build the tools.<br />
-            We explore automation —<br />
-            so no one{' '}
+            We explore automation.<br />
+            So no one{' '}
             <span style={{ color: 'var(--amber-bright)' }}>gets left behind.</span>
           </div>
           <div style={{

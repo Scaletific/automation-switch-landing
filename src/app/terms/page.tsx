@@ -42,7 +42,7 @@ export default function TermsPage() {
 
           <section className="legal-section">
             <h2>Intellectual property</h2>
-            <p>All content on the Site — including articles, guides, tool descriptions, code examples, and visual assets — is owned by Automation Switch or its contributors and is protected by copyright.</p>
+            <p>All content on the Site, including articles, guides, tool descriptions, code examples, and visual assets, is owned by Automation Switch or its contributors and is protected by copyright.</p>
             <p>You may quote short excerpts from our content for commentary or educational purposes, provided you clearly attribute Automation Switch and link to the original source. Full reproduction requires written permission.</p>
             <p>The Automation Switch name, logo, and brand marks are our trademarks. You may not use them without prior written consent.</p>
           </section>

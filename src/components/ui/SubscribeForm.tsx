@@ -44,18 +44,18 @@ export function SubscribeForm({ compact = false }: { compact?: boolean }) {
           cursor: 'default',
         } : undefined}
       >
-        {status === 'loading' ? 'Subscribing...' : status === 'success' ? "✓ You're in" : "Subscribe — It's Free"}
+        {status === 'loading' ? 'Subscribing...' : status === 'success' ? "✓ You're in" : "Subscribe. It's Free."}
       </button>
       {status === 'error' && (
-        <p style={{ fontFamily: 'var(--mono)', fontSize: '10px', color: '#f87171' }}>Something went wrong. Try again.</p>
+        <p style={{ fontFamily: 'var(--mono)', fontSize: '12px', color: '#f87171' }}>Something went wrong. Try again.</p>
       )}
       {status === 'success' && (
-        <p style={{ fontFamily: 'var(--mono)', fontSize: '10px', color: '#22c55e', lineHeight: 1.6, marginTop: '8px' }}>
+        <p style={{ fontFamily: 'var(--mono)', fontSize: '12px', color: '#22c55e', lineHeight: 1.6, marginTop: '8px' }}>
           You are subscribed. Check your inbox to confirm.
         </p>
       )}
       {status !== 'success' && (
-        <p style={{ fontFamily: 'var(--mono)', fontSize: '10px', color: 'var(--text-mid)', lineHeight: 1.6, marginTop: '8px' }}>
+        <p style={{ fontFamily: 'var(--mono)', fontSize: '12px', color: 'var(--text-mid)', lineHeight: 1.6, marginTop: '8px' }}>
           One email per week. No spam. Unsubscribe any time. By subscribing you agree to our{' '}
           <a href="/privacy" style={{ color: 'var(--amber)', textDecoration: 'underline' }}>Privacy Policy</a>.
         </p>

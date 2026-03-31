@@ -87,7 +87,7 @@ export function Topbar() {
             <Link href="/skills" className="mobile-nav-link" onClick={close}>Skills</Link>
             <Link href="/about" className="mobile-nav-link" onClick={close}>About</Link>
             <Link href="/contact" className="mobile-nav-link" onClick={close}>Contact</Link>
-            <Link href="/#subscribe" className="mobile-nav-link mobile-nav-link--cta" onClick={close}>Subscribe — It&apos;s Free</Link>
+            <Link href="/#subscribe" className="mobile-nav-link mobile-nav-link--cta" onClick={close}>Subscribe. It&apos;s Free.</Link>
           </nav>
           <div className="mobile-menu-social">
             <a href="https://x.com/automationswitch" className="social-link" aria-label="X / Twitter" onClick={close}>

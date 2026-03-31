@@ -28,7 +28,7 @@ const PLACEHOLDER_FEATURED: Article = {
 const PLACEHOLDER_ARTICLES: Article[] = [
   { _id: 'pa1', title: 'Building a Notion to Sanity Sync Pipeline in 2026', slug: { current: 'make-crm' }, publishedAt: '2026-02-01T00:00:00Z', readTime: 8, excerpt: 'How we wired Notion as a CMS frontend to Sanity as a delivery layer, with a Vercel cron job running every 30 minutes and zero manual deploys.', category: { title: 'Tool Guide', slug: { current: 'tool-guide' } } },
   { _id: 'pa2', title: 'The Agent Governance Layer Most Teams Skip', slug: { current: '3-layer-stack' }, publishedAt: '2026-02-01T00:00:00Z', readTime: 6, excerpt: 'A capable agent and a trustworthy agent are different things. Here is the configuration layer that separates teams shipping reliably from teams cleaning up messes.', category: { title: 'Strategy', slug: { current: 'strategy' } } },
-  { _id: 'pa3', title: 'Zapier vs Make vs n8n — Which Platform Is Right for Your Team', slug: { current: 'zapier-vs-make-vs-n8n' }, publishedAt: '2026-01-01T00:00:00Z', readTime: 9, excerpt: 'An honest comparison of three major automation platforms across price, flexibility, and team fit for growing businesses.', category: { title: 'Comparison', slug: { current: 'comparison' } } },
+  { _id: 'pa3', title: 'Zapier vs Make vs n8n: Which Platform Is Right for Your Team', slug: { current: 'zapier-vs-make-vs-n8n' }, publishedAt: '2026-01-01T00:00:00Z', readTime: 9, excerpt: 'An honest comparison of three major automation platforms across price, flexibility, and team fit for growing businesses.', category: { title: 'Comparison', slug: { current: 'comparison' } } },
 ]
 
 function formatDate(iso: string) {
@@ -157,7 +157,7 @@ export default async function HomePage() {
       {/* SKILLS CALLOUT — full-width amber-light band */}
       <div className="skills-callout">
         <div>
-          <div className="skills-callout-eyebrow">New — Skills Hub</div>
+          <div className="skills-callout-eyebrow">New: Skills Hub</div>
           <div className="skills-callout-title">The SKILL.md Directory</div>
           <p className="skills-callout-sub">
             The index the agent ecosystem has been missing. Browse, filter, and copy SKILL.md files
