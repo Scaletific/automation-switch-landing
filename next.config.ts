@@ -15,6 +15,7 @@ const nextConfig: NextConfig = {
       { source: '/what-is-a-chatbot-builder',    destination: '/articles/best-automation-tools-small-businesses', permanent: true },
       { source: '/virtual-ai-friend-apps',       destination: '/articles/best-automation-tools-small-businesses', permanent: true },
       { source: '/eva-chatbot',                  destination: '/articles/best-automation-tools-small-businesses', permanent: true },
+      { source: '/chatbot-case-studies',          destination: '/articles/best-automation-tools-small-businesses', permanent: true },
 
       // Group 6: AI tools / creative → design systems article (301)
       { source: '/midjourney-aspect-ratio-keyword-midjourney',  destination: '/articles/google-stitch-claude-design-systems', permanent: true },
@@ -27,6 +28,7 @@ const nextConfig: NextConfig = {
       { source: '/what-is-a-chatbot-builder/',    destination: '/articles/best-automation-tools-small-businesses', permanent: true },
       { source: '/virtual-ai-friend-apps/',       destination: '/articles/best-automation-tools-small-businesses', permanent: true },
       { source: '/eva-chatbot/',                  destination: '/articles/best-automation-tools-small-businesses', permanent: true },
+      { source: '/chatbot-case-studies/',          destination: '/articles/best-automation-tools-small-businesses', permanent: true },
       { source: '/midjourney-aspect-ratio-keyword-midjourney/',  destination: '/articles/google-stitch-claude-design-systems', permanent: true },
       { source: '/stable-diffusion-setup-on-runpoud-cloud/',     destination: '/articles/google-stitch-claude-design-systems', permanent: true },
       { source: '/reimagine-home-ai-interior-design-generator/', destination: '/articles/google-stitch-claude-design-systems', permanent: true },
