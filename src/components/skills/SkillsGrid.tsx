@@ -105,7 +105,7 @@ function SkillCard({ source }: { source: SkillSource }) {
 
       {source.installCmd
         ? <CopyInstall cmd={source.installCmd} />
-        : <div className="no-install">No install command — link only</div>
+        : <div className="no-install">No install command. Link only.</div>
       }
 
       <div className="card-footer">
@@ -229,7 +229,7 @@ export function SkillsGrid({ sources }: { sources: SkillSource[] }) {
               </div>
               <p style={{ fontSize: '13px', fontWeight: 300, color: 'var(--text-dim)', maxWidth: '400px', lineHeight: 1.8 }}>
                 Submit a repo, site, or CLI tool and we&apos;ll review it for the index.
-                Quality over quantity — vetted sources only.
+                Quality over quantity. Vetted sources only.
               </p>
             </div>
             <div>

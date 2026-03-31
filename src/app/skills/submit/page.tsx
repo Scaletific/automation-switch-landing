@@ -72,7 +72,7 @@ export default function SkillsSubmitPage() {
         <h1 className="page-title">SUBMIT<br /><span style={{ color: 'var(--amber)' }}>A SOURCE</span></h1>
         <p className="page-sub">
           Know a high-quality SKILL.md collection we haven&apos;t indexed?
-          Submit it here — editorial review before publishing.
+          Submit it here. Editorial review before publishing.
         </p>
       </div>
 
@@ -166,7 +166,7 @@ export default function SkillsSubmitPage() {
           {/* Email */}
           <div>
             <label style={{ display: 'block', fontFamily: 'var(--mono)', fontSize: '9px', letterSpacing: '0.16em', textTransform: 'uppercase', color: 'var(--amber)', marginBottom: '8px' }}>
-              Your email <span style={{ color: 'var(--text-dim)' }}>(optional — for follow-up)</span>
+              Your email <span style={{ color: 'var(--text-dim)' }}>(optional, for follow-up)</span>
             </label>
             <input
               type="email"

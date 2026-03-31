@@ -5,7 +5,7 @@ import type { Tool } from '@/lib/types'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Tools — Automation Switch',
+  title: 'Tools | Automation Switch',
   description: 'AI-powered automation tools built by Automation Switch. From cold email intelligence to workflow visualisation.',
 }
 

@@ -34,10 +34,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const source = await client.fetch<SkillSource>(skillSourceBySlugQuery, { slug })
   if (!source) return {}
   return {
-    title: source.seo?.metaTitle ?? `${source.name} — Skills Hub`,
+    title: source.seo?.metaTitle ?? `${source.name} | Skills Hub`,
     description: source.seo?.metaDescription ?? source.description,
     openGraph: {
-      title: source.seo?.metaTitle ?? `${source.name} — Skills Hub`,
+      title: source.seo?.metaTitle ?? `${source.name} | Skills Hub`,
       description: source.seo?.metaDescription ?? source.description,
       type: 'website',
     },
@@ -71,7 +71,7 @@ export default async function SkillSourcePage({ params }: { params: Promise<{ sl
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'WebPage',
-            name: `${source.name} — Skills Hub`,
+            name: `${source.name} | Skills Hub`,
             description: source.description,
             url: `https://automationswitch.com/skills/${source.slug.current}`,
             breadcrumb: {

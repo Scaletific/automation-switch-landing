@@ -7,11 +7,11 @@ import type { Metadata } from 'next'
 export const revalidate = 3600 // revalidate hourly (Firecrawl cron runs weekly)
 
 export const metadata: Metadata = {
-  title: 'Skills Hub — Agent Skill Sources Directory',
+  title: 'Skills Hub | Agent Skill Sources Directory',
   description:
-    'The canonical index of SKILL.md file sources for AI coding agents. Curated sources from official platforms, community collections, and tooling — filterable by platform and domain.',
+    'The canonical index of SKILL.md file sources for AI coding agents. Curated sources from official platforms, community collections, and tooling. Filterable by platform and domain.',
   openGraph: {
-    title: 'Skills Hub — Automation Switch',
+    title: 'Skills Hub | Automation Switch',
     description: 'The canonical index of SKILL.md file sources for AI coding agents.',
     type: 'website',
   },
@@ -32,7 +32,7 @@ export default async function SkillsPage() {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'CollectionPage',
-            name: 'Skills Hub — Agent Skill Sources Directory',
+            name: 'Skills Hub | Agent Skill Sources Directory',
             description: 'Curated index of SKILL.md file sources for AI coding agents.',
             url: 'https://automationswitch.com/skills',
             publisher: {
@@ -77,7 +77,7 @@ export default async function SkillsPage() {
           <h1 className="page-title">SKILLS<br /><span style={{ color: 'var(--amber)' }}>HUB</span></h1>
           <p className="page-sub">
             The canonical index of SKILL.md file sources for AI coding agents.
-            We curate the list — the content lives at the source.
+            We curate the list. The content lives at the source.
           </p>
         </div>
         <div style={{ textAlign: 'right' }}>
@@ -102,7 +102,7 @@ export default async function SkillsPage() {
             Coming soon
           </div>
           <p style={{ fontFamily: 'var(--mono)', fontSize: '11px', color: 'var(--text-dim)' }}>
-            We&apos;re seeding the directory — check back shortly.
+            We&apos;re seeding the directory. Check back shortly.
           </p>
         </div>
       ) : (

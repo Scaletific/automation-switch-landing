@@ -28,7 +28,7 @@ const ibmPlexSans = IBM_Plex_Sans({
 })
 
 export const metadata: Metadata = {
-  title: { default: 'Automation Switch', template: '%s — Automation Switch' },
+  title: { default: 'Automation Switch', template: '%s | Automation Switch' },
   description: 'Practical automation tools, guides, and workflows for businesses that move fast.',
   metadataBase: new URL('https://automationswitch.com'),
   openGraph: { siteName: 'Automation Switch', type: 'website' },
