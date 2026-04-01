@@ -1,19 +1,20 @@
 import type { MetadataRoute } from 'next'
 import { client } from '@sanity/lib/client'
 import { groq } from 'next-sanity'
+import { getRuntimeEnv } from '@/lib/runtime-env'
 
-const BASE_URL = 'https://automationswitch.com'
+const BASE_URL = (getRuntimeEnv('NEXT_PUBLIC_SITE_URL') ?? 'https://automationswitch.com').replace(/\/+$/, '')
+const NOW = new Date()
 
 const staticRoutes: MetadataRoute.Sitemap = [
-  { url: `${BASE_URL}/`,          lastModified: new Date(), changeFrequency: 'daily',   priority: 1.0 },
-  { url: `${BASE_URL}/articles`,  lastModified: new Date(), changeFrequency: 'daily',   priority: 0.9 },
-  { url: `${BASE_URL}/skills`,    lastModified: new Date(), changeFrequency: 'weekly',  priority: 0.9 },
-  { url: `${BASE_URL}/tools`,     lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
-  { url: `${BASE_URL}/about`,     lastModified: new Date(), changeFrequency: 'monthly', priority: 0.7 },
-  { url: `${BASE_URL}/contact`,   lastModified: new Date(), changeFrequency: 'yearly',  priority: 0.5 },
-  { url: `${BASE_URL}/skills/submit`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.5 },
-  { url: `${BASE_URL}/privacy`,   lastModified: new Date(), changeFrequency: 'yearly',  priority: 0.3 },
-  { url: `${BASE_URL}/terms`,     lastModified: new Date(), changeFrequency: 'yearly',  priority: 0.3 },
+  { url: `${BASE_URL}/`,                     lastModified: NOW, changeFrequency: 'daily',   priority: 1.0 },
+  { url: `${BASE_URL}/articles`,             lastModified: NOW, changeFrequency: 'daily',   priority: 0.9 },
+  { url: `${BASE_URL}/skills`,               lastModified: NOW, changeFrequency: 'weekly',  priority: 0.9 },
+  { url: `${BASE_URL}/tools`,                lastModified: NOW, changeFrequency: 'monthly', priority: 0.8 },
+  { url: `${BASE_URL}/tools/audit`,          lastModified: NOW, changeFrequency: 'weekly',  priority: 0.75 },
+  { url: `${BASE_URL}/tools/search-console`, lastModified: NOW, changeFrequency: 'weekly',  priority: 0.75 },
+  { url: `${BASE_URL}/about`,                lastModified: NOW, changeFrequency: 'monthly', priority: 0.7 },
+  { url: `${BASE_URL}/contact`,              lastModified: NOW, changeFrequency: 'yearly',  priority: 0.5 },
 ]
 
 const articlesQuery = groq`
@@ -39,30 +40,36 @@ const authorsQuery = groq`
 
 export const revalidate = 3600
 
+function safeDate(value?: string): Date {
+  if (!value) return NOW
+  const date = new Date(value)
+  return Number.isNaN(date.getTime()) ? NOW : date
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [articles, skillSources, authors] = await Promise.all([
-    client.fetch<{ slug: string; publishedAt?: string; lastModified?: string }[]>(articlesQuery),
-    client.fetch<{ slug: string; skillCountUpdatedAt?: string }[]>(skillSourcesQuery),
-    client.fetch<{ slug: string }[]>(authorsQuery),
+    client.fetch<{ slug: string; publishedAt?: string; lastModified?: string }[]>(articlesQuery).catch(() => []),
+    client.fetch<{ slug: string; skillCountUpdatedAt?: string }[]>(skillSourcesQuery).catch(() => []),
+    client.fetch<{ slug: string }[]>(authorsQuery).catch(() => []),
   ])
 
   const articleRoutes: MetadataRoute.Sitemap = (articles ?? []).map((a) => ({
     url: `${BASE_URL}/articles/${a.slug}`,
-    lastModified: a.lastModified ? new Date(a.lastModified) : a.publishedAt ? new Date(a.publishedAt) : new Date(),
+    lastModified: safeDate(a.lastModified ?? a.publishedAt),
     changeFrequency: 'monthly',
     priority: 0.8,
   }))
 
   const skillRoutes: MetadataRoute.Sitemap = (skillSources ?? []).map((s) => ({
     url: `${BASE_URL}/skills/${s.slug}`,
-    lastModified: s.skillCountUpdatedAt ? new Date(s.skillCountUpdatedAt) : new Date(),
+    lastModified: safeDate(s.skillCountUpdatedAt),
     changeFrequency: 'weekly',
     priority: 0.6,
   }))
 
   const authorRoutes: MetadataRoute.Sitemap = (authors ?? []).map((a) => ({
     url: `${BASE_URL}/authors/${a.slug}`,
-    lastModified: new Date(),
+    lastModified: NOW,
     changeFrequency: 'monthly',
     priority: 0.5,
   }))

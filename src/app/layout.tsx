@@ -4,6 +4,7 @@ import './globals.css'
 import { Topbar } from '@/components/layout/Topbar'
 import { Footer } from '@/components/layout/Footer'
 import { Analytics } from '@vercel/analytics/next'
+import { getRuntimeEnv } from '@/lib/runtime-env'
 
 const bebasNeue = Bebas_Neue({
   weight: '400',
@@ -31,6 +32,10 @@ export const metadata: Metadata = {
   title: { default: 'Automation Switch', template: '%s | Automation Switch' },
   description: 'Practical automation tools, guides, and workflows for businesses that move fast.',
   metadataBase: new URL('https://automationswitch.com'),
+  alternates: { canonical: 'https://automationswitch.com' },
+  verification: {
+    google: getRuntimeEnv('GOOGLE_SITE_VERIFICATION'),
+  },
   openGraph: { siteName: 'Automation Switch', type: 'website' },
   icons: {
     icon: [

@@ -64,15 +64,15 @@ JUDGMENT_OVERRIDE_THRESHOLD = 70
 # ── Brand colours ──────────────────────────────────────────────────────────
 BRAND = {
     "amber":        "#c8861a",
-    "amber_bright": "#f9b700",
+    "amber_bright": "#e09a20",
     "amber_dark":   "#a06810",
-    "bg":           "#1e1e1e",
-    "bg2":          "#282828",
-    "bg3":          "#323232",
-    "text":         "#b0b0b0",
-    "text_bright":  "#e8e8e8",
-    "text_dim":     "#6b6b6b",
-    "border":       "#3a3a3a",
+    "bg":           "#111113",
+    "bg2":          "#18181d",
+    "bg3":          "#1e1e23",
+    "text":         "#c0c0c8",
+    "text_bright":  "#f0f0f5",
+    "text_dim":     "#666666",
+    "border":       "#26262e",
 }
 
 # ── Max workflows per session ───────────────────────────────────────────────

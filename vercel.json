@@ -15,6 +15,14 @@
     {
       "path": "/api/sync/skills",
       "schedule": "0 10 * * 1"
+    },
+    {
+      "path": "/api/sync/search-console",
+      "schedule": "15 10 * * 1"
+    },
+    {
+      "path": "/api/sync/search-audit",
+      "schedule": "0 6 * * *"
     }
   ]
 }

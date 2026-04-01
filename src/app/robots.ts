@@ -1,0 +1,17 @@
+import type { MetadataRoute } from 'next'
+import { getRuntimeEnv } from '@/lib/runtime-env'
+
+const BASE_URL = (getRuntimeEnv('NEXT_PUBLIC_SITE_URL') ?? 'https://automationswitch.com').replace(/\/+$/, '')
+
+export default function robots(): MetadataRoute.Robots {
+  return {
+    rules: [
+      {
+        userAgent: '*',
+        allow: '/',
+        disallow: ['/studio', '/api'],
+      },
+    ],
+    sitemap: `${BASE_URL}/sitemap.xml`,
+  }
+}
