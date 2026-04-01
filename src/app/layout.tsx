@@ -4,6 +4,7 @@ import './globals.css'
 import { Topbar } from '@/components/layout/Topbar'
 import { Footer } from '@/components/layout/Footer'
 import { Analytics } from '@vercel/analytics/next'
+import { getRuntimeEnv } from '@/lib/runtime-env'
 
 const bebasNeue = Bebas_Neue({
   weight: '400',
@@ -33,7 +34,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://automationswitch.com'),
   alternates: { canonical: 'https://automationswitch.com' },
   verification: {
-    google: process.env.GOOGLE_SITE_VERIFICATION,
+    google: getRuntimeEnv('GOOGLE_SITE_VERIFICATION'),
   },
   openGraph: { siteName: 'Automation Switch', type: 'website' },
   icons: {

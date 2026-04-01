@@ -15,11 +15,31 @@ const PLACEHOLDER_TOOLS: Tool[] = [
   { _id: 'p1', name: 'PRECISION REACH', slug: { current: 'precision-reach' }, tagline: 'AI-powered cold email intelligence. Research an industry, surface stakeholder pain points, and generate high-converting email sequences automatically.', icon: '🎯', status: 'live', url: '/precisionreach.html' },
   { _id: 'p2', name: 'FLOWMAP', slug: { current: 'flowmap' }, tagline: 'Visualise your existing workflow as a structured automation map. Identify where friction lives before you build a single trigger.', icon: '⚡', status: 'soon', url: null },
   { _id: 'p3', name: 'HOOKBASE', slug: { current: 'hookbase' }, tagline: 'A lightweight webhook relay and inspector. Test, monitor, and debug integrations between your tools without a backend.', icon: '🔗', status: 'soon', url: null },
+  { _id: 'p4', name: 'SEARCH CONSOLE COPILOT', slug: { current: 'search-console-copilot' }, tagline: 'Connect Google Search Console, run indexing audits, and execute read-only agent actions for prioritized SEO fixes.', icon: '📈', status: 'beta', url: '/tools/search-console' },
 ]
+
+const SEARCH_CONSOLE_TOOL: Tool = {
+  _id: 'copilot-static',
+  name: 'SEARCH CONSOLE COPILOT',
+  slug: { current: 'search-console-copilot' },
+  tagline: 'Connect Google Search Console, run indexing audits, and execute read-only agent actions for prioritized SEO fixes.',
+  icon: '📈',
+  status: 'beta',
+  url: '/tools/search-console',
+}
+
+function ensureCopilotTool(items: Tool[]): Tool[] {
+  const exists = items.some((tool) =>
+    tool.slug?.current === 'search-console-copilot' || tool.url === '/tools/search-console'
+  )
+  if (exists) return items
+  return [...items, SEARCH_CONSOLE_TOOL]
+}
 
 export default async function ToolsPage() {
   const tools = await client.fetch<Tool[]>(toolsQuery)
-  const showTools = (tools && tools.length > 0) ? tools : PLACEHOLDER_TOOLS
+  const seedTools = (tools && tools.length > 0) ? tools : PLACEHOLDER_TOOLS
+  const showTools = ensureCopilotTool(seedTools)
 
   return (
     <>

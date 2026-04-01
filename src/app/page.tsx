@@ -12,8 +12,26 @@ const PLACEHOLDER_TOOLS: Tool[] = [
   { _id: 'p1', name: 'PRECISION REACH', tagline: 'AI-powered cold email intelligence. Research an industry, surface stakeholder pain points, and generate high-converting email sequences automatically.', icon: '🎯', status: 'live', url: '/precisionreach.html', slug: { current: 'precision-reach' } },
   { _id: 'p2', name: 'FLOWMAP', tagline: 'Visualise your existing workflow as a structured automation map. Identify where friction lives before you build a single trigger.', icon: '⚡', status: 'soon', url: null, slug: { current: 'flowmap' } },
   { _id: 'p3', name: 'HOOKBASE', tagline: 'A lightweight webhook relay and inspector. Test, monitor, and debug integrations between your tools without a backend.', icon: '🔗', status: 'soon', url: null, slug: { current: 'hookbase' } },
-  { _id: 'p4', name: 'SKILLS BUILDER', tagline: 'Draft, validate, and publish SKILL.md files for your AI agent workflows in minutes.', icon: '🧠', status: 'soon', url: null, slug: { current: 'skills-builder' } },
+  { _id: 'p4', name: 'SEARCH CONSOLE COPILOT', tagline: 'Connect Search Console, run indexing audits, and execute read-only agent actions for SEO ops.', icon: '📈', status: 'beta', url: '/tools/search-console', slug: { current: 'search-console-copilot' } },
 ]
+
+const SEARCH_CONSOLE_TOOL: Tool = {
+  _id: 'copilot-static',
+  name: 'SEARCH CONSOLE COPILOT',
+  tagline: 'Connect Search Console, run indexing audits, and execute read-only agent actions for SEO ops.',
+  icon: '📈',
+  status: 'beta',
+  url: '/tools/search-console',
+  slug: { current: 'search-console-copilot' },
+}
+
+function ensureCopilotTool(items: Tool[]): Tool[] {
+  const exists = items.some((tool) =>
+    tool.slug?.current === 'search-console-copilot' || tool.url === '/tools/search-console'
+  )
+  if (exists) return items
+  return [...items, SEARCH_CONSOLE_TOOL]
+}
 
 const PLACEHOLDER_FEATURED: Article = {
   _id: 'pf1',
@@ -44,7 +62,8 @@ export default async function HomePage() {
 
   const showFeatured = featured ?? PLACEHOLDER_FEATURED
   const showArticles = (allArticles && allArticles.length > 0) ? allArticles.slice(0, 3) : PLACEHOLDER_ARTICLES
-  const showTools = (tools && tools.length > 0) ? tools.slice(0, 4) : PLACEHOLDER_TOOLS
+  const seedTools = (tools && tools.length > 0) ? tools : PLACEHOLDER_TOOLS
+  const showTools = ensureCopilotTool(seedTools).slice(0, 4)
 
   return (
     <>

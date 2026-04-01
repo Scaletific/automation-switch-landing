@@ -6,6 +6,7 @@ export const article = defineType({
   type: 'document',
   groups: [
     { name: 'content', title: 'Content', default: true },
+    { name: 'taxonomy', title: 'Taxonomy & Revenue' },
     { name: 'seo', title: 'SEO & Meta' },
     { name: 'richSnippets', title: 'Rich Snippets' },
   ],
@@ -131,6 +132,117 @@ export const article = defineType({
       description: '3–7 keyword-rich tags. Lowercase, specific phrases. Maps to article:tag Open Graph properties.',
     }),
 
+    // ── TAXONOMY & REVENUE ────────────────────────────────────
+    defineField({
+      name: 'primaryPillar',
+      title: 'Primary Pillar',
+      type: 'string',
+      group: 'taxonomy',
+      description: 'The main content pillar this article belongs to. Determines the URL prefix.',
+      options: {
+        list: [
+          { title: 'Workflow Automation', value: 'workflow-automation' },
+          { title: 'AI Workflows', value: 'ai-workflows' },
+          { title: 'Tool Comparisons', value: 'tool-comparisons' },
+          { title: 'Automation Audits', value: 'automation-audits' },
+          { title: 'Hyperautomation', value: 'hyperautomation' },
+          { title: 'Production Readiness', value: 'production-readiness' },
+        ],
+        layout: 'radio',
+      },
+      validation: r => r.required(),
+    }),
+    defineField({
+      name: 'secondaryPillar',
+      title: 'Secondary Pillar',
+      type: 'string',
+      group: 'taxonomy',
+      description: 'Optional cross-pillar link. Used for internal linking and related content.',
+      options: {
+        list: [
+          { title: 'Workflow Automation', value: 'workflow-automation' },
+          { title: 'AI Workflows', value: 'ai-workflows' },
+          { title: 'Tool Comparisons', value: 'tool-comparisons' },
+          { title: 'Automation Audits', value: 'automation-audits' },
+          { title: 'Hyperautomation', value: 'hyperautomation' },
+          { title: 'Production Readiness', value: 'production-readiness' },
+        ],
+        layout: 'dropdown',
+      },
+    }),
+    defineField({
+      name: 'audience',
+      title: 'Audience',
+      type: 'string',
+      group: 'taxonomy',
+      description: 'Primary audience this article is written for.',
+      options: {
+        list: [
+          { title: 'Operators', value: 'operators' },
+          { title: 'Founders', value: 'founders' },
+          { title: 'Platform Teams', value: 'platform-teams' },
+          { title: 'Content Teams', value: 'content-teams' },
+          { title: 'Agencies', value: 'agencies' },
+        ],
+        layout: 'dropdown',
+      },
+      validation: r => r.required(),
+    }),
+    defineField({
+      name: 'primaryCTA',
+      title: 'Primary CTA',
+      type: 'string',
+      group: 'taxonomy',
+      description: 'Main conversion goal for this article. E.g. "Book an audit", "Sign up for newsletter", "Try Firecrawl (affiliate)".',
+      validation: r => r.required(),
+    }),
+    defineField({
+      name: 'secondaryCTA',
+      title: 'Secondary CTA',
+      type: 'string',
+      group: 'taxonomy',
+      description: 'Fallback conversion. E.g. "Download the checklist", "Join the newsletter".',
+    }),
+    defineField({
+      name: 'affiliateOffer',
+      title: 'Affiliate Offer',
+      type: 'string',
+      group: 'taxonomy',
+      description: 'Which tool/product affiliate link is embedded, if any. E.g. "Firecrawl", "Vercel", "Supabase".',
+    }),
+    defineField({
+      name: 'leadMagnet',
+      title: 'Lead Magnet',
+      type: 'string',
+      group: 'taxonomy',
+      description: 'Which downloadable asset or gated content is offered, if any. E.g. "Workflow audit checklist PDF".',
+    }),
+    defineField({
+      name: 'relatedArticles',
+      title: 'Related Articles',
+      type: 'array',
+      group: 'taxonomy',
+      of: [{ type: 'reference', to: [{ type: 'article' }] }],
+      description: 'Link to exactly 2 related articles for internal linking.',
+      validation: r => r.max(3),
+    }),
+    defineField({
+      name: 'updateCadence',
+      title: 'Update Cadence',
+      type: 'string',
+      group: 'taxonomy',
+      description: 'How often this article should be reviewed and refreshed.',
+      options: {
+        list: [
+          { title: 'Monthly', value: 'monthly' },
+          { title: 'Quarterly', value: 'quarterly' },
+          { title: 'Biannually', value: 'biannually' },
+          { title: 'Annually', value: 'annually' },
+        ],
+        layout: 'dropdown',
+      },
+    }),
+
     // ── SEO & META ───────────────────────────────────────────
     defineField({
       name: 'seo',
@@ -223,12 +335,22 @@ export const article = defineType({
       title: 'title',
       author: 'author.name',
       category: 'category.title',
+      pillar: 'primaryPillar',
       media: 'heroImage',
     },
-    prepare({ title, author, category, media }) {
+    prepare({ title, author, category, pillar, media }) {
+      const pillarLabels: Record<string, string> = {
+        'workflow-automation': 'Workflow',
+        'ai-workflows': 'AI Workflows',
+        'tool-comparisons': 'Tools',
+        'automation-audits': 'Audits',
+        'hyperautomation': 'Hyperauto',
+        'production-readiness': 'Prod Ready',
+      }
+      const pillarLabel = pillar ? pillarLabels[pillar] ?? pillar : 'No pillar'
       return {
         title,
-        subtitle: `${category ?? 'Uncategorised'} · ${author ?? 'No author'}`,
+        subtitle: `${pillarLabel} · ${category ?? 'Uncategorised'} · ${author ?? 'No author'}`,
         media,
       }
     },
