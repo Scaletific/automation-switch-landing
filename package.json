@@ -37,8 +37,5 @@
     "eslint-config-next": "^15.2.4",
     "tailwindcss": "^4",
     "typescript": "^5"
-  },
-  "overrides": {
-    "@sanity/ui": "2.16.22"
   }
 }
