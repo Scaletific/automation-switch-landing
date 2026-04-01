@@ -9,21 +9,21 @@ export default function ContactForm() {
     return (
       <div style={{
         padding: '32px',
-        border: '1px solid var(--amber)',
-        background: 'rgba(200, 134, 26, 0.06)',
+        border: '1px solid #22c55e',
+        background: 'rgba(34, 197, 94, 0.06)',
       }}>
         <div style={{
           fontFamily: 'var(--mono)',
           fontSize: '10px',
           letterSpacing: '0.2em',
           textTransform: 'uppercase',
-          color: 'var(--amber)',
+          color: '#22c55e',
           marginBottom: '12px',
         }}>
           Message received
         </div>
         <p style={{ fontSize: '14px', fontWeight: 300, lineHeight: 1.8, color: 'var(--text)' }}>
-          Thanks for reaching out. We will get back to you shortly.
+          Thanks for reaching out. We will get back to you at team@automationswitch.com shortly.
         </p>
       </div>
     )
@@ -111,8 +111,8 @@ export default function ContactForm() {
           cursor: state.submitting ? 'not-allowed' : 'pointer',
           opacity: state.submitting ? 0.7 : 1,
           transition: 'opacity 0.2s',
-          alignSelf: 'flex-start',
-          minWidth: '160px',
+          alignSelf: "stretch",
+          width: "100%",
         }}
       >
         {state.submitting ? 'Sending...' : 'Send Message'}

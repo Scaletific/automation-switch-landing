@@ -67,7 +67,7 @@ export default function ContactPage() {
           maxWidth: '480px',
         }}>
           Questions about workflow automation, tool feedback, partnership enquiries,
-          or anything else — we read every message.
+          or anything else. We read every message.
         </p>
 
         <ContactForm />

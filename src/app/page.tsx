@@ -12,8 +12,26 @@ const PLACEHOLDER_TOOLS: Tool[] = [
   { _id: 'p1', name: 'PRECISION REACH', tagline: 'AI-powered cold email intelligence. Research an industry, surface stakeholder pain points, and generate high-converting email sequences automatically.', icon: '🎯', status: 'live', url: '/precisionreach.html', slug: { current: 'precision-reach' } },
   { _id: 'p2', name: 'FLOWMAP', tagline: 'Visualise your existing workflow as a structured automation map. Identify where friction lives before you build a single trigger.', icon: '⚡', status: 'soon', url: null, slug: { current: 'flowmap' } },
   { _id: 'p3', name: 'HOOKBASE', tagline: 'A lightweight webhook relay and inspector. Test, monitor, and debug integrations between your tools without a backend.', icon: '🔗', status: 'soon', url: null, slug: { current: 'hookbase' } },
-  { _id: 'p4', name: 'SKILLS BUILDER', tagline: 'Draft, validate, and publish SKILL.md files for your AI agent workflows in minutes.', icon: '🧠', status: 'soon', url: null, slug: { current: 'skills-builder' } },
+  { _id: 'p4', name: 'SEARCH CONSOLE COPILOT', tagline: 'Connect Search Console, run indexing audits, and execute read-only agent actions for SEO ops.', icon: '📈', status: 'beta', url: '/tools/search-console', slug: { current: 'search-console-copilot' } },
 ]
+
+const SEARCH_CONSOLE_TOOL: Tool = {
+  _id: 'copilot-static',
+  name: 'SEARCH CONSOLE COPILOT',
+  tagline: 'Connect Search Console, run indexing audits, and execute read-only agent actions for SEO ops.',
+  icon: '📈',
+  status: 'beta',
+  url: '/tools/search-console',
+  slug: { current: 'search-console-copilot' },
+}
+
+function ensureCopilotTool(items: Tool[]): Tool[] {
+  const exists = items.some((tool) =>
+    tool.slug?.current === 'search-console-copilot' || tool.url === '/tools/search-console'
+  )
+  if (exists) return items
+  return [...items, SEARCH_CONSOLE_TOOL]
+}
 
 const PLACEHOLDER_FEATURED: Article = {
   _id: 'pf1',
@@ -28,7 +46,7 @@ const PLACEHOLDER_FEATURED: Article = {
 const PLACEHOLDER_ARTICLES: Article[] = [
   { _id: 'pa1', title: 'Building a Notion to Sanity Sync Pipeline in 2026', slug: { current: 'make-crm' }, publishedAt: '2026-02-01T00:00:00Z', readTime: 8, excerpt: 'How we wired Notion as a CMS frontend to Sanity as a delivery layer, with a Vercel cron job running every 30 minutes and zero manual deploys.', category: { title: 'Tool Guide', slug: { current: 'tool-guide' } } },
   { _id: 'pa2', title: 'The Agent Governance Layer Most Teams Skip', slug: { current: '3-layer-stack' }, publishedAt: '2026-02-01T00:00:00Z', readTime: 6, excerpt: 'A capable agent and a trustworthy agent are different things. Here is the configuration layer that separates teams shipping reliably from teams cleaning up messes.', category: { title: 'Strategy', slug: { current: 'strategy' } } },
-  { _id: 'pa3', title: 'Zapier vs Make vs n8n — Which Platform Is Right for Your Team', slug: { current: 'zapier-vs-make-vs-n8n' }, publishedAt: '2026-01-01T00:00:00Z', readTime: 9, excerpt: 'An honest comparison of three major automation platforms across price, flexibility, and team fit for growing businesses.', category: { title: 'Comparison', slug: { current: 'comparison' } } },
+  { _id: 'pa3', title: 'Zapier vs Make vs n8n: Which Platform Is Right for Your Team', slug: { current: 'zapier-vs-make-vs-n8n' }, publishedAt: '2026-01-01T00:00:00Z', readTime: 9, excerpt: 'An honest comparison of three major automation platforms across price, flexibility, and team fit for growing businesses.', category: { title: 'Comparison', slug: { current: 'comparison' } } },
 ]
 
 function formatDate(iso: string) {
@@ -44,7 +62,8 @@ export default async function HomePage() {
 
   const showFeatured = featured ?? PLACEHOLDER_FEATURED
   const showArticles = (allArticles && allArticles.length > 0) ? allArticles.slice(0, 3) : PLACEHOLDER_ARTICLES
-  const showTools = (tools && tools.length > 0) ? tools.slice(0, 4) : PLACEHOLDER_TOOLS
+  const seedTools = (tools && tools.length > 0) ? tools : PLACEHOLDER_TOOLS
+  const showTools = ensureCopilotTool(seedTools).slice(0, 4)
 
   return (
     <>
@@ -157,7 +176,7 @@ export default async function HomePage() {
       {/* SKILLS CALLOUT — full-width amber-light band */}
       <div className="skills-callout">
         <div>
-          <div className="skills-callout-eyebrow">New — Skills Hub</div>
+          <div className="skills-callout-eyebrow">New: Skills Hub</div>
           <div className="skills-callout-title">The SKILL.md Directory</div>
           <p className="skills-callout-sub">
             The index the agent ecosystem has been missing. Browse, filter, and copy SKILL.md files

@@ -3,6 +3,8 @@ import { Bebas_Neue, IBM_Plex_Mono, IBM_Plex_Sans } from 'next/font/google'
 import './globals.css'
 import { Topbar } from '@/components/layout/Topbar'
 import { Footer } from '@/components/layout/Footer'
+import { Analytics } from '@vercel/analytics/next'
+import { getRuntimeEnv } from '@/lib/runtime-env'
 
 const bebasNeue = Bebas_Neue({
   weight: '400',
@@ -27,9 +29,13 @@ const ibmPlexSans = IBM_Plex_Sans({
 })
 
 export const metadata: Metadata = {
-  title: { default: 'Automation Switch', template: '%s — Automation Switch' },
+  title: { default: 'Automation Switch', template: '%s | Automation Switch' },
   description: 'Practical automation tools, guides, and workflows for businesses that move fast.',
   metadataBase: new URL('https://automationswitch.com'),
+  alternates: { canonical: 'https://automationswitch.com' },
+  verification: {
+    google: getRuntimeEnv('GOOGLE_SITE_VERIFICATION'),
+  },
   openGraph: { siteName: 'Automation Switch', type: 'website' },
   icons: {
     icon: [
@@ -48,6 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Topbar />
         <main>{children}</main>
         <Footer />
+        <Analytics />
       </body>
     </html>
   )

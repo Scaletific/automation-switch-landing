@@ -30,6 +30,36 @@ const gone410 = new Set([
   '/what-are-robotaxis',
   '/how-will-robotaxis-impact-urban-mobility',
   '/wearable-technology-in-sports',
+
+  // Group 5: NFT / crypto / steampunk / lifestyle
+  '/best-nft-marketplaces',
+  '/how-to-create-nft-art',
+  '/steampunk-sunglasses-retro-futuristic-eyewear',
+  '/steampunk-goggles',
+  '/cyberpunk-aesthetic',
+
+  // Group 6: Robotics / biotech / sensors
+  '/applications-of-swarm-robotics',
+  '/are-robots-expensive',
+  '/nao-robot-discover-programmable-humanoid-2',
+  '/egrobots-a-uae-based-startup-is-advancing-mena-agriculture-with-robotics-and-ai',
+  '/injectable-sensors-revolutionize-animal-health-monitoring',
+  '/implantable-batteries-use-the-bodys-oxygen-for-power',
+  '/the-future-of-bionic-limbs',
+  '/vertiports-for-evtol',
+  '/iot-for-healthcare',
+
+  // Group 7: Tech news / analysis (off-topic)
+  '/zoom-launches-ai-powered-workplace-collaboration-platform',
+  '/altmans-50-billion-wager-openais-quest-for-agi-ignites-discussion',
+  '/google-cyber-security',
+  '/blockchain-attacks-and-their-impact',
+  '/technology-for-high-capacity-optical-discs',
+  '/telesign-relies-on-ai-and-ml-for-omnichannel-security',
+  '/understanding-disruptive-technology',
+  '/tech-companies-driving-change',
+  '/how-much-do-machine-learning-engineers-earn',
+  '/digital-wellbeing-apps-for-kids-and-parents',
 ])
 
 export function middleware(request: NextRequest) {

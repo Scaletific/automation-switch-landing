@@ -13,10 +13,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const author = await client.fetch<AuthorWithArticles>(authorBySlugQuery, { slug })
   if (!author) return {}
   return {
-    title: `${author.name} — Automation Switch`,
+    title: `${author.name} | Automation Switch`,
     description: author.bio,
     openGraph: {
-      title: `${author.name} — Automation Switch`,
+      title: `${author.name} | Automation Switch`,
       description: author.bio,
       url: `https://automationswitch.com/authors/${slug}`,
       siteName: 'Automation Switch',

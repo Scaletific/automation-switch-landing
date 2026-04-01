@@ -78,8 +78,8 @@ export default function PrivacyPage() {
             <h2>Third-party services</h2>
             <p>We use the following third-party services that may process data on our behalf:</p>
             <ul>
-              <li><strong>Vercel</strong> — hosting and CDN. Processes server logs. <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer">Vercel Privacy Policy</a></li>
-              <li><strong>Sanity</strong> — content management system. Stores published article and tool data (not personal data). <a href="https://www.sanity.io/legal/privacy" target="_blank" rel="noopener noreferrer">Sanity Privacy Policy</a></li>
+              <li><strong>Vercel</strong>: hosting and CDN. Processes server logs. <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer">Vercel Privacy Policy</a></li>
+              <li><strong>Sanity</strong>: content management system. Stores published article and tool data (not personal data). <a href="https://www.sanity.io/legal/privacy" target="_blank" rel="noopener noreferrer">Sanity Privacy Policy</a></li>
             </ul>
             <p>We use <strong>Next.js Google Fonts</strong> integration, which downloads and self-hosts font files at build time. No font requests are sent to Google servers at runtime.</p>
           </section>
@@ -94,9 +94,9 @@ export default function PrivacyPage() {
           <section className="legal-section">
             <h2>How long we keep your data</h2>
             <ul>
-              <li><strong>Newsletter email addresses</strong> — retained until you unsubscribe or request deletion</li>
-              <li><strong>Skills submissions</strong> — retained for as long as the submission is under review or published in the directory</li>
-              <li><strong>Server logs</strong> — retained by Vercel in accordance with their data retention policy</li>
+              <li><strong>Newsletter email addresses</strong>: retained until you unsubscribe or request deletion</li>
+              <li><strong>Skills submissions</strong>: retained for as long as the submission is under review or published in the directory</li>
+              <li><strong>Server logs</strong>: retained by Vercel in accordance with their data retention policy</li>
             </ul>
           </section>
 
@@ -104,13 +104,13 @@ export default function PrivacyPage() {
             <h2>Your rights</h2>
             <p>Under UK GDPR, you have the right to:</p>
             <ul>
-              <li><strong>Access</strong> — request a copy of the personal data we hold about you</li>
-              <li><strong>Rectification</strong> — request correction of inaccurate data</li>
-              <li><strong>Erasure</strong> — request deletion of your data (&ldquo;right to be forgotten&rdquo;)</li>
-              <li><strong>Restriction</strong> — request we restrict processing of your data</li>
-              <li><strong>Portability</strong> — request your data in a portable format</li>
-              <li><strong>Object</strong> — object to processing based on legitimate interests</li>
-              <li><strong>Withdraw consent</strong> — unsubscribe from the newsletter at any time using the link in any email we send you</li>
+              <li><strong>Access</strong>: request a copy of the personal data we hold about you</li>
+              <li><strong>Rectification</strong>: request correction of inaccurate data</li>
+              <li><strong>Erasure</strong>: request deletion of your data (&ldquo;right to be forgotten&rdquo;)</li>
+              <li><strong>Restriction</strong>: request we restrict processing of your data</li>
+              <li><strong>Portability</strong>: request your data in a portable format</li>
+              <li><strong>Object</strong>: object to processing based on legitimate interests</li>
+              <li><strong>Withdraw consent</strong>: unsubscribe from the newsletter at any time using the link in any email we send you</li>
             </ul>
             <p>To exercise any of these rights, contact us at <strong>privacy@automationswitch.com</strong>. We will respond within 30 days.</p>
             <p>You also have the right to lodge a complaint with the <strong>Information Commissioner&apos;s Office (ICO)</strong> at <a href="https://ico.org.uk" target="_blank" rel="noopener noreferrer">ico.org.uk</a>.</p>
