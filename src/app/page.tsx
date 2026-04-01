@@ -3,6 +3,7 @@ import { client } from '@sanity/lib/client'
 import { homepageArticlesQuery, toolsQuery, allArticlesQuery } from '@sanity/lib/queries'
 import { SubscribeForm } from '@/components/ui/SubscribeForm'
 import { Ticker } from '@/components/home/Ticker'
+import { getArticleHref } from '@/lib/pillars'
 import type { Article, Tool } from '@/lib/types'
 
 export const revalidate = 60
@@ -88,7 +89,7 @@ export default async function HomePage() {
           </div>
         </div>
 
-        <Link href={`/articles/${showFeatured.slug.current}`} className="hero-v1-card">
+        <Link href={getArticleHref(showFeatured)} className="hero-v1-card">
           <div className="hero-v1-card-label">Latest</div>
           {showFeatured.category && (
             <div className="hero-v1-card-cat">{showFeatured.category.title}&nbsp;·&nbsp;{showFeatured.readTime} min read</div>
@@ -130,7 +131,7 @@ export default async function HomePage() {
         const [lead, ...rest] = showArticles
         return (
           <>
-            <Link href={`/articles/${lead.slug.current}`} className="article-featured">
+            <Link href={getArticleHref(lead)} className="article-featured">
               <div className="article-featured-text">
                 <div className="article-featured-label">Latest</div>
                 {lead.kicker && <div className="article-kicker">{lead.kicker}</div>}
@@ -156,7 +157,7 @@ export default async function HomePage() {
             {rest.length > 0 && (
               <div className="article-grid-2col">
                 {rest.map((article) => (
-                  <Link key={article._id} href={`/articles/${article.slug.current}`} className="article-grid-item">
+                  <Link key={article._id} href={getArticleHref(article)} className="article-grid-item">
                     {article.category && <div className="article-category">{article.category.title}</div>}
                     {article.kicker && <div className="article-kicker">{article.kicker}</div>}
                     <div className="article-grid-title">{article.title}</div>

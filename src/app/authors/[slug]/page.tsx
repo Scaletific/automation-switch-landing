@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { notFound } from 'next/navigation'
 import { client } from '@sanity/lib/client'
 import { authorBySlugQuery } from '@sanity/lib/queries'
+import { getArticleHref } from '@/lib/pillars'
 import type { AuthorWithArticles } from '@/lib/types'
 import type { Metadata } from 'next'
 
@@ -115,7 +116,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
             {author.articles.map(article => (
               <Link
                 key={article._id}
-                href={`/articles/${article.slug.current}`}
+                href={getArticleHref(article)}
                 className="article-grid-item"
               >
                 {article.category && (

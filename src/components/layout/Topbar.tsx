@@ -1,27 +1,86 @@
 'use client'
 
 import Link from 'next/link'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { usePathname } from 'next/navigation'
+
+const CORE_PILLARS = [
+  {
+    slug: 'workflow-automation',
+    label: 'Workflow Automation',
+    desc: 'Platforms, flows, and operational cleanup',
+  },
+  {
+    slug: 'ai-workflows',
+    label: 'AI Workflows',
+    desc: 'Agentic automation and AI-powered systems',
+  },
+  {
+    slug: 'tool-comparisons',
+    label: 'Tool Comparisons',
+    desc: 'Side-by-side breakdowns and buying guides',
+  },
+  {
+    slug: 'automation-audits',
+    label: 'Automation Audits',
+    desc: 'Frameworks, reviews, and diagnostic guides',
+  },
+]
+
+const SECONDARY_PILLARS = [
+  { slug: 'hyperautomation',      label: 'Hyperautomation' },
+  { slug: 'production-readiness', label: 'Production Readiness' },
+]
 
 export function Topbar() {
-  const [menuOpen, setMenuOpen] = useState(false)
+  const [menuOpen, setMenuOpen]       = useState(false)
+  const [topicsOpen, setTopicsOpen]   = useState(false)  // mobile sub-menu
+  const [dropdownOpen, setDropdownOpen] = useState(false) // desktop hover state
+  const dropdownRef  = useRef<HTMLDivElement>(null)
+  const closeTimer   = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const pathname = usePathname()
 
-  // Close menu on route change / resize to desktop
+  // Close mobile menu on route change
+  useEffect(() => { setMenuOpen(false); setTopicsOpen(false) }, [pathname])
+
+  // Close mobile menu on resize to desktop
   useEffect(() => {
     function handleResize() {
-      if (window.innerWidth > 900) setMenuOpen(false)
+      if (window.innerWidth > 900) { setMenuOpen(false); setTopicsOpen(false) }
     }
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  // Prevent body scroll when menu is open
+  // Prevent body scroll when mobile menu open
   useEffect(() => {
     document.body.style.overflow = menuOpen ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
   }, [menuOpen])
 
-  function close() { setMenuOpen(false) }
+  // Close dropdown on outside click (keyboard / mouse)
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setDropdownOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [])
+
+  // Cleanup close timer on unmount
+  useEffect(() => () => { if (closeTimer.current) clearTimeout(closeTimer.current) }, [])
+
+  function openDropdown() {
+    if (closeTimer.current) clearTimeout(closeTimer.current)
+    setDropdownOpen(true)
+  }
+  function scheduleClose() {
+    closeTimer.current = setTimeout(() => setDropdownOpen(false), 180)
+  }
+
+  function close() { setMenuOpen(false); setTopicsOpen(false) }
 
   return (
     <>
@@ -39,11 +98,71 @@ export function Topbar() {
         </div>
 
         <nav className="topbar-right">
-          <Link href="/articles" className="nav-link">Articles</Link>
-          <Link href="/tools" className="nav-link">Tools</Link>
-          <Link href="/skills" className="nav-link">Skills</Link>
-          <Link href="/about" className="nav-link">About</Link>
-          <Link href="/contact" className="nav-link">Contact</Link>
+          {/* Articles with pillar dropdown */}
+          <div
+            className={`nav-dropdown-wrap${dropdownOpen ? ' nav-dropdown-wrap--open' : ''}`}
+            ref={dropdownRef}
+            onMouseEnter={openDropdown}
+            onMouseLeave={scheduleClose}
+          >
+            <button
+              className="nav-link nav-link--btn"
+              aria-haspopup="true"
+              aria-expanded={dropdownOpen}
+              onClick={() => setDropdownOpen(o => !o)}
+            >
+              Articles
+              <span className="nav-chevron" aria-hidden="true">▾</span>
+            </button>
+
+            <div className="nav-dropdown" role="menu" aria-label="Browse by topic" onMouseEnter={openDropdown} onMouseLeave={scheduleClose}>
+              <div className="nav-dropdown-header">Browse by topic</div>
+
+              <div className="nav-dropdown-core">
+                {CORE_PILLARS.map(p => (
+                  <Link
+                    key={p.slug}
+                    href={`/${p.slug}`}
+                    className="nav-dropdown-item"
+                    role="menuitem"
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    <span className="nav-dropdown-label">{p.label}</span>
+                    <span className="nav-dropdown-desc">{p.desc}</span>
+                  </Link>
+                ))}
+              </div>
+
+              <div className="nav-dropdown-divider" />
+
+              <div className="nav-dropdown-secondary">
+                {SECONDARY_PILLARS.map(p => (
+                  <Link
+                    key={p.slug}
+                    href={`/${p.slug}`}
+                    className="nav-dropdown-secondary-item"
+                    role="menuitem"
+                    onClick={() => setDropdownOpen(false)}
+                  >
+                    {p.label}
+                  </Link>
+                ))}
+                <Link
+                  href="/articles"
+                  className="nav-dropdown-all"
+                  role="menuitem"
+                  onClick={() => setDropdownOpen(false)}
+                >
+                  All articles →
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          <Link href="/tools"   className="nav-link">Tools</Link>
+          <Link href="/skills"  className="nav-link">Skills Hub</Link>
+          <Link href="/audits"  className="nav-link">Audits</Link>
+          <Link href="/about"   className="nav-link">About</Link>
 
           <div className="topbar-social">
             <a href="https://x.com/automationswitch" className="social-link" aria-label="X / Twitter">
@@ -82,12 +201,52 @@ export function Topbar() {
       {menuOpen && (
         <div className="mobile-menu" role="dialog" aria-label="Navigation menu">
           <nav className="mobile-menu-nav">
-            <Link href="/articles" className="mobile-nav-link" onClick={close}>Articles</Link>
-            <Link href="/tools" className="mobile-nav-link" onClick={close}>Tools</Link>
-            <Link href="/skills" className="mobile-nav-link" onClick={close}>Skills</Link>
-            <Link href="/about" className="mobile-nav-link" onClick={close}>About</Link>
-            <Link href="/contact" className="mobile-nav-link" onClick={close}>Contact</Link>
-            <Link href="/#subscribe" className="mobile-nav-link mobile-nav-link--cta" onClick={close}>Subscribe. It&apos;s Free.</Link>
+            {/* Articles — expandable topics sub-list */}
+            <button
+              className={`mobile-nav-link mobile-nav-link--expandable${topicsOpen ? ' mobile-nav-link--expanded' : ''}`}
+              onClick={() => setTopicsOpen(o => !o)}
+              aria-expanded={topicsOpen}
+            >
+              Articles
+              <span className="mobile-nav-chevron" aria-hidden="true">{topicsOpen ? '−' : '+'}</span>
+            </button>
+
+            {topicsOpen && (
+              <div className="mobile-topics-panel">
+                {CORE_PILLARS.map(p => (
+                  <Link
+                    key={p.slug}
+                    href={`/${p.slug}`}
+                    className="mobile-topic-link"
+                    onClick={close}
+                  >
+                    <span className="mobile-topic-label">{p.label}</span>
+                    <span className="mobile-topic-desc">{p.desc}</span>
+                  </Link>
+                ))}
+                <div className="mobile-topics-divider" />
+                {SECONDARY_PILLARS.map(p => (
+                  <Link
+                    key={p.slug}
+                    href={`/${p.slug}`}
+                    className="mobile-topic-link mobile-topic-link--secondary"
+                    onClick={close}
+                  >
+                    {p.label}
+                  </Link>
+                ))}
+                <Link href="/articles" className="mobile-topic-link mobile-topic-link--all" onClick={close}>
+                  All articles →
+                </Link>
+              </div>
+            )}
+
+            <Link href="/tools"          className="mobile-nav-link" onClick={close}>Tools</Link>
+            <Link href="/skills"         className="mobile-nav-link" onClick={close}>Skills Hub</Link>
+            <Link href="/audits"         className="mobile-nav-link" onClick={close}>Audits</Link>
+            <Link href="/about"          className="mobile-nav-link" onClick={close}>About</Link>
+            <Link href="/contact"        className="mobile-nav-link" onClick={close}>Contact</Link>
+            <Link href="/#subscribe"     className="mobile-nav-link mobile-nav-link--cta" onClick={close}>Subscribe. It&apos;s Free.</Link>
           </nav>
           <div className="mobile-menu-social">
             <a href="https://x.com/automationswitch" className="social-link" aria-label="X / Twitter" onClick={close}>

@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import Link from 'next/link'
+import { getArticleHref } from '@/lib/pillars'
 import type { Article } from '@/lib/types'
 
 function formatDate(iso: string) {
@@ -84,7 +85,7 @@ export function ArticlesGrid({ articles }: { articles: Article[] }) {
             {/* Featured row — first article large left, next two in sidebar */}
             {featured && (
               <div className="articles-featured-row">
-                <Link href={`/articles/${featured.slug.current}`} className="article-card-featured">
+                <Link href={getArticleHref(featured)} className="article-card-featured">
                   {featured.category && (
                     <div className="article-category">{featured.category.title}</div>
                   )}
@@ -109,7 +110,7 @@ export function ArticlesGrid({ articles }: { articles: Article[] }) {
                 {(second || third) && (
                   <div className="featured-side">
                     {second && (
-                      <Link href={`/articles/${second.slug.current}`} className="featured-side-item">
+                      <Link href={getArticleHref(second)} className="featured-side-item">
                         {second.category && (
                           <div className="article-category">{second.category.title}</div>
                         )}
@@ -123,7 +124,7 @@ export function ArticlesGrid({ articles }: { articles: Article[] }) {
                       </Link>
                     )}
                     {third && (
-                      <Link href={`/articles/${third.slug.current}`} className="featured-side-item">
+                      <Link href={getArticleHref(third)} className="featured-side-item">
                         {third.category && (
                           <div className="article-category">{third.category.title}</div>
                         )}
@@ -145,7 +146,7 @@ export function ArticlesGrid({ articles }: { articles: Article[] }) {
             {rest.length > 0 && (
               <div className="article-grid" style={{ marginTop: '1px' }}>
                 {rest.map(a => (
-                  <Link key={a._id} href={`/articles/${a.slug.current}`} className="article-grid-item">
+                  <Link key={a._id} href={getArticleHref(a)} className="article-grid-item">
                     {a.category && (
                       <div className="article-category">{a.category.title}</div>
                     )}
