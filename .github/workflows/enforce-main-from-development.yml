@@ -1,0 +1,19 @@
+name: Enforce Main From Development
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  enforce-source-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require development as source branch for main
+        run: |
+          echo "PR base: ${{ github.base_ref }}"
+          echo "PR head: ${{ github.head_ref }}"
+          if [ "${{ github.head_ref }}" != "development" ]; then
+            echo "Only PRs from 'development' may target 'main'."
+            exit 1
+          fi
