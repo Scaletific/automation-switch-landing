@@ -20,6 +20,7 @@ const staticRoutes: MetadataRoute.Sitemap = [
 const articlesQuery = groq`
   *[_type == "article" && defined(slug.current)] | order(publishedAt desc) {
     "slug": slug.current,
+    primaryPillar,
     publishedAt,
     lastModified
   }
@@ -48,17 +49,20 @@ function safeDate(value?: string): Date {
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [articles, skillSources, authors] = await Promise.all([
-    client.fetch<{ slug: string; publishedAt?: string; lastModified?: string }[]>(articlesQuery).catch(() => []),
+    client.fetch<{ slug: string; primaryPillar?: string; publishedAt?: string; lastModified?: string }[]>(articlesQuery).catch(() => []),
     client.fetch<{ slug: string; skillCountUpdatedAt?: string }[]>(skillSourcesQuery).catch(() => []),
     client.fetch<{ slug: string }[]>(authorsQuery).catch(() => []),
   ])
 
-  const articleRoutes: MetadataRoute.Sitemap = (articles ?? []).map((a) => ({
-    url: `${BASE_URL}/articles/${a.slug}`,
-    lastModified: safeDate(a.lastModified ?? a.publishedAt),
-    changeFrequency: 'monthly',
-    priority: 0.8,
-  }))
+  const articleRoutes: MetadataRoute.Sitemap = (articles ?? []).map((a) => {
+    const prefix = a.primaryPillar ? `/${a.primaryPillar}` : '/articles'
+    return {
+      url: `${BASE_URL}${prefix}/${a.slug}`,
+      lastModified: safeDate(a.lastModified ?? a.publishedAt),
+      changeFrequency: 'monthly',
+      priority: 0.8,
+    }
+  })
 
   const skillRoutes: MetadataRoute.Sitemap = (skillSources ?? []).map((s) => ({
     url: `${BASE_URL}/skills/${s.slug}`,

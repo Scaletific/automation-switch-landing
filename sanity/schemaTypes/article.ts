@@ -92,6 +92,12 @@ export const article = defineType({
             defineField({ name: 'caption', title: 'Caption', type: 'string' }),
           ],
         },
+        { type: 'comparisonTable' },
+        { type: 'calloutBox' },
+        { type: 'proConList' },
+        { type: 'howToSteps' },
+        { type: 'codeBlock' },
+        { type: 'statHighlight' },
       ],
     }),
     defineField({
