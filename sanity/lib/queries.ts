@@ -6,6 +6,7 @@ const articleFields = groq`
   title,
   kicker,
   slug,
+  primaryPillar,
   excerpt,
   publishedAt,
   readTime,
@@ -65,6 +66,7 @@ export const articleFullBySlugQuery = groq`
     title,
     kicker,
     slug,
+    primaryPillar,
     excerpt,
     publishedAt,
     lastModified,
@@ -131,5 +133,38 @@ export const skillSourceBySlugQuery = groq`
     _id, name, slug, description, url, installCmd,
     domains, platforms, skillCount, skillCountPrev, skillCountUpdatedAt,
     sourceType, featured, status, seo
+  }
+`
+
+// Tool reviews — all with basic fields
+export const allToolReviewsQuery = groq`
+  *[_type == "toolReview"] | order(publishedAt desc) {
+    _id, name, slug, tagline, category, overallRating, publishedAt
+  }
+`
+
+// Single tool review by slug
+export const toolReviewBySlugQuery = groq`
+  *[_type == "toolReview" && slug.current == $slug][0] {
+    _id, name, slug, tagline, featuredImage,
+    externalUrl, affiliateUrl, category, overallRating,
+    verdict, pros, cons, pricingTiers[] { name, price, description },
+    bestFor, publishedAt, lastTestedAt, seo
+  }
+`
+
+// Glossary terms — all, ordered by term A-Z
+export const allGlossaryTermsQuery = groq`
+  *[_type == "glossaryTerm"] | order(term asc) {
+    _id, term, slug, definition, pillar
+  }
+`
+
+// Single glossary term by slug
+export const glossaryTermBySlugQuery = groq`
+  *[_type == "glossaryTerm" && slug.current == $slug][0] {
+    _id, term, slug, definition, pillar,
+    "relatedTerms": relatedTerms[]->{ term, slug },
+    "relatedArticles": relatedArticles[]->{ title, slug, primaryPillar }
   }
 `

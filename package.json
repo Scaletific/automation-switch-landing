@@ -25,6 +25,7 @@
     "react-dom": "^19.0.0",
     "react-is": "^19.2.4",
     "sanity": "^3.66.1",
+    "shiki": "^3.2.0",
     "styled-components": "^6.3.12"
   },
   "devDependencies": {

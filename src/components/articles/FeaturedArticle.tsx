@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { getArticleHref } from '@/lib/pillars'
 import type { Article } from '@/lib/types'
 
 function formatDate(iso: string) {
@@ -7,7 +8,7 @@ function formatDate(iso: string) {
 
 export function FeaturedArticle({ article }: { article: Article }) {
   return (
-    <Link href={`/articles/${article.slug.current}`} className="featured-main" style={{ textDecoration: 'none' }}>
+    <Link href={getArticleHref(article)} className="featured-main" style={{ textDecoration: 'none' }}>
       <div className="article-category">{article.category?.title}</div>
       <h3 className="article-title-large">{article.title}</h3>
       <p className="article-excerpt">{article.excerpt}</p>

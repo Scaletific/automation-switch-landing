@@ -22,9 +22,19 @@ export function Footer() {
         <div className="footer-dark-cols">
           <div className="footer-dark-col">
             <div className="footer-col-label">Content</div>
-            <Link href="/articles">Articles</Link>
+            <Link href="/workflow-automation">Workflow Automation</Link>
+            <Link href="/ai-workflows">AI Workflows</Link>
+            <Link href="/tool-comparisons">Tool Comparisons</Link>
+            <Link href="/automation-audits">Automation Audits</Link>
+            <Link href="/hyperautomation">Hyperautomation</Link>
+            <Link href="/production-readiness">Production Readiness</Link>
+          </div>
+          <div className="footer-dark-col">
+            <div className="footer-col-label">Resources</div>
+            <Link href="/articles">All Articles</Link>
             <Link href="/tools">Tools</Link>
             <Link href="/skills">Skills Hub</Link>
+            <Link href="/audits">Audits</Link>
           </div>
           <div className="footer-dark-col">
             <div className="footer-col-label">Company</div>

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { getArticleHref } from '@/lib/pillars'
 import type { Article } from '@/lib/types'
 
 function formatDate(iso: string) {
@@ -12,7 +13,7 @@ interface Props {
 
 export function ArticleCard({ article, size = 'grid' }: Props) {
   return (
-    <Link href={`/articles/${article.slug.current}`} className="featured-side-item">
+    <Link href={getArticleHref(article)} className="featured-side-item">
       <div className="article-category">{article.category?.title}</div>
       {article.kicker && <div className="article-kicker">{article.kicker}</div>}
       {size === 'side' ? (

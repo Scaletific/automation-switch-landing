@@ -415,6 +415,44 @@ The provider is abstracted behind `/api/subscribe`. The frontend never calls Bee
 
 ---
 
+## Hero & OG Image Standards
+
+> **Full specification:** See `HERO_IMAGE_GUIDELINES.md` at the repo root for per-content-type treatments, annotation style, screenshot capture SOP, and Wave 1 screenshot assignments.
+
+**Core rule:** Screenshots from actual tool usage — never AI-generated art, stock photos, or marketing screenshots from tool websites. This is an E-E-A-T signal.
+
+| Spec | Value |
+|---|---|
+| Aspect ratio | 16:9, 1200 × 675px minimum |
+| Capture | 2× resolution, 1440px browser width |
+| Theme | Dark mode preferred |
+| Export | WebP primary, JPEG fallback, under 150KB |
+| Chrome | No browser chrome — tool UI only |
+| Annotations | Amber `#c8861a` rectangles/arrows, IBM Plex Mono labels, max 2–3 |
+| Alt text | `[Tool Name] [what's shown] — [context]` |
+
+**Per content type:**
+
+| Content Type | Hero Treatment |
+|---|---|
+| **Tool Comparison** | Split-screen composite: 2–3 tool UIs, amber divider |
+| **Deep Dive** | Single annotated screenshot, 1–2 amber callouts |
+| **Workflow / How-To** | Process screenshot showing completed workflow |
+| **Strategy / Framework** | Dashboard or results screenshot |
+| **Audit / Assessment** | Before/after composite with amber divider |
+
+**OG image derivation:** Hero image IS the OG image. Sanity serves at `?w=1200&h=675&fit=crop`. No separate asset needed. `hotspot: true` enabled in schema for focal point control.
+
+### SEO checklist (append to article review)
+
+- Hero image present with descriptive alt text (not article title)
+- Hero follows content-type treatment from guidelines
+- Image under 150KB, exported as WebP
+- OG image tag resolves to hero URL
+- No AI art, stock photos, or vendor marketing screenshots
+
+---
+
 ## Tools Section
 
 PrecisionReach is the first live tool. Tool cards use the following status pattern:

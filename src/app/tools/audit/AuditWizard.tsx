@@ -292,7 +292,7 @@ function WelcomeScreen({ dispatch }: { dispatch: React.Dispatch<Action> }) {
 
         <p className="audit-source-note">
           Based on the{" "}
-          <a href={`${SITE_BASE}/articles/automation-audit-workflow-checklist`}>
+          <a href={`${SITE_BASE}/automation-audits/automation-audit-workflow-checklist`}>
             five-dimension audit framework
           </a>{" "}
           by Automation Switch
