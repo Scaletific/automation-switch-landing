@@ -94,7 +94,7 @@ export const toolReview = defineType({
   ],
   preview: {
     select: { title: 'name', rating: 'overallRating', category: 'category', media: 'featuredImage' },
-    prepare({ title, rating, category, media }: { title?: string; rating?: number; category?: string; media?: unknown }) {
+    prepare({ title, rating, category, media }: { title?: string; rating?: number; category?: string; media?: any }) {
       const stars = rating ? '★'.repeat(Math.round(rating)) + '☆'.repeat(5 - Math.round(rating)) : ''
       return { title, subtitle: `${stars} · ${category ?? ''}`, media }
     },
